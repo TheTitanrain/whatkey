@@ -69,6 +69,8 @@ namespace WhatKey
             editItem.Click += (s, e) => OpenEditor();
             menu.Items.Add(editItem);
 
+            menu.Items.Add(new Separator());
+
             var aboutItem = new MenuItem { Header = "About" };
             aboutItem.Click += (s, e) => OpenAbout();
             menu.Items.Add(aboutItem);

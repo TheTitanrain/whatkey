@@ -48,6 +48,8 @@ KeyboardHookService (WH_KEYBOARD_LL hook or WM_HOTKEY)
 
 - **`EditorWindow`** — two-panel layout (ListBox of apps left, DataGrid of hotkeys right). Closing is intercepted to `Hide()` instead of closing, so the app stays in the tray. Opened via tray menu or double-click. **Detect App** button starts a 3-second DispatcherTimer countdown; after it fires, `GetActiveProcessName()` captures whatever is in the foreground.
 
+- **`AboutWindow`** — `WindowStyle=None`, `AllowsTransparency=True`, `ShowInTaskbar=False`, `ResizeMode=NoResize`. Centered on screen, draggable via title-bar `MouseDown` → `DragMove()`. Unlike `EditorWindow`, it truly closes (not hides) on dismiss — `App.xaml.cs` nulls `_aboutWindow` in the `Closed` handler so a fresh instance is created on next open. Opened via tray context menu "About".
+
 ### Models & JSON format
 
 ```json
