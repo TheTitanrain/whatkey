@@ -1,0 +1,251 @@
+{
+  "settings": {
+    "holdKey": "LControlKey",
+    "holdDelayMs": 500,
+    "toggleHotkey": "Ctrl+Alt+H"
+  },
+  "apps": [
+    {
+      "processName": "code",
+      "title": "VS Code",
+      "hotkeys": [
+        { "keys": "Ctrl+P", "description": "Quick Open" },
+        { "keys": "Ctrl+Shift+P", "description": "Command Palette" },
+        { "keys": "Ctrl+`", "description": "Toggle Terminal" },
+        { "keys": "Ctrl+B", "description": "Toggle Sidebar" },
+        { "keys": "Ctrl+/", "description": "Toggle Comment" },
+        { "keys": "Alt+Up/Down", "description": "Move Line Up/Down" },
+        { "keys": "Ctrl+D", "description": "Select Next Occurrence" },
+        { "keys": "Ctrl+Shift+K", "description": "Delete Line" },
+        { "keys": "F5", "description": "Start Debugging" },
+        { "keys": "Ctrl+G", "description": "Go to Line" }
+      ]
+    },
+    {
+      "processName": "chrome",
+      "title": "Google Chrome",
+      "hotkeys": [
+        { "keys": "Ctrl+T", "description": "New Tab" },
+        { "keys": "Ctrl+W", "description": "Close Tab" },
+        { "keys": "Ctrl+Tab", "description": "Next Tab" },
+        { "keys": "Ctrl+Shift+Tab", "description": "Previous Tab" },
+        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+        { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
+        { "keys": "Ctrl+F", "description": "Find in Page" },
+        { "keys": "F5", "description": "Reload Page" },
+        { "keys": "Ctrl+D", "description": "Bookmark Page" },
+        { "keys": "Ctrl+Shift+N", "description": "New Incognito Window" }
+      ]
+    },
+    {
+      "processName": "firefox",
+      "title": "Firefox",
+      "hotkeys": [
+        { "keys": "Ctrl+T", "description": "New Tab" },
+        { "keys": "Ctrl+W", "description": "Close Tab" },
+        { "keys": "Ctrl+Tab", "description": "Next Tab" },
+        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+        { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
+        { "keys": "Ctrl+F", "description": "Find in Page" },
+        { "keys": "F5", "description": "Reload Page" },
+        { "keys": "Ctrl+Shift+P", "description": "New Private Window" },
+        { "keys": "Ctrl+Shift+A", "description": "Manage Extensions" }
+      ]
+    },
+    {
+      "processName": "msedge",
+      "title": "Microsoft Edge",
+      "hotkeys": [
+        { "keys": "Ctrl+T", "description": "New Tab" },
+        { "keys": "Ctrl+W", "description": "Close Tab" },
+        { "keys": "Ctrl+Tab", "description": "Next Tab" },
+        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+        { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
+        { "keys": "Ctrl+F", "description": "Find in Page" },
+        { "keys": "F5", "description": "Reload Page" },
+        { "keys": "Ctrl+Shift+N", "description": "New InPrivate Window" },
+        { "keys": "Ctrl+Shift+O", "description": "Open Favorites" }
+      ]
+    },
+    {
+      "processName": "explorer",
+      "title": "Windows Explorer",
+      "hotkeys": [
+        { "keys": "Alt+Up", "description": "Go Up One Level" },
+        { "keys": "Alt+Left", "description": "Back" },
+        { "keys": "Alt+Right", "description": "Forward" },
+        { "keys": "F2", "description": "Rename" },
+        { "keys": "F5", "description": "Refresh" },
+        { "keys": "Ctrl+Shift+N", "description": "New Folder" },
+        { "keys": "Ctrl+W", "description": "Close Window" },
+        { "keys": "Alt+D", "description": "Focus Address Bar" },
+        { "keys": "Ctrl+Z", "description": "Undo Action" }
+      ]
+    },
+    {
+      "processName": "notepad++",
+      "title": "Notepad++",
+      "hotkeys": [
+        { "keys": "Ctrl+S", "description": "Save" },
+        { "keys": "Ctrl+Z", "description": "Undo" },
+        { "keys": "Ctrl+F", "description": "Find" },
+        { "keys": "Ctrl+H", "description": "Find & Replace" },
+        { "keys": "Ctrl+G", "description": "Go to Line" },
+        { "keys": "Ctrl+D", "description": "Duplicate Line" },
+        { "keys": "Ctrl+Shift+Up", "description": "Move Line Up" },
+        { "keys": "Ctrl+/", "description": "Toggle Comment" },
+        { "keys": "F5", "description": "Run Program" }
+      ]
+    },
+    {
+      "processName": "winword",
+      "title": "Microsoft Word",
+      "hotkeys": [
+        { "keys": "Ctrl+S", "description": "Save" },
+        { "keys": "Ctrl+Z", "description": "Undo" },
+        { "keys": "Ctrl+B", "description": "Bold" },
+        { "keys": "Ctrl+I", "description": "Italic" },
+        { "keys": "Ctrl+U", "description": "Underline" },
+        { "keys": "Ctrl+F", "description": "Find" },
+        { "keys": "Ctrl+H", "description": "Find & Replace" },
+        { "keys": "Ctrl+P", "description": "Print" },
+        { "keys": "Ctrl+Shift+C", "description": "Copy Formatting" },
+        { "keys": "Ctrl+Shift+V", "description": "Paste Formatting" }
+      ]
+    },
+    {
+      "processName": "excel",
+      "title": "Microsoft Excel",
+      "hotkeys": [
+        { "keys": "Ctrl+S", "description": "Save" },
+        { "keys": "Ctrl+Z", "description": "Undo" },
+        { "keys": "Ctrl+F", "description": "Find" },
+        { "keys": "Ctrl+H", "description": "Find & Replace" },
+        { "keys": "Ctrl+Home", "description": "Go to Cell A1" },
+        { "keys": "Ctrl+End", "description": "Go to Last Cell" },
+        { "keys": "Ctrl+Shift+L", "description": "Toggle AutoFilter" },
+        { "keys": "Alt+=", "description": "AutoSum" },
+        { "keys": "F2", "description": "Edit Cell" },
+        { "keys": "Ctrl+1", "description": "Format Cells Dialog" }
+      ]
+    },
+    {
+      "processName": "windowsterminal",
+      "title": "Windows Terminal",
+      "hotkeys": [
+        { "keys": "Ctrl+Shift+T", "description": "New Tab" },
+        { "keys": "Ctrl+Shift+W", "description": "Close Tab" },
+        { "keys": "Ctrl+Tab", "description": "Next Tab" },
+        { "keys": "Ctrl+Shift+Tab", "description": "Previous Tab" },
+        { "keys": "Ctrl+Shift+D", "description": "Duplicate Tab" },
+        { "keys": "Alt+Shift+D", "description": "Split Pane (Horizontal)" },
+        { "keys": "Alt+Shift+Plus", "description": "Split Pane (Vertical)" },
+        { "keys": "Ctrl+C", "description": "Copy / Cancel" },
+        { "keys": "Ctrl+V", "description": "Paste" }
+      ]
+    },
+    {
+      "processName": "slack",
+      "title": "Slack",
+      "hotkeys": [
+        { "keys": "Ctrl+K", "description": "Quick Switcher" },
+        { "keys": "Ctrl+/", "description": "Show Shortcuts" },
+        { "keys": "Ctrl+Shift+M", "description": "Open Activity" },
+        { "keys": "Ctrl+Shift+Y", "description": "Set Status" },
+        { "keys": "Ctrl+N", "description": "New Message" },
+        { "keys": "Ctrl+F", "description": "Search" },
+        { "keys": "Alt+Up/Down", "description": "Previous/Next Channel" },
+        { "keys": "Ctrl+Shift+Enter", "description": "Create Snippet" }
+      ]
+    },
+    {
+      "processName": "telegram",
+      "title": "Telegram",
+      "hotkeys": [
+        { "keys": "Ctrl+N", "description": "New Private Message" },
+        { "keys": "Ctrl+F", "description": "Search" },
+        { "keys": "Ctrl+W", "description": "Close" },
+        { "keys": "Ctrl+Q", "description": "Quit" },
+        { "keys": "Alt+Up/Down", "description": "Previous/Next Chat" },
+        { "keys": "Ctrl+Enter", "description": "Send Message" }
+      ]
+    },
+    {
+      "processName": "vlc",
+      "title": "VLC Media Player",
+      "hotkeys": [
+        { "keys": "Space", "description": "Play/Pause" },
+        { "keys": "F", "description": "Toggle Fullscreen" },
+        { "keys": "Ctrl+Right", "description": "Fast Forward 1 min" },
+        { "keys": "Ctrl+Left", "description": "Rewind 1 min" },
+        { "keys": "Right", "description": "Forward 10s" },
+        { "keys": "Left", "description": "Rewind 10s" },
+        { "keys": "Up", "description": "Volume Up" },
+        { "keys": "Down", "description": "Volume Down" },
+        { "keys": "M", "description": "Mute" },
+        { "keys": "S", "description": "Stop" }
+      ]
+    },
+    {
+      "processName": "rider64",
+      "title": "JetBrains Rider",
+      "hotkeys": [
+        { "keys": "Shift+Shift", "description": "Search Everywhere" },
+        { "keys": "Ctrl+Shift+A", "description": "Find Action" },
+        { "keys": "Alt+Enter", "description": "Quick Fix" },
+        { "keys": "Ctrl+R, R", "description": "Rename" },
+        { "keys": "Ctrl+Alt+L", "description": "Reformat Code" },
+        { "keys": "Ctrl+Shift+F", "description": "Find in Files" },
+        { "keys": "F5", "description": "Run" },
+        { "keys": "F9", "description": "Debug" },
+        { "keys": "Ctrl+Alt+S", "description": "Settings" }
+      ]
+    },
+    {
+      "processName": "idea64",
+      "title": "IntelliJ IDEA",
+      "hotkeys": [
+        { "keys": "Shift+Shift", "description": "Search Everywhere" },
+        { "keys": "Ctrl+Shift+A", "description": "Find Action" },
+        { "keys": "Alt+Enter", "description": "Quick Fix / Intention" },
+        { "keys": "Ctrl+R, R", "description": "Rename" },
+        { "keys": "Ctrl+Alt+L", "description": "Reformat Code" },
+        { "keys": "Ctrl+Shift+F", "description": "Find in Files" },
+        { "keys": "Shift+F10", "description": "Run" },
+        { "keys": "Shift+F9", "description": "Debug" },
+        { "keys": "Ctrl+Alt+S", "description": "Settings" }
+      ]
+    },
+    {
+      "processName": "figma",
+      "title": "Figma",
+      "hotkeys": [
+        { "keys": "Ctrl+Z", "description": "Undo" },
+        { "keys": "Ctrl+Shift+Z", "description": "Redo" },
+        { "keys": "Ctrl+C", "description": "Copy" },
+        { "keys": "Ctrl+V", "description": "Paste" },
+        { "keys": "Ctrl+D", "description": "Duplicate" },
+        { "keys": "Ctrl+G", "description": "Group Selection" },
+        { "keys": "Ctrl+Shift+G", "description": "Ungroup" },
+        { "keys": "V", "description": "Select Tool" },
+        { "keys": "F", "description": "Frame Tool" },
+        { "keys": "Ctrl+Alt+C", "description": "Copy Properties" }
+      ]
+    },
+    {
+      "processName": "obsidian",
+      "title": "Obsidian",
+      "hotkeys": [
+        { "keys": "Ctrl+P", "description": "Command Palette" },
+        { "keys": "Ctrl+O", "description": "Quick Switcher" },
+        { "keys": "Ctrl+E", "description": "Toggle Edit/Preview" },
+        { "keys": "Ctrl+F", "description": "Search in Note" },
+        { "keys": "Ctrl+Shift+F", "description": "Search in Vault" },
+        { "keys": "Ctrl+N", "description": "New Note" },
+        { "keys": "Ctrl+L", "description": "Toggle Checklist" },
+        { "keys": "Ctrl+B", "description": "Bold" },
+        { "keys": "Ctrl+I", "description": "Italic" }
+      ]
+    }
+  ]
+}
