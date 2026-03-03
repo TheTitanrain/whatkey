@@ -16,6 +16,7 @@ namespace WhatKey
         private HotkeysStorageService _storageService;
         private OverlayWindow _overlayWindow;
         private EditorWindow _editorWindow;
+        private AboutWindow _aboutWindow;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -68,6 +69,10 @@ namespace WhatKey
             editItem.Click += (s, e) => OpenEditor();
             menu.Items.Add(editItem);
 
+            var aboutItem = new MenuItem { Header = "About" };
+            aboutItem.Click += (s, e) => OpenAbout();
+            menu.Items.Add(aboutItem);
+
             menu.Items.Add(new Separator());
 
             var exitItem = new MenuItem { Header = "Exit" };
@@ -82,6 +87,17 @@ namespace WhatKey
         {
             _editorWindow.Show();
             _editorWindow.Activate();
+        }
+
+        private void OpenAbout()
+        {
+            if (_aboutWindow == null)
+            {
+                _aboutWindow = new AboutWindow();
+                _aboutWindow.Closed += (s, e) => _aboutWindow = null;
+            }
+            _aboutWindow.Show();
+            _aboutWindow.Activate();
         }
 
         private void ExitApp()
