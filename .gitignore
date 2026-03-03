@@ -17,3 +17,6 @@ packages/
 # OS
 Thumbs.db
 Desktop.ini
+
+# ralphex progress logs
+progress*.txt
