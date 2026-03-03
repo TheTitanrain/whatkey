@@ -12,7 +12,7 @@ namespace WhatKey.Views
 
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left && Mouse.LeftButton == MouseButtonState.Pressed)
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1)
                 DragMove();
         }
 
