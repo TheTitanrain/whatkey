@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using WhatKey.Models;
 
@@ -23,8 +23,7 @@ namespace WhatKey.Services
         {
             if (!File.Exists(DataFile))
             {
-                CreateDefaults();
-                Save();
+                LoadDefaults();
                 return;
             }
 
@@ -39,7 +38,7 @@ namespace WhatKey.Services
             }
             catch
             {
-                CreateDefaults();
+                LoadDefaults();
             }
         }
 
@@ -75,51 +74,15 @@ namespace WhatKey.Services
             return new List<HotkeyEntry>();
         }
 
-        private void CreateDefaults()
+        private void LoadDefaults()
         {
-            _data = new HotkeysData
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream("WhatKey.Assets.hotkeys.defaults.json"))
+            using (var reader = new StreamReader(stream))
             {
-                Settings = new AppSettings
-                {
-                    HoldKey = "LControlKey",
-                    HoldDelayMs = 500,
-                    ToggleHotkey = "Ctrl+Alt+H"
-                },
-                Apps = new List<AppHotkeys>
-                {
-                    new AppHotkeys
-                    {
-                        ProcessName = "code",
-                        Title = "VS Code",
-                        Hotkeys = new ObservableCollection<HotkeyEntry>
-                        {
-                            new HotkeyEntry { Keys = "Ctrl+P", Description = "Quick Open" },
-                            new HotkeyEntry { Keys = "Ctrl+Shift+P", Description = "Command Palette" },
-                            new HotkeyEntry { Keys = "Ctrl+`", Description = "Toggle Terminal" },
-                            new HotkeyEntry { Keys = "Ctrl+B", Description = "Toggle Sidebar" },
-                            new HotkeyEntry { Keys = "Ctrl+/", Description = "Toggle Comment" },
-                            new HotkeyEntry { Keys = "Alt+Up/Down", Description = "Move Line Up/Down" },
-                            new HotkeyEntry { Keys = "Ctrl+D", Description = "Select Next Occurrence" },
-                            new HotkeyEntry { Keys = "F5", Description = "Start Debugging" },
-                        }
-                    },
-                    new AppHotkeys
-                    {
-                        ProcessName = "chrome",
-                        Title = "Google Chrome",
-                        Hotkeys = new ObservableCollection<HotkeyEntry>
-                        {
-                            new HotkeyEntry { Keys = "Ctrl+T", Description = "New Tab" },
-                            new HotkeyEntry { Keys = "Ctrl+W", Description = "Close Tab" },
-                            new HotkeyEntry { Keys = "Ctrl+Tab", Description = "Next Tab" },
-                            new HotkeyEntry { Keys = "Ctrl+L", Description = "Focus Address Bar" },
-                            new HotkeyEntry { Keys = "Ctrl+Shift+T", Description = "Reopen Closed Tab" },
-                            new HotkeyEntry { Keys = "Ctrl+F", Description = "Find in Page" },
-                            new HotkeyEntry { Keys = "F5", Description = "Reload Page" },
-                        }
-                    }
-                }
-            };
+                _data = JsonConvert.DeserializeObject<HotkeysData>(reader.ReadToEnd()) ?? new HotkeysData();
+            }
+            Save();
         }
     }
 }
