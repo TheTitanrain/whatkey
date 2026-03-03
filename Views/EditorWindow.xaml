@@ -1,0 +1,245 @@
+<Window x:Class="WhatKey.Views.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WhatKey — Hotkey Editor"
+        Width="820" Height="580"
+        MinWidth="600" MinHeight="420"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2E"
+        Foreground="#CDD6F4">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#313244"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderBrush" Value="#45475A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#45475A"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#585B70"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#313244"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderBrush" Value="#45475A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="4,3"/>
+            <Setter Property="CaretBrush" Value="#CDD6F4"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#313244"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderBrush" Value="#45475A"/>
+        </Style>
+
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="#181825"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderBrush" Value="#313244"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#313244"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#26263a"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#181825"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+            <Setter Property="BorderBrush" Value="#313244"/>
+            <Setter Property="RowBackground" Value="#1E1E2E"/>
+            <Setter Property="AlternatingRowBackground" Value="#181825"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#313244"/>
+            <Setter Property="ColumnHeaderHeight" Value="32"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#313244"/>
+            <Setter Property="Foreground" Value="#BAC2DE"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="BorderBrush" Value="#45475A"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Foreground" Value="#CDD6F4"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main content: Apps list + Hotkeys grid -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="210" MinWidth="150"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left panel: Applications -->
+            <Grid Grid.Column="0" Background="#181825">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="#313244" Padding="10,8" Grid.Row="0">
+                    <TextBlock Text="Applications" FontWeight="Bold" FontSize="13" Foreground="#BAC2DE"/>
+                </Border>
+
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Apps}"
+                         SelectedItem="{Binding SelectedApp}"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,2">
+                                <TextBlock Text="{Binding Title}" FontSize="13"/>
+                                <TextBlock Text="{Binding ProcessName}" FontSize="10" Foreground="#6C7086"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="6,6">
+                    <Button Content="Add" Command="{Binding AddAppCommand}"
+                            Width="44" Margin="0,0,4,0"/>
+                    <Button Content="Remove" Command="{Binding RemoveAppCommand}"
+                            Width="58" Margin="0,0,4,0"/>
+                    <Button Content="{Binding DetectButtonText}"
+                            Command="{Binding DetectAppCommand}"
+                            Width="74"
+                            ToolTip="Switch to the target app within 3 seconds after clicking"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#313244"/>
+
+            <!-- Right panel: Hotkeys for selected app -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- App title bar with inline edit -->
+                <Border Background="#313244" Padding="10,6" Grid.Row="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Process:" Foreground="#6C7086" FontSize="11"
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Width="100" Margin="0,0,12,0" FontSize="11"
+                                 Text="{Binding SelectedApp.ProcessName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Title:" Foreground="#6C7086" FontSize="11"
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Width="160" FontSize="11"
+                                 Text="{Binding SelectedApp.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Border>
+
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding SelectedApp.Hotkeys}"
+                          SelectedItem="{Binding SelectedHotkey}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Keys"
+                                            Binding="{Binding Keys, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="180" FontFamily="Consolas"/>
+                        <DataGridTextColumn Header="Description"
+                                            Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="6,6">
+                    <Button Content="Add Hotkey" Command="{Binding AddHotkeyCommand}" Width="84" Margin="0,0,6,0"/>
+                    <Button Content="Remove Hotkey" Command="{Binding RemoveHotkeyCommand}" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Bottom: Settings + Save -->
+        <Border Grid.Row="1" Background="#181825" BorderBrush="#313244"
+                BorderThickness="0,1,0,0" Padding="10,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="Hold Key:" Foreground="#6C7086"
+                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <ComboBox Width="120" SelectedValue="{Binding Settings.HoldKey}"
+                              SelectedValuePath="Content" Margin="0,0,16,0">
+                        <ComboBoxItem Content="LControlKey"/>
+                        <ComboBoxItem Content="RControlKey"/>
+                        <ComboBoxItem Content="LShiftKey"/>
+                        <ComboBoxItem Content="RShiftKey"/>
+                        <ComboBoxItem Content="LMenu"/>
+                        <ComboBoxItem Content="RMenu"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Hold Delay (ms):" Foreground="#6C7086"
+                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Width="55" Margin="0,0,16,0"
+                             Text="{Binding Settings.HoldDelayMs, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Toggle Hotkey:" Foreground="#6C7086"
+                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Width="100" Text="{Binding Settings.ToggleHotkey, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" Content="Save" Command="{Binding SaveCommand}"
+                        Width="80" Height="30"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
