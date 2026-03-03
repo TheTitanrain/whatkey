@@ -1,6 +1,6 @@
 # WhatKey
 
-Аналог CheatSheet для Windows. Приложение живёт в трее и показывает прозрачный оверлей с горячими клавишами для текущего активного окна.
+Аналог macOS CheatSheet для Windows. Живёт в трее и показывает прозрачный оверлей с горячими клавишами для текущего активного окна.
 
 ## Как это работает
 
@@ -8,17 +8,38 @@
 
 Также можно нажать **Ctrl+Alt+H** для переключения оверлея в фиксированном режиме.
 
-![overlay mockup](https://placehold.co/500x300/1e1e2e/cdd6f4?text=WhatKey+Overlay)
-
 ## Возможности
 
 - Оверлей появляется автоматически при удержании клавиши
 - Список хоткеев определяется по имени процесса активного окна
 - Встроенный редактор для добавления приложений и хоткеев
-- Кнопка «Detect» в редакторе автоматически определяет процесс целевого окна
+- Кнопка «Detect App» автоматически определяет процесс целевого окна за 3 секунды
 - Настраиваемая триггерная клавиша, задержка и toggle-хоткей
 - Данные хранятся в `%APPDATA%\WhatKey\hotkeys.json`
 - Запускается в трее, не мешает работе
+
+## Встроенные профили
+
+При первом запуске автоматически создаются профили для 16 приложений:
+
+| Приложение | Процесс |
+|---|---|
+| VS Code | `code` |
+| Google Chrome | `chrome` |
+| Firefox | `firefox` |
+| Microsoft Edge | `msedge` |
+| Windows Explorer | `explorer` |
+| Notepad++ | `notepad++` |
+| Microsoft Word | `winword` |
+| Microsoft Excel | `excel` |
+| Windows Terminal | `windowsterminal` |
+| Slack | `slack` |
+| Telegram | `telegram` |
+| VLC Media Player | `vlc` |
+| JetBrains Rider | `rider64` |
+| IntelliJ IDEA | `idea64` |
+| Figma | `figma` |
+| Obsidian | `obsidian` |
 
 ## Требования
 
@@ -36,11 +57,9 @@ dotnet build -c Release
 
 ## Настройка хоткеев
 
-При первом запуске создаётся файл `%APPDATA%\WhatKey\hotkeys.json` с примерами для VS Code и Chrome.
-
 Открыть редактор: двойной клик по иконке в трее или «Edit Hotkeys» в контекстном меню.
 
-Формат файла:
+Данные хранятся в `%APPDATA%\WhatKey\hotkeys.json`. Формат файла:
 
 ```json
 {
@@ -62,7 +81,7 @@ dotnet build -c Release
 }
 ```
 
-`processName` — имя процесса в нижнем регистре (можно узнать в Диспетчере задач или кнопкой «Detect» в редакторе).
+`processName` — имя процесса в нижнем регистре (узнать в Диспетчере задач или кнопкой «Detect App» в редакторе).
 
 Доступные значения `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
 
