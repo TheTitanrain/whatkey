@@ -187,21 +187,6 @@
       ]
     },
     {
-      "processName": "rider64",
-      "title": "JetBrains Rider",
-      "hotkeys": [
-        { "keys": "Shift+Shift", "description": "Search Everywhere" },
-        { "keys": "Ctrl+Shift+A", "description": "Find Action" },
-        { "keys": "Alt+Enter", "description": "Quick Fix" },
-        { "keys": "Ctrl+R, R", "description": "Rename" },
-        { "keys": "Ctrl+Alt+L", "description": "Reformat Code" },
-        { "keys": "Ctrl+Shift+F", "description": "Find in Files" },
-        { "keys": "F5", "description": "Run" },
-        { "keys": "F9", "description": "Debug" },
-        { "keys": "Ctrl+Alt+S", "description": "Settings" }
-      ]
-    },
-    {
       "processName": "idea64",
       "title": "IntelliJ IDEA",
       "hotkeys": [
