@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore
+        run: msbuild whatkey.sln /t:Restore /p:Configuration=Release
+
+      - name: Build
+        run: msbuild whatkey.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+      - name: Test
+        run: dotnet test whatkey.sln --configuration Release --no-build
