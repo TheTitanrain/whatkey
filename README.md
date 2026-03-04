@@ -1,28 +1,30 @@
 # WhatKey
 
-Аналог macOS CheatSheet для Windows. Живёт в трее и показывает прозрачный оверлей с горячими клавишами для текущего активного окна.
+Russian version: [README.ru.md](README.ru.md)
 
-## Как это работает
+A Windows equivalent of macOS CheatSheet. It runs in the system tray and shows a transparent hotkey overlay for the currently active window.
 
-Зажмите и удерживайте **Left Ctrl** (~500 мс) — появится оверлей с хоткеями приложения, которое сейчас активно. Отпустите — оверлей исчезнет.
+## How it works
 
-Также можно нажать **Ctrl+Alt+H** для переключения оверлея в фиксированном режиме.
+Press and hold **Left Ctrl** for about 500 ms to show the hotkeys for the active app. Release the key to hide the overlay.
 
-## Возможности
+You can also press **Ctrl+Alt+H** to toggle the overlay in pinned mode.
 
-- Оверлей появляется автоматически при удержании клавиши
-- Список хоткеев определяется по имени процесса активного окна
-- Встроенный редактор для добавления приложений и хоткеев
-- Кнопка «Detect App» автоматически определяет процесс целевого окна за 3 секунды
-- Настраиваемая триггерная клавиша, задержка и toggle-хоткей
-- Данные хранятся в `%APPDATA%\WhatKey\hotkeys.json`
-- Запускается в трее, не мешает работе
+## Features
 
-## Встроенные профили
+- Overlay appears automatically while the trigger key is held
+- Hotkey list is selected by the active window process name
+- Built-in editor for apps and hotkeys
+- `Detect App` button auto-detects the target process within 3 seconds
+- Configurable trigger key, hold delay, and toggle hotkey
+- Data is stored in `%APPDATA%\WhatKey\hotkeys.json`
+- Runs in the tray and stays out of the way
 
-При первом запуске автоматически создаются профили для 16 приложений:
+## Built-in profiles
 
-| Приложение | Процесс |
+On first launch, profiles for 16 apps are created automatically:
+
+| Application | Process |
 |---|---|
 | VS Code | `code` |
 | Google Chrome | `chrome` |
@@ -41,25 +43,25 @@
 | Figma | `figma` |
 | Obsidian | `obsidian` |
 
-## Требования
+## Requirements
 
-- Windows 7 SP1 и выше
+- Windows 7 SP1 or later
 - [.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)
 
-## Сборка
+## Build
 
 ```bash
 dotnet build
 dotnet build -c Release
 ```
 
-Бинарник: `bin/Release/net48/WhatKey.exe`
+Binary: `bin/Release/net48/WhatKey.exe`
 
-## Настройка хоткеев
+## Hotkey configuration
 
-Открыть редактор: двойной клик по иконке в трее или «Edit Hotkeys» в контекстном меню.
+Open the editor by double-clicking the tray icon or using `Edit Hotkeys` in the context menu.
 
-Данные хранятся в `%APPDATA%\WhatKey\hotkeys.json`. Формат файла:
+Data is stored in `%APPDATA%\WhatKey\hotkeys.json`. File format:
 
 ```json
 {
@@ -81,13 +83,14 @@ dotnet build -c Release
 }
 ```
 
-`processName` — имя процесса в нижнем регистре (узнать в Диспетчере задач или кнопкой «Detect App» в редакторе).
+`processName` must be lowercase (check Task Manager or use `Detect App` in the editor).
 
-Доступные значения `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
+Available values for `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
 
-## Стек
+## Tech stack
 
 - .NET Framework 4.8 + WPF (MVVM)
-- [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon) — иконка в трее
-- [Newtonsoft.Json](https://www.newtonsoft.com/json) — хранение данных
-- Win32 API (P/Invoke) — глобальный хук клавиатуры, определение активного окна
+- [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon) for the tray icon
+- [Newtonsoft.Json](https://www.newtonsoft.com/json) for data storage
+- Win32 API (P/Invoke) for global keyboard hook and active window detection
+
