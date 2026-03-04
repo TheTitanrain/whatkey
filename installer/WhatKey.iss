@@ -23,8 +23,9 @@ OutputBaseFilename=WhatKeySetup-{#AppVersion}
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
-MinVersion=6.1
-ArchitecturesInstallIn64BitMode=x64 arm64
+MinVersion=6.1sp1
+ArchitecturesInstallIn64BitMode=x64compatible arm64
+PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -49,4 +50,21 @@ Name: "{userstartup}\{#AppName}";     Filename: "{app}\{#AppExeName}"; Tasks: st
 Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchProgram,WhatKey}"; Flags: nowait postinstall skipifsilent
 
 [UninstallRun]
-Filename: "taskkill.exe"; Parameters: "/f /im {#AppExeName}"; Flags: runhidden skipifdoesntexist
+Filename: "taskkill.exe"; Parameters: "/f /im {#AppExeName}"; RunOnceId: "KillBeforeUninstall"; Flags: runhidden skipifdoesntexist
+
+[Code]
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  DataDir: String;
+begin
+  if CurUninstallStep = usPostUninstall then
+  begin
+    DataDir := ExpandConstant('{userappdata}\WhatKey');
+    if DirExists(DataDir) then
+    begin
+      if MsgBox('Delete your saved hotkeys and settings?' + #13#10 + DataDir,
+                mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES then
+        DelTree(DataDir, True, True, True);
+    end;
+  end;
+end;
