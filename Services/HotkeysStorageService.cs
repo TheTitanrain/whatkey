@@ -9,7 +9,7 @@ namespace WhatKey.Services
 {
     public class HotkeysStorageService
     {
-        private static readonly string DataDir = Path.Combine(
+        public static readonly string DataDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WhatKey");
 
         private static readonly string DataFile = Path.Combine(DataDir, "hotkeys.json");
