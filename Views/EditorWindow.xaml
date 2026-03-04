@@ -231,9 +231,11 @@
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="6,6">
                     <Button Content="Add" Command="{Binding AddAppCommand}"
-                            Width="44" Margin="0,0,4,0"/>
+                            Width="44" Margin="0,0,4,0"
+                            ToolTip="Add a new application profile"/>
                     <Button Content="Remove" Command="{Binding RemoveAppCommand}"
-                            Width="58" Margin="0,0,4,0"/>
+                            Width="58" Margin="0,0,4,0"
+                            ToolTip="Remove the selected application profile"/>
                     <Button Content="{Binding DetectButtonText}"
                             Command="{Binding DetectAppCommand}"
                             Width="74"
@@ -258,11 +260,13 @@
                         <TextBlock Text="Process:" Foreground="#6C7086" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
                         <TextBox Width="100" Margin="0,0,12,0" FontSize="11"
-                                 Text="{Binding SelectedApp.ProcessName, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding SelectedApp.ProcessName, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Executable name used to match the active window (e.g. &quot;chrome&quot;)"/>
                         <TextBlock Text="Title:" Foreground="#6C7086" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
                         <TextBox Width="160" FontSize="11"
-                                 Text="{Binding SelectedApp.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding SelectedApp.Title, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Display name shown in the applications list"/>
                     </StackPanel>
                 </Border>
 
@@ -277,16 +281,30 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Keys"
                                             Binding="{Binding Keys, UpdateSourceTrigger=PropertyChanged}"
-                                            Width="180" FontFamily="Consolas"/>
+                                            Width="180" FontFamily="Consolas">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="ToolTip" Value="Key combination displayed on the overlay (e.g. &quot;Ctrl+C&quot;)"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Description"
                                             Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                                            Width="*"/>
+                                            Width="*">
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="ToolTip" Value="What the key combination does"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="6,6">
-                    <Button Content="Add Hotkey" Command="{Binding AddHotkeyCommand}" Width="84" Margin="0,0,6,0"/>
-                    <Button Content="Remove Hotkey" Command="{Binding RemoveHotkeyCommand}" Width="100"/>
+                    <Button Content="Add Hotkey" Command="{Binding AddHotkeyCommand}" Width="84" Margin="0,0,6,0"
+                            ToolTip="Add a new hotkey row to this application"/>
+                    <Button Content="Remove Hotkey" Command="{Binding RemoveHotkeyCommand}" Width="100"
+                            ToolTip="Remove the selected hotkey row"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -304,7 +322,8 @@
                     <TextBlock Text="Hold Key:" Foreground="#6C7086"
                                VerticalAlignment="Center" Margin="0,0,6,0"/>
                     <ComboBox Width="120" SelectedValue="{Binding Settings.HoldKey}"
-                              SelectedValuePath="Content" Margin="0,0,16,0">
+                              SelectedValuePath="Content" Margin="0,0,16,0"
+                              ToolTip="Modifier key to hold for the overlay to appear">
                         <ComboBoxItem Content="LControlKey"/>
                         <ComboBoxItem Content="RControlKey"/>
                         <ComboBoxItem Content="LShiftKey"/>
@@ -316,18 +335,22 @@
                     <TextBlock Text="Hold Delay (ms):" Foreground="#6C7086"
                                VerticalAlignment="Center" Margin="0,0,6,0"/>
                     <TextBox Width="55" Margin="0,0,16,0"
-                             Text="{Binding Settings.HoldDelayMs, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding Settings.HoldDelayMs, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="How long to hold the key (ms) before the overlay appears"/>
 
                     <TextBlock Text="Toggle Hotkey:" Foreground="#6C7086"
                                VerticalAlignment="Center" Margin="0,0,6,0"/>
-                    <TextBox Width="100" Text="{Binding Settings.ToggleHotkey, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="100" Text="{Binding Settings.ToggleHotkey, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Global hotkey to toggle the overlay on/off (e.g. &quot;Ctrl+Alt+H&quot;). Modifiers: Ctrl, Alt, Shift, Win"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="Open File Location" Command="{Binding OpenFolderCommand}"
-                            Width="130" Height="30" Margin="0,0,8,0"/>
+                            Width="130" Height="30" Margin="0,0,8,0"
+                            ToolTip="Open the folder containing hotkeys.json in Explorer"/>
                     <Button Content="Save" Command="{Binding SaveCommand}"
-                            Width="80" Height="30"/>
+                            Width="80" Height="30"
+                            ToolTip="Save all changes and apply settings immediately without restarting"/>
                 </StackPanel>
             </Grid>
         </Border>
