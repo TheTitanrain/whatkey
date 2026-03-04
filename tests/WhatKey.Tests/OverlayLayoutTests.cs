@@ -1,4 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.IO;
 using WhatKey.ViewModels;
 
 namespace WhatKey.Tests
@@ -6,6 +8,33 @@ namespace WhatKey.Tests
     [TestClass]
     public class OverlayLayoutTests
     {
+        [TestMethod]
+        public void OverlayWindowXaml_UsesUniformGridWithOverlayColumnsBinding()
+        {
+            var xaml = LoadOverlayWindowXaml();
+
+            StringAssert.Contains(xaml, "<UniformGrid Columns=\"{Binding OverlayColumns, FallbackValue=1}\"/>");
+        }
+
+        [TestMethod]
+        public void OverlayWindowXaml_PreservesHotkeyRowStyleAndEmptyState()
+        {
+            var xaml = LoadOverlayWindowXaml();
+
+            StringAssert.Contains(xaml, "Text=\"{Binding Keys}\"");
+            StringAssert.Contains(xaml, "Text=\"{Binding Description}\"");
+            StringAssert.Contains(xaml, "Text=\"No hotkeys defined for this application.\"");
+        }
+
+        [TestMethod]
+        public void OverlayWindowXaml_ConstrainsScrollableAreaForLongLists()
+        {
+            var xaml = LoadOverlayWindowXaml();
+
+            StringAssert.Contains(xaml, "<ScrollViewer MaxHeight=\"460\"");
+            StringAssert.Contains(xaml, "VerticalScrollBarVisibility=\"Auto\"");
+        }
+
         [TestMethod]
         public void CalculateOverlayColumns_NoHotkeys_ReturnsOneColumn()
         {
@@ -64,6 +93,23 @@ namespace WhatKey.Tests
                 maxColumns: 0);
 
             Assert.AreEqual(1, columns);
+        }
+
+        private static string LoadOverlayWindowXaml()
+        {
+            var directory = AppContext.BaseDirectory;
+
+            while (!string.IsNullOrEmpty(directory))
+            {
+                var xamlPath = Path.Combine(directory, "Views", "OverlayWindow.xaml");
+                if (File.Exists(xamlPath))
+                    return File.ReadAllText(xamlPath);
+
+                directory = Directory.GetParent(directory)?.FullName;
+            }
+
+            Assert.Fail("Unable to locate Views/OverlayWindow.xaml from test base directory.");
+            return string.Empty;
         }
     }
 }

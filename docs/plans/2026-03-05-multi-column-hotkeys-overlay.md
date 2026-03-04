@@ -34,11 +34,11 @@
 **Files:**
 - Modify: `Views/OverlayWindow.xaml`
 
-- [ ] Заменить текущий одно-колоночный ItemsControl в ScrollViewer на layout с колонками (например, UniformGrid/ItemsControl с панелью и биндингом числа колонок)
-- [ ] Сохранить текущий визуальный стиль строки hotkey (badge клавиш + описание) и пустое состояние
-- [ ] Ограничить габариты оверлея так, чтобы вертикальный скролл не был основным сценарием при длинных списках
-- [ ] write tests for this task
-- [ ] run project test suite - must pass before task 3
+- [x] Заменить текущий одно-колоночный ItemsControl в ScrollViewer на layout с колонками (например, UniformGrid/ItemsControl с панелью и биндингом числа колонок)
+- [x] Сохранить текущий визуальный стиль строки hotkey (badge клавиш + описание) и пустое состояние
+- [x] Ограничить габариты оверлея так, чтобы вертикальный скролл не был основным сценарием при длинных списках
+- [x] write tests for this task
+- [x] run project test suite - must pass before task 3
 
 ### Task 3: Подключить runtime-обновление компоновки при показе оверлея
 

@@ -12,6 +12,7 @@ namespace WhatKey.ViewModels
         public const int MaxOverlayColumns = 3;
 
         private string _appTitle;
+        private int _overlayColumns = MinOverlayColumns;
         private ObservableCollection<HotkeyEntry> _hotkeys = new ObservableCollection<HotkeyEntry>();
 
         public string AppTitle
@@ -28,6 +29,12 @@ namespace WhatKey.ViewModels
                 if (SetField(ref _hotkeys, value))
                     OnPropertyChanged(nameof(EmptyMessageVisibility));
             }
+        }
+
+        public int OverlayColumns
+        {
+            get => _overlayColumns;
+            set => SetField(ref _overlayColumns, value);
         }
 
         public Visibility EmptyMessageVisibility =>
