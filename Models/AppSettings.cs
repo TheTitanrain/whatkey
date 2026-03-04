@@ -6,7 +6,7 @@ namespace WhatKey.Models
     public class AppSettings : INotifyPropertyChanged
     {
         private string _holdKey = "LControlKey";
-        private int _holdDelayMs = 500;
+        private int _holdDelayMs = 1000;
         private string _toggleHotkey = "Ctrl+Alt+H";
 
         public event PropertyChangedEventHandler PropertyChanged;

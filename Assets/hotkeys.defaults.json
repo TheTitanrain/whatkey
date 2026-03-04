@@ -1,7 +1,7 @@
 {
   "settings": {
     "holdKey": "LControlKey",
-    "holdDelayMs": 500,
+    "holdDelayMs": 1000,
     "toggleHotkey": "Ctrl+Alt+H"
   },
   "apps": [

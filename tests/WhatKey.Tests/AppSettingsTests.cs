@@ -51,7 +51,7 @@ namespace WhatKey.Tests
             settings.PropertyChanged += (s, e) => eventCount++;
 
             settings.HoldKey = "LControlKey";       // same as default
-            settings.HoldDelayMs = 500;             // same as default
+            settings.HoldDelayMs = 1000;             // same as default
             settings.ToggleHotkey = "Ctrl+Alt+H";  // same as default
 
             Assert.AreEqual(0, eventCount);
@@ -63,7 +63,7 @@ namespace WhatKey.Tests
             var settings = new AppSettings();
 
             Assert.AreEqual("LControlKey", settings.HoldKey);
-            Assert.AreEqual(500, settings.HoldDelayMs);
+            Assert.AreEqual(1000, settings.HoldDelayMs);
             Assert.AreEqual("Ctrl+Alt+H", settings.ToggleHotkey);
         }
     }
