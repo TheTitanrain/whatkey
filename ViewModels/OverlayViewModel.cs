@@ -6,6 +6,11 @@ namespace WhatKey.ViewModels
 {
     public class OverlayViewModel : BaseViewModel
     {
+        public const double DefaultHotkeysListMaxHeight = 500d;
+        public const double DefaultHotkeyRowHeight = 30d;
+        public const int MinOverlayColumns = 1;
+        public const int MaxOverlayColumns = 3;
+
         private string _appTitle;
         private ObservableCollection<HotkeyEntry> _hotkeys = new ObservableCollection<HotkeyEntry>();
 
@@ -27,5 +32,32 @@ namespace WhatKey.ViewModels
 
         public Visibility EmptyMessageVisibility =>
             _hotkeys == null || _hotkeys.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        public static int CalculateOverlayColumns(
+            int hotkeysCount,
+            double maxListHeight = DefaultHotkeysListMaxHeight,
+            double estimatedRowHeight = DefaultHotkeyRowHeight,
+            int maxColumns = MaxOverlayColumns)
+        {
+            if (hotkeysCount <= 0)
+                return MinOverlayColumns;
+
+            if (maxListHeight <= 0 || estimatedRowHeight <= 0)
+                return MinOverlayColumns;
+
+            if (maxColumns < MinOverlayColumns)
+                return MinOverlayColumns;
+
+            var rowsPerColumn = (int)(maxListHeight / estimatedRowHeight);
+            if (rowsPerColumn < 1)
+                rowsPerColumn = 1;
+
+            var requiredColumns = (hotkeysCount + rowsPerColumn - 1) / rowsPerColumn;
+
+            if (requiredColumns < MinOverlayColumns)
+                return MinOverlayColumns;
+
+            return requiredColumns > maxColumns ? maxColumns : requiredColumns;
+        }
     }
 }

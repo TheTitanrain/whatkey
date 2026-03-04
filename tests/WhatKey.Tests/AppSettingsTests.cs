@@ -26,7 +26,7 @@ namespace WhatKey.Tests
             string raised = null;
             settings.PropertyChanged += (s, e) => raised = e.PropertyName;
 
-            settings.HoldDelayMs = 1000;
+            settings.HoldDelayMs = 1001;
 
             Assert.AreEqual(nameof(AppSettings.HoldDelayMs), raised);
         }

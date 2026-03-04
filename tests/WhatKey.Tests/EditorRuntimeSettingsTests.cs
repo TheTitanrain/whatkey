@@ -94,7 +94,7 @@ namespace WhatKey.Tests
                     viewModel.Settings.HoldKey = "RShiftKey";
                     viewModel.Settings.ToggleHotkey = "Ctrl+Shift+T";
 
-                    Assert.AreEqual(500d, GetHoldTimerInterval(service).TotalMilliseconds, 0.001d);
+                    Assert.AreEqual(1000d, GetHoldTimerInterval(service).TotalMilliseconds, 0.001d);
                     Assert.AreEqual((uint)0xA2, GetHoldVkCode(service));
 
                     viewModel.SaveCommand.Execute(null);
