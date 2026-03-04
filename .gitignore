@@ -29,3 +29,6 @@ docs/plans/
 
 # Inno Setup build output
 installer/output/
+
+# Test results
+TestResults/
