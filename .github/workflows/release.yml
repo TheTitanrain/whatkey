@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag (e.g. v1.2.3)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+            $tag = '${{ github.event.inputs.version_tag }}'
+          } else {
+            $tag = '${{ github.ref_name }}'
+          }
+          $version = $tag.TrimStart('v')
+          echo "TAG=$tag"         >> $env:GITHUB_OUTPUT
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "Releasing version: $version (tag: $tag)"
+
+      - name: Patch version in AboutWindow.xaml
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.VERSION }}'
+          $file = 'Views\AboutWindow.xaml'
+          $content = Get-Content $file -Raw
+          $patched = $content -replace 'Text="Version [^"]*"', "Text=`"Version $version`""
+          Set-Content $file -Value $patched -NoNewline
+          if (-not ($patched -match [regex]::Escape("Version $version"))) {
+            Write-Error "Version patch failed"
+            exit 1
+          }
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore
+        run: msbuild whatkey.sln /t:Restore /p:Configuration=Release
+
+      - name: Build
+        run: msbuild whatkey.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+      - name: Test
+        run: dotnet test whatkey.sln --configuration Release --no-build
+
+      - name: Compile installer
+        id: installer
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.VERSION }}'
+          $iscc = 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe'
+          New-Item -ItemType Directory -Force -Path 'installer\output' | Out-Null
+          & $iscc /DAppVersion="$version" installer\WhatKey.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          echo "PATH=installer\output\WhatKeySetup-$version.exe" >> $env:GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.TAG }}
+          name: WhatKey ${{ steps.version.outputs.VERSION }}
+          generate_release_notes: true
+          files: ${{ steps.installer.outputs.PATH }}
+          fail_on_unmatched_files: true

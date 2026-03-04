@@ -26,3 +26,6 @@ CLAUDE.md
 progress*.txt
 docs/plans/
 .ralphex/
+
+# Inno Setup build output
+installer/output/
