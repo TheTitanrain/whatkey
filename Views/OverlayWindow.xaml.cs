@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WhatKey.Models;
 using WhatKey.ViewModels;
@@ -12,6 +14,26 @@ namespace WhatKey.Views
     {
         private readonly OverlayViewModel _viewModel;
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
+        private const uint MONITOR_DEFAULTTONEAREST = 2;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT { public int Left, Top, Right, Bottom; }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private struct MONITORINFO
+        {
+            public uint cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public uint dwFlags;
+        }
+
         public OverlayWindow()
         {
             InitializeComponent();
@@ -19,12 +41,12 @@ namespace WhatKey.Views
             DataContext = _viewModel;
         }
 
-        public void ShowWithHotkeys(List<HotkeyEntry> hotkeys, string processName)
+        public void ShowWithHotkeys(List<HotkeyEntry> hotkeys, string processName, IntPtr sourceHwnd = default)
         {
             _viewModel.Hotkeys = new ObservableCollection<HotkeyEntry>(hotkeys);
             _viewModel.AppTitle = string.IsNullOrEmpty(processName) ? "Unknown Application" : processName;
 
-            // Recenter on primary screen each time it's shown
+            // Recenter on active monitor each time it's shown
             Opacity = 0;
 
             if (!IsVisible)
@@ -33,12 +55,34 @@ namespace WhatKey.Views
             // Position after layout
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                Left = (SystemParameters.PrimaryScreenWidth - ActualWidth) / 2;
-                Top = (SystemParameters.PrimaryScreenHeight - ActualHeight) / 2;
+                var bounds = GetMonitorWorkAreaDips(sourceHwnd);
+                Left = bounds.Left + (bounds.Width - ActualWidth) / 2;
+                Top  = bounds.Top  + (bounds.Height - ActualHeight) / 2;
             }));
 
             var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150));
             BeginAnimation(OpacityProperty, fadeIn);
+        }
+
+        private Rect GetMonitorWorkAreaDips(IntPtr hwnd)
+        {
+            var fallback = new Rect(0, 0,
+                SystemParameters.PrimaryScreenWidth,
+                SystemParameters.PrimaryScreenHeight);
+
+            if (hwnd == IntPtr.Zero) return fallback;
+
+            var hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            var info = new MONITORINFO { cbSize = (uint)Marshal.SizeOf<MONITORINFO>() };
+            if (!GetMonitorInfo(hMonitor, ref info)) return fallback;
+
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget == null) return fallback;
+
+            var m = source.CompositionTarget.TransformFromDevice;
+            var topLeft     = m.Transform(new Point(info.rcWork.Left,  info.rcWork.Top));
+            var bottomRight = m.Transform(new Point(info.rcWork.Right, info.rcWork.Bottom));
+            return new Rect(topLeft, bottomRight);
         }
 
         public void HideOverlay()

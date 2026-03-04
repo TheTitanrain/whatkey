@@ -30,5 +30,24 @@ namespace WhatKey.Services
                 return string.Empty;
             }
         }
+
+        public (string ProcessName, IntPtr Hwnd) GetActiveWindowInfo()
+        {
+            try
+            {
+                var hwnd = GetForegroundWindow();
+                if (hwnd == IntPtr.Zero) return (string.Empty, IntPtr.Zero);
+
+                GetWindowThreadProcessId(hwnd, out uint pid);
+                if (pid == 0) return (string.Empty, IntPtr.Zero);
+
+                var process = Process.GetProcessById((int)pid);
+                return (process.ProcessName.ToLower(), hwnd);
+            }
+            catch
+            {
+                return (string.Empty, IntPtr.Zero);
+            }
+        }
     }
 }
