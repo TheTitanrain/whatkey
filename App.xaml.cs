@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -24,7 +25,12 @@ namespace WhatKey
 
             // Load data
             _storageService = new HotkeysStorageService();
-            _storageService.Load();
+            var loadResult = _storageService.Load();
+            if (!HandleLoadResult(loadResult))
+            {
+                Shutdown();
+                return;
+            }
 
             _activeWindowService = new ActiveWindowService();
 
@@ -41,6 +47,97 @@ namespace WhatKey
 
             // Setup tray
             InitializeTray();
+        }
+
+        private bool HandleLoadResult(HotkeysLoadResult result)
+        {
+            if (result.Status != HotkeysLoadStatus.InvalidFormat)
+                return true;
+
+            var message =
+                "The hotkeys configuration file has an invalid format and cannot be read.\n\n" +
+                "Yes: Restore defaults\n" +
+                "No: Open hotkeys.json\n" +
+                "Cancel: Exit application\n\n" +
+                "File: " + result.DataFilePath + "\n" +
+                "Error: " + result.ErrorMessage;
+
+            var action = MessageBox.Show(
+                message,
+                "Invalid hotkeys.json",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Warning,
+                MessageBoxResult.Yes);
+
+            if (action == MessageBoxResult.Yes)
+            {
+                if (!TryBackupBeforeRestore())
+                    return false;
+
+                try
+                {
+                    _storageService.LoadDefaultsAndSave();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        "Failed to restore defaults.\n\n" + ex.Message,
+                        "Restore failed",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return false;
+                }
+            }
+
+            if (action == MessageBoxResult.No)
+            {
+                TryOpenHotkeysFile(result.DataFilePath);
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool TryBackupBeforeRestore()
+        {
+            try
+            {
+                _storageService.CreateBackupOfDataFile();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var decision = MessageBox.Show(
+                    "Failed to create backup of hotkeys.json.\n\n" +
+                    ex.Message + "\n\n" +
+                    "Continue restoring defaults without backup?",
+                    "Backup failed",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning,
+                    MessageBoxResult.No);
+
+                return decision == MessageBoxResult.Yes;
+            }
+        }
+
+        private void TryOpenHotkeysFile(string path)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo(path)
+                {
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Could not open hotkeys.json.\n\n" + ex.Message,
+                    "Open file failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         private void OnTriggerShow(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -16,30 +17,48 @@ namespace WhatKey.Services
 
         private HotkeysData _data = new HotkeysData();
 
+        public string DataFilePath => DataFile;
         public AppSettings Settings => _data.Settings;
         public List<AppHotkeys> Apps => _data.Apps;
 
-        public void Load()
+        public HotkeysLoadResult Load()
         {
             if (!File.Exists(DataFile))
             {
-                LoadDefaults();
-                return;
+                LoadDefaultsAndSave();
+                return HotkeysLoadResult.MissingFile(DataFile);
             }
 
             try
             {
                 var json = File.ReadAllText(DataFile);
                 _data = JsonConvert.DeserializeObject<HotkeysData>(json) ?? new HotkeysData();
-
-                // Ensure Settings is not null after deserialization
-                if (_data.Settings == null) _data.Settings = new AppSettings();
-                if (_data.Apps == null) _data.Apps = new List<AppHotkeys>();
+                NormalizeData();
+                return HotkeysLoadResult.Ok(DataFile);
             }
-            catch
+            catch (Exception ex)
             {
-                LoadDefaults();
+                return HotkeysLoadResult.Invalid(DataFile, ex.Message);
             }
+        }
+
+        public string CreateBackupOfDataFile()
+        {
+            if (!File.Exists(DataFile))
+                throw new FileNotFoundException("hotkeys.json was not found.", DataFile);
+
+            Directory.CreateDirectory(DataDir);
+
+            var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+            var backupPath = Path.Combine(DataDir, string.Format("hotkeys.{0}.json.bak", timestamp));
+            File.Copy(DataFile, backupPath, false);
+            return backupPath;
+        }
+
+        public void LoadDefaultsAndSave()
+        {
+            LoadDefaults();
+            Save();
         }
 
         public void Save()
@@ -58,7 +77,7 @@ namespace WhatKey.Services
             foreach (var app in _data.Apps)
             {
                 if (string.Equals(app.ProcessName, lower, StringComparison.OrdinalIgnoreCase))
-                    return new List<HotkeyEntry>(app.Hotkeys);
+                    return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
             }
 
             return GetDefaultHotkeys();
@@ -69,7 +88,7 @@ namespace WhatKey.Services
             foreach (var app in _data.Apps)
             {
                 if (string.Equals(app.ProcessName, "default", StringComparison.OrdinalIgnoreCase))
-                    return new List<HotkeyEntry>(app.Hotkeys);
+                    return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
             }
             return new List<HotkeyEntry>();
         }
@@ -82,7 +101,20 @@ namespace WhatKey.Services
             {
                 _data = JsonConvert.DeserializeObject<HotkeysData>(reader.ReadToEnd()) ?? new HotkeysData();
             }
-            Save();
+
+            NormalizeData();
+        }
+
+        private void NormalizeData()
+        {
+            if (_data.Settings == null) _data.Settings = new AppSettings();
+            if (_data.Apps == null) _data.Apps = new List<AppHotkeys>();
+
+            foreach (var app in _data.Apps)
+            {
+                if (app.Hotkeys == null)
+                    app.Hotkeys = new ObservableCollection<HotkeyEntry>();
+            }
         }
     }
 }

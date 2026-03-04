@@ -85,9 +85,12 @@ dotnet build -c Release
 
 Доступные значения `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
 
+Если при запуске `hotkeys.json` имеет неверный JSON-формат, приложение спрашивает, что делать: восстановить значения по умолчанию (с предварительным backup в timestamped `.bak`), открыть файл для ручного исправления или выйти.
+
 ## Стек
 
 - .NET Framework 4.8 + WPF (MVVM)
 - [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon) — иконка в трее
 - [Newtonsoft.Json](https://www.newtonsoft.com/json) — хранение данных
 - Win32 API (P/Invoke) — глобальный хук клавиатуры, определение активного окна
+
