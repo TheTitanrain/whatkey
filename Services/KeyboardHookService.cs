@@ -8,6 +8,14 @@ using WhatKey.Models;
 
 namespace WhatKey.Services
 {
+    public class HotkeyRecoveryException : InvalidOperationException
+    {
+        public HotkeyRecoveryException(string message)
+            : base(message)
+        {
+        }
+    }
+
     public class KeyboardHookService : IDisposable
     {
         // Hook constants
@@ -24,6 +32,7 @@ namespace WhatKey.Services
         private const int MOD_SHIFT = 0x0004;
         private const int MOD_WIN = 0x0008;
         private const int MOD_NOREPEAT = 0x4000;
+        private const int ERROR_HOTKEY_NOT_REGISTERED = 1419;
 
         // VK codes
         private const uint VK_ESCAPE = 0x1B;
@@ -43,11 +52,11 @@ namespace WhatKey.Services
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+        [DllImport("user32.dll", EntryPoint = "RegisterHotKey", SetLastError = true)]
+        private static extern bool RegisterHotKeyNative(IntPtr hWnd, int id, int fsModifiers, int vk);
 
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DllImport("user32.dll", EntryPoint = "UnregisterHotKey", SetLastError = true)]
+        private static extern bool UnregisterHotKeyNative(IntPtr hWnd, int id);
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
@@ -65,8 +74,16 @@ namespace WhatKey.Services
         private readonly LowLevelKeyboardProc _hookProc; // keep alive to prevent GC
         private DispatcherTimer _holdTimer;
         private HwndSource _hwndSource;
+        private IntPtr _hotkeyWindowHandle = IntPtr.Zero;
         private readonly AppSettings _settings;
-        private readonly uint _holdVkCode;
+        private uint _holdVkCode;
+        private int _appliedHoldDelayMs;
+        private string _appliedHoldKey;
+        private string _appliedToggleHotkey;
+        private Func<IntPtr, int, int, int, bool> _registerHotKey;
+        private Func<IntPtr, int, bool> _unregisterHotKey;
+        private Func<int> _getLastWin32Error;
+        private Func<IntPtr> _installKeyboardHook;
 
         private bool _isHoldKeyDown;
         private bool _isOverlayVisible;
@@ -76,13 +93,28 @@ namespace WhatKey.Services
 
         public KeyboardHookService(AppSettings settings)
         {
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+
             _settings = settings;
             _hookProc = HookCallback;
-            _holdVkCode = GetHoldKeyVkCode(settings.HoldKey);
+            _appliedHoldDelayMs = NormalizeHoldDelayMs(settings.HoldDelayMs);
+            _appliedHoldKey = NormalizeHoldKey(settings.HoldKey);
+            _appliedToggleHotkey = NormalizeStartupToggleHotkey(settings.ToggleHotkey);
+
+            _settings.HoldDelayMs = _appliedHoldDelayMs;
+            _settings.HoldKey = _appliedHoldKey;
+            _settings.ToggleHotkey = _appliedToggleHotkey;
+
+            _holdVkCode = GetHoldKeyVkCode(_appliedHoldKey);
+            _registerHotKey = RegisterHotKeyNative;
+            _unregisterHotKey = UnregisterHotKeyNative;
+            _getLastWin32Error = Marshal.GetLastWin32Error;
+            _installKeyboardHook = InstallKeyboardHookNative;
 
             _holdTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(settings.HoldDelayMs)
+                Interval = TimeSpan.FromMilliseconds(_appliedHoldDelayMs)
             };
             _holdTimer.Tick += OnHoldTimerTick;
         }
@@ -102,28 +134,84 @@ namespace WhatKey.Services
             };
 
             _hwndSource = new HwndSource(parameters);
+            _hotkeyWindowHandle = _hwndSource.Handle;
             _hwndSource.AddHook(WndProc);
 
-            // Install low-level keyboard hook
-            using (var process = Process.GetCurrentProcess())
-            using (var module = process.MainModule)
+            _hookId = _installKeyboardHook();
+            if (_hookId == IntPtr.Zero)
             {
-                _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _hookProc,
-                    GetModuleHandle(module.ModuleName), 0);
+                var error = _getLastWin32Error();
+                throw new InvalidOperationException(
+                    $"Failed to install keyboard hook. Win32 error: {error}.");
             }
 
-            RegisterToggleHotkey();
+            if (!RegisterToggleHotkey(_appliedToggleHotkey))
+                throw new InvalidOperationException("Failed to register toggle hotkey.");
+        }
+
+        public AppSettings GetAppliedSettingsSnapshot()
+        {
+            return new AppSettings
+            {
+                HoldDelayMs = _appliedHoldDelayMs,
+                HoldKey = _appliedHoldKey,
+                ToggleHotkey = _appliedToggleHotkey
+            };
         }
 
         public void UpdateSettings(AppSettings settings)
         {
-            // Unregister old hotkey and register new one
-            if (_hwndSource != null)
-                UnregisterHotKey(_hwndSource.Handle, TOGGLE_HOTKEY_ID);
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
 
-            _holdTimer.Interval = TimeSpan.FromMilliseconds(settings.HoldDelayMs);
+            if (_holdTimer != null && !_holdTimer.Dispatcher.CheckAccess())
+            {
+                _holdTimer.Dispatcher.Invoke(() => UpdateSettingsCore(settings));
+                return;
+            }
 
-            RegisterToggleHotkey();
+            UpdateSettingsCore(settings);
+        }
+
+        private void UpdateSettingsCore(AppSettings settings)
+        {
+            int normalizedDelayMs = NormalizeHoldDelayMs(settings.HoldDelayMs);
+            var normalizedHoldKey = NormalizeHoldKey(settings.HoldKey);
+            var normalizedToggleHotkey = NormalizeToggleHotkey(settings.ToggleHotkey);
+            var oldDelayMs = _appliedHoldDelayMs;
+            var oldHoldKey = _appliedHoldKey;
+            var oldToggleHotkey = _appliedToggleHotkey;
+            var oldHoldVkCode = _holdVkCode;
+
+            if (_hotkeyWindowHandle != IntPtr.Zero && !TryUnregisterToggleHotkey())
+                throw new InvalidOperationException("Failed to unregister current toggle hotkey.");
+
+            _settings.HoldDelayMs = normalizedDelayMs;
+            _settings.HoldKey = normalizedHoldKey;
+            _settings.ToggleHotkey = normalizedToggleHotkey;
+            _holdVkCode = GetHoldKeyVkCode(_settings.HoldKey);
+            _holdTimer.Interval = TimeSpan.FromMilliseconds(_settings.HoldDelayMs);
+            ResetHoldStateForRuntimeUpdate();
+
+            if (!RegisterToggleHotkey(_settings.ToggleHotkey))
+            {
+                Trace.TraceWarning("Failed to register updated toggle hotkey, rolling back to previous value.");
+                _settings.HoldDelayMs = oldDelayMs;
+                _settings.HoldKey = oldHoldKey;
+                _settings.ToggleHotkey = oldToggleHotkey;
+                _holdVkCode = oldHoldVkCode;
+                _holdTimer.Interval = TimeSpan.FromMilliseconds(_settings.HoldDelayMs);
+                ResetHoldStateForRuntimeUpdate();
+
+                if (_hotkeyWindowHandle != IntPtr.Zero && !RegisterToggleHotkey(_settings.ToggleHotkey))
+                    throw new HotkeyRecoveryException("Failed to restore previous toggle hotkey after update rollback.");
+
+                throw new InvalidOperationException("Failed to register updated toggle hotkey.");
+            }
+
+            _appliedHoldDelayMs = _settings.HoldDelayMs;
+            _appliedHoldKey = _settings.HoldKey;
+            _appliedToggleHotkey = _settings.ToggleHotkey;
         }
 
         public void NotifyOverlayHidden()
@@ -131,37 +219,128 @@ namespace WhatKey.Services
             _isOverlayVisible = false;
         }
 
-        private void RegisterToggleHotkey()
+        private bool RegisterToggleHotkey(string hotkey)
         {
-            if (_hwndSource == null) return;
+            if (_hotkeyWindowHandle == IntPtr.Zero) return true;
 
-            ParseToggleHotkey(_settings.ToggleHotkey, out int mods, out int vk);
-            if (vk != 0)
-                RegisterHotKey(_hwndSource.Handle, TOGGLE_HOTKEY_ID, mods | MOD_NOREPEAT, vk);
+            if (!TryParseToggleHotkey(hotkey, out int mods, out int vk))
+            {
+                Trace.TraceWarning("RegisterHotKey skipped due to invalid hotkey format. hotkey='{0}'", hotkey);
+                return false;
+            }
+
+            if (vk == 0) return true;
+
+            var registerResult = _registerHotKey(_hotkeyWindowHandle, TOGGLE_HOTKEY_ID, mods | MOD_NOREPEAT, vk);
+            if (!registerResult)
+            {
+                var error = _getLastWin32Error();
+                Trace.TraceWarning("RegisterHotKey failed. hotkey='{0}', error={1}", hotkey, error);
+            }
+
+            return registerResult;
         }
 
-        private static void ParseToggleHotkey(string hotkey, out int mods, out int vk)
+        private bool TryUnregisterToggleHotkey()
+        {
+            var unregisterResult = _unregisterHotKey(_hotkeyWindowHandle, TOGGLE_HOTKEY_ID);
+            if (!unregisterResult)
+            {
+                var error = _getLastWin32Error();
+                if (error != 0 && error != ERROR_HOTKEY_NOT_REGISTERED)
+                {
+                    Trace.TraceWarning("UnregisterHotKey failed. error={0}", error);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void ResetHoldStateForRuntimeUpdate()
+        {
+            _holdTimer.Stop();
+            _isHoldKeyDown = false;
+
+            if (_isOverlayVisible)
+            {
+                _isOverlayVisible = false;
+                TriggerHide?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private IntPtr InstallKeyboardHookNative()
+        {
+            using (var process = Process.GetCurrentProcess())
+            using (var module = process.MainModule)
+            {
+                return SetWindowsHookEx(
+                    WH_KEYBOARD_LL,
+                    _hookProc,
+                    GetModuleHandle(module.ModuleName),
+                    0);
+            }
+        }
+
+        private static bool TryParseToggleHotkey(string hotkey, out int mods, out int vk)
         {
             mods = 0;
             vk = 0;
 
-            if (string.IsNullOrEmpty(hotkey)) return;
+            if (string.IsNullOrWhiteSpace(hotkey)) return true;
 
+            bool hasPrimaryKey = false;
             foreach (var part in hotkey.Split('+'))
             {
-                switch (part.Trim().ToLower())
+                var token = part.Trim();
+                if (token.Length == 0)
+                    return false;
+
+                switch (token.ToLowerInvariant())
                 {
                     case "ctrl": mods |= MOD_CONTROL; break;
                     case "alt": mods |= MOD_ALT; break;
                     case "shift": mods |= MOD_SHIFT; break;
                     case "win": mods |= MOD_WIN; break;
                     default:
-                        var key = part.Trim();
-                        if (key.Length == 1)
-                            vk = char.ToUpper(key[0]);
+                        if (token.Length != 1 || hasPrimaryKey)
+                            return false;
+
+                        vk = char.ToUpperInvariant(token[0]);
+                        hasPrimaryKey = true;
                         break;
                 }
             }
+
+            return hasPrimaryKey;
+        }
+
+        private static int NormalizeHoldDelayMs(int holdDelayMs)
+        {
+            return holdDelayMs < 0 ? 0 : holdDelayMs;
+        }
+
+        private static string NormalizeHoldKey(string holdKey)
+        {
+            return string.IsNullOrWhiteSpace(holdKey) ? "LControlKey" : holdKey;
+        }
+
+        private static string NormalizeToggleHotkey(string toggleHotkey)
+        {
+            return toggleHotkey ?? string.Empty;
+        }
+
+        private static string NormalizeStartupToggleHotkey(string toggleHotkey)
+        {
+            var normalized = NormalizeToggleHotkey(toggleHotkey);
+            if (normalized.Length == 0)
+                return normalized;
+
+            if (TryParseToggleHotkey(normalized, out _, out _))
+                return normalized;
+
+            Trace.TraceWarning("Invalid persisted toggle hotkey '{0}' detected at startup. Falling back to disabled toggle hotkey.", normalized);
+            return string.Empty;
         }
 
         private static uint GetHoldKeyVkCode(string keyName)
@@ -263,9 +442,14 @@ namespace WhatKey.Services
                 _hookId = IntPtr.Zero;
             }
 
+            if (_hotkeyWindowHandle != IntPtr.Zero)
+            {
+                TryUnregisterToggleHotkey();
+                _hotkeyWindowHandle = IntPtr.Zero;
+            }
+
             if (_hwndSource != null)
             {
-                UnregisterHotKey(_hwndSource.Handle, TOGGLE_HOTKEY_ID);
                 _hwndSource.Dispose();
                 _hwndSource = null;
             }

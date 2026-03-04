@@ -13,45 +13,52 @@ namespace WhatKey.Services
         public static readonly string DataDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WhatKey");
 
-        private static readonly string DataFile = Path.Combine(DataDir, "hotkeys.json");
+        private readonly string _dataDir;
+        private readonly string _dataFile;
 
         private HotkeysData _data = new HotkeysData();
 
-        public string DataFilePath => DataFile;
+        public string DataFilePath => _dataFile;
         public AppSettings Settings => _data.Settings;
         public List<AppHotkeys> Apps => _data.Apps;
 
+        public HotkeysStorageService(string dataDir = null)
+        {
+            _dataDir = string.IsNullOrWhiteSpace(dataDir) ? DataDir : dataDir;
+            _dataFile = Path.Combine(_dataDir, "hotkeys.json");
+        }
+
         public HotkeysLoadResult Load()
         {
-            if (!File.Exists(DataFile))
+            if (!File.Exists(_dataFile))
             {
                 LoadDefaultsAndSave();
-                return HotkeysLoadResult.MissingFile(DataFile);
+                return HotkeysLoadResult.MissingFile(_dataFile);
             }
 
             try
             {
-                var json = File.ReadAllText(DataFile);
+                var json = File.ReadAllText(_dataFile);
                 _data = JsonConvert.DeserializeObject<HotkeysData>(json) ?? new HotkeysData();
                 NormalizeData();
-                return HotkeysLoadResult.Ok(DataFile);
+                return HotkeysLoadResult.Ok(_dataFile);
             }
             catch (Exception ex)
             {
-                return HotkeysLoadResult.Invalid(DataFile, ex.Message);
+                return HotkeysLoadResult.Invalid(_dataFile, ex.Message);
             }
         }
 
         public string CreateBackupOfDataFile()
         {
-            if (!File.Exists(DataFile))
-                throw new FileNotFoundException("hotkeys.json was not found.", DataFile);
+            if (!File.Exists(_dataFile))
+                throw new FileNotFoundException("hotkeys.json was not found.", _dataFile);
 
-            Directory.CreateDirectory(DataDir);
+            Directory.CreateDirectory(_dataDir);
 
             var timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
-            var backupPath = Path.Combine(DataDir, string.Format("hotkeys.{0}.json.bak", timestamp));
-            File.Copy(DataFile, backupPath, false);
+            var backupPath = Path.Combine(_dataDir, string.Format("hotkeys.{0}.json.bak", timestamp));
+            File.Copy(_dataFile, backupPath, false);
             return backupPath;
         }
 
@@ -63,9 +70,9 @@ namespace WhatKey.Services
 
         public void Save()
         {
-            Directory.CreateDirectory(DataDir);
+            Directory.CreateDirectory(_dataDir);
             var json = JsonConvert.SerializeObject(_data, Formatting.Indented);
-            File.WriteAllText(DataFile, json);
+            File.WriteAllText(_dataFile, json);
         }
 
         public List<HotkeyEntry> GetHotkeysForProcess(string processName)

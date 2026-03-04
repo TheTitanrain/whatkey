@@ -67,6 +67,8 @@ namespace WhatKey.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand OpenFolderCommand { get; }
 
+        public event EventHandler<AppSettings> SettingsSaved;
+
         public EditorViewModel(HotkeysStorageService storage, ActiveWindowService activeWindow)
         {
             _storage = storage;
@@ -180,12 +182,62 @@ namespace WhatKey.ViewModels
 
         private void Save()
         {
-            // Sync back from ObservableCollection to storage
+            var previousApps = CloneApps(_storage.Apps);
+            var newApps = CloneApps(Apps);
+
             _storage.Apps.Clear();
-            foreach (var app in Apps)
+            foreach (var app in newApps)
                 _storage.Apps.Add(app);
 
-            _storage.Save();
+            try
+            {
+                if (SettingsSaved != null)
+                {
+                    SettingsSaved(this, _storage.Settings);
+                    return;
+                }
+
+                _storage.Save();
+            }
+            catch
+            {
+                _storage.Apps.Clear();
+                foreach (var app in previousApps)
+                    _storage.Apps.Add(app);
+                throw;
+            }
+        }
+
+        private static System.Collections.Generic.List<AppHotkeys> CloneApps(System.Collections.Generic.IEnumerable<AppHotkeys> source)
+        {
+            var result = new System.Collections.Generic.List<AppHotkeys>();
+            if (source == null)
+                return result;
+
+            foreach (var app in source)
+            {
+                var clone = new AppHotkeys
+                {
+                    ProcessName = app?.ProcessName,
+                    Title = app?.Title
+                };
+
+                if (app?.Hotkeys != null)
+                {
+                    foreach (var hotkey in app.Hotkeys)
+                    {
+                        clone.Hotkeys.Add(new HotkeyEntry
+                        {
+                            Keys = hotkey?.Keys,
+                            Description = hotkey?.Description
+                        });
+                    }
+                }
+
+                result.Add(clone);
+            }
+
+            return result;
         }
     }
 }

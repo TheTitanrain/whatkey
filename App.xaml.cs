@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using Hardcodet.Wpf.TaskbarNotification;
+using WhatKey.Models;
 using WhatKey.Services;
 using WhatKey.ViewModels;
 using WhatKey.Views;
@@ -38,12 +39,89 @@ namespace WhatKey
             _hookService = new KeyboardHookService(_storageService.Settings);
             _hookService.TriggerShow += OnTriggerShow;
             _hookService.TriggerHide += OnTriggerHide;
-            _hookService.Install();
+            try
+            {
+                _hookService.Install();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Failed to initialize keyboard hotkey listener.\n\n" + ex.Message,
+                    "WhatKey startup error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                Shutdown();
+                return;
+            }
 
             // Create windows (but don't show them)
             _overlayWindow = new OverlayWindow();
-            _editorWindow = new EditorWindow(
-                new EditorViewModel(_storageService, _activeWindowService));
+            var editorViewModel = new EditorViewModel(_storageService, _activeWindowService);
+            RuntimeSettingsCoordinator.Attach(editorViewModel, settings =>
+            {
+                var previousApplied = _hookService.GetAppliedSettingsSnapshot();
+                try
+                {
+                    _hookService.UpdateSettings(settings);
+                }
+                catch (HotkeyRecoveryException ex)
+                {
+                    RestoreSettingsSnapshot(_storageService.Settings, previousApplied);
+                    if (!TryPersistRollbackSettings(previousApplied, ex))
+                        return;
+                    MessageBox.Show(
+                        "Runtime settings rollback failed. Application will exit to avoid inconsistent hotkey state.\n\n" + ex.Message,
+                        "WhatKey runtime error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    RestoreSettingsSnapshot(_storageService.Settings, previousApplied);
+                    if (!TryPersistRollbackSettings(previousApplied, ex))
+                        return;
+                    MessageBox.Show(
+                        "Runtime settings were not applied and have been rolled back.\n\n" + ex.Message,
+                        "WhatKey settings error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                try
+                {
+                    _storageService.Save();
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        _hookService.UpdateSettings(previousApplied);
+                        RestoreSettingsSnapshot(_storageService.Settings, previousApplied);
+                        _storageService.Save();
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        MessageBox.Show(
+                            "Runtime settings save failed and rollback did not complete. Application will exit to avoid inconsistent hotkey state.\n\n" +
+                            "Save error: " + ex.Message + "\n\n" +
+                            "Rollback error: " + rollbackEx.Message,
+                            "WhatKey runtime error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        Shutdown();
+                        return;
+                    }
+
+                    MessageBox.Show(
+                        "Runtime settings could not be persisted and were rolled back.\n\n" + ex.Message,
+                        "WhatKey settings error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+            });
+            _editorWindow = new EditorWindow(editorViewModel);
 
             // Setup tray
             InitializeTray();
@@ -217,6 +295,46 @@ namespace WhatKey
             Shutdown();
         }
 
+        private static void RestoreSettingsSnapshot(AppSettings target, AppSettings source)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            target.HoldDelayMs = source.HoldDelayMs;
+            target.HoldKey = source.HoldKey;
+            target.ToggleHotkey = source.ToggleHotkey;
+        }
+
+        private bool TryPersistRollbackSettings(AppSettings rollbackSnapshot, Exception applyException)
+        {
+            try
+            {
+                _storageService.Save();
+                return true;
+            }
+            catch (Exception saveEx)
+            {
+                try
+                {
+                    _hookService.UpdateSettings(rollbackSnapshot);
+                }
+                catch
+                {
+                    // Best-effort runtime alignment before shutdown.
+                }
+
+                MessageBox.Show(
+                    "Runtime settings rollback could not be persisted. Application will exit to avoid inconsistent state.\n\n" +
+                    "Apply error: " + applyException.Message + "\n\n" +
+                    "Rollback save error: " + saveEx.Message,
+                    "WhatKey runtime error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                Shutdown();
+                return false;
+            }
+        }
+
         private static System.Drawing.Icon CreateTrayIcon()
         {
             var bmp = new System.Drawing.Bitmap(16, 16);
@@ -250,6 +368,17 @@ namespace WhatKey
             _hookService?.Dispose();
             _trayIcon?.Dispose();
             base.OnExit(e);
+        }
+    }
+
+    public static class RuntimeSettingsCoordinator
+    {
+        public static void Attach(EditorViewModel editorViewModel, Action<Models.AppSettings> applySettings)
+        {
+            if (editorViewModel == null) throw new ArgumentNullException(nameof(editorViewModel));
+            if (applySettings == null) throw new ArgumentNullException(nameof(applySettings));
+
+            editorViewModel.SettingsSaved += (sender, settings) => applySettings(settings);
         }
     }
 

@@ -87,6 +87,8 @@ Data is stored in `%APPDATA%\WhatKey\hotkeys.json`. File format:
 
 Available values for `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
 
+When you change `holdKey`, `holdDelayMs`, or `toggleHotkey` in the editor and click Save, the running app applies these values immediately. Restart is not required.
+
 If `hotkeys.json` has invalid JSON format on startup, the app asks what to do: restore defaults (with a timestamped `.bak` backup first), open the file for manual fix, or exit.
 
 ## Tech stack
