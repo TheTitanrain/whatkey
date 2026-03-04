@@ -69,6 +69,17 @@ namespace WhatKey
             editItem.Click += (s, e) => OpenEditor();
             menu.Items.Add(editItem);
 
+            var autostartItem = new MenuItem { Header = "Run at startup", IsCheckable = true };
+            menu.Opened += (s, e) => autostartItem.IsChecked = AutostartService.IsEnabled();
+            autostartItem.Click += (s, e) =>
+            {
+                if (AutostartService.IsEnabled())
+                    AutostartService.Disable();
+                else
+                    AutostartService.Enable();
+            };
+            menu.Items.Add(autostartItem);
+
             menu.Items.Add(new Separator());
 
             var aboutItem = new MenuItem { Header = "About" };
