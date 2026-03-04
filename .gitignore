@@ -20,8 +20,9 @@ Desktop.ini
 
 # Claude
 CLAUDE.md
+.claude/
 
 # ralphex progress logs
 progress*.txt
 docs/plans/
-
+.ralphex/
