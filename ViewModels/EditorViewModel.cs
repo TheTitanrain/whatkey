@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WhatKey.Models;
@@ -64,6 +65,7 @@ namespace WhatKey.ViewModels
         public ICommand AddHotkeyCommand { get; }
         public ICommand RemoveHotkeyCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand OpenFolderCommand { get; }
 
         public EditorViewModel(HotkeysStorageService storage, ActiveWindowService activeWindow)
         {
@@ -79,6 +81,7 @@ namespace WhatKey.ViewModels
             AddHotkeyCommand = new RelayCommand(AddHotkey, () => SelectedApp != null);
             RemoveHotkeyCommand = new RelayCommand(RemoveHotkey, () => SelectedApp != null && SelectedHotkey != null);
             SaveCommand = new RelayCommand(Save);
+            OpenFolderCommand = new RelayCommand(OpenFolder);
         }
 
         private void AddApp()
@@ -168,6 +171,11 @@ namespace WhatKey.ViewModels
             if (SelectedApp == null || SelectedHotkey == null) return;
             SelectedApp.Hotkeys.Remove(SelectedHotkey);
             SelectedHotkey = null;
+        }
+
+        private void OpenFolder()
+        {
+            Process.Start("explorer.exe", HotkeysStorageService.DataDir);
         }
 
         private void Save()
