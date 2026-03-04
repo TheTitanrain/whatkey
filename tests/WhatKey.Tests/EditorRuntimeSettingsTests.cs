@@ -223,25 +223,5 @@ namespace WhatKey.Tests
             return field.GetValue(instance);
         }
 
-        private sealed class TestStorageScope : IDisposable
-        {
-            private readonly string _dataDir;
-
-            public TestStorageScope()
-            {
-                _dataDir = Path.Combine(Path.GetTempPath(), "WhatKey.Tests", Guid.NewGuid().ToString("N"));
-            }
-
-            public HotkeysStorageService CreateStorage()
-            {
-                return new HotkeysStorageService(_dataDir);
-            }
-
-            public void Dispose()
-            {
-                if (Directory.Exists(_dataDir))
-                    Directory.Delete(_dataDir, true);
-            }
-        }
     }
 }

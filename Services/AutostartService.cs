@@ -5,8 +5,8 @@ namespace WhatKey.Services
 {
     internal static class AutostartService
     {
-        private const string RegKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-        private const string AppName = "WhatKey";
+        internal static string RegKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
+        internal static string AppName = "WhatKey";
 
         public static bool IsEnabled()
         {
