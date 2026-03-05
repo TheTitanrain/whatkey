@@ -9,6 +9,7 @@ namespace WhatKey.ViewModels
         public const double DefaultHotkeysListMaxHeight = 460d;
         public const double DefaultHotkeyRowHeight = 30d;
         public const double DefaultMinColumnWidth = 240d;
+        public const double DefaultOverlayMinWidth = 420d;
         public const double DefaultOverlayMaxWidth = 980d;
         public const int MinOverlayColumns = 1;
         public const int MaxOverlayColumns = 3;

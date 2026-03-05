@@ -76,3 +76,9 @@
 ## Post-Review Fixes (2026-03-05, pass 2)
 - Исправлено ограничение ширины в `OverlayViewModel.CalculateOverlayColumns`: результат расчета по `availableWidth/minColumnWidth` теперь дополнительно ограничивается `maxColumns`, чтобы не выходить за контракт 1/2/3 колонок.
 - Добавлен тест `CalculateOverlayColumns_WithWideFiniteWidth_StillCapsAtThreeColumns` в `tests/WhatKey.Tests/OverlayLayoutTests.cs`, фиксирующий регрессию с потенциальным выбором 4+ колонок.
+
+## Post-Review Fixes (2026-03-05, pass 3)
+- Исправлен runtime-пересчет колонок в `OverlayWindow.ShowWithHotkeys`: после измерения layout теперь используется фактическая ширина списка (`HotkeysScrollViewer.ActualWidth`) с учетом видимости вертикального скроллбара.
+- Устранен конфликт ограничений ширины на маленьких экранах: минимальная ширина окна теперь адаптивно ограничивается рабочей областью монитора (`MinWidth = Math.Min(DefaultOverlayMinWidth, bounds.Width)`).
+- В `OverlayViewModel` добавлена константа `DefaultOverlayMinWidth` для единого источника значения минимальной ширины.
+- Обновлены тесты `OverlayLayoutTests` для фиксации новой логики адаптивной минимальной ширины и второго пересчета колонок по измеренной ширине списка.

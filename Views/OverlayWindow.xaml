@@ -9,12 +9,12 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
+        MinWidth="420"
         MaxHeight="650">
 
     <Border Background="#CC1E1E2E"
             CornerRadius="12"
             Padding="28,20"
-            MinWidth="420"
             MaxWidth="980">
         <StackPanel>
             <!-- Header -->
@@ -29,7 +29,8 @@
             <Rectangle Height="1" Fill="#313244" Margin="0,0,0,14"/>
 
             <!-- Hotkeys list -->
-            <ScrollViewer MaxHeight="{Binding HotkeysListMaxHeight}"
+            <ScrollViewer x:Name="HotkeysScrollViewer"
+                          MaxHeight="{Binding HotkeysListMaxHeight}"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Hotkeys}">

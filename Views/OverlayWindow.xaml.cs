@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WhatKey.Models;
@@ -58,8 +59,12 @@ namespace WhatKey.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 var bounds = GetMonitorWorkAreaDips(sourceHwnd);
+                MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);
                 MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);
                 _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);
+                UpdateLayout();
+                var listWidth = GetAvailableHotkeysListWidth();
+                _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, listWidth);
                 UpdateLayout();
 
                 var centeredLeft = bounds.Left + (bounds.Width - ActualWidth) / 2;
@@ -74,6 +79,18 @@ namespace WhatKey.Views
 
             var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150));
             BeginAnimation(OpacityProperty, fadeIn);
+        }
+
+        private double GetAvailableHotkeysListWidth()
+        {
+            var width = HotkeysScrollViewer.ActualWidth;
+            if (width <= 0d || double.IsNaN(width))
+                return MaxWidth;
+
+            if (HotkeysScrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                width -= SystemParameters.VerticalScrollBarWidth;
+
+            return width > 0d ? width : OverlayViewModel.DefaultMinColumnWidth;
         }
 
         private Rect GetMonitorWorkAreaDips(IntPtr hwnd)

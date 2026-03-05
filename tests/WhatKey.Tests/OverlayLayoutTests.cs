@@ -32,7 +32,7 @@ namespace WhatKey.Tests
         {
             var xaml = LoadOverlayWindowXaml();
 
-            StringAssert.Contains(xaml, "<ScrollViewer MaxHeight=\"{Binding HotkeysListMaxHeight}\"");
+            StringAssert.Contains(xaml, "MaxHeight=\"{Binding HotkeysListMaxHeight}\"");
             StringAssert.Contains(xaml, "VerticalScrollBarVisibility=\"Auto\"");
         }
 
@@ -173,8 +173,11 @@ namespace WhatKey.Tests
             var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");
 
             StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);");
+            StringAssert.Contains(codeBehind, "MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);");
             StringAssert.Contains(codeBehind, "MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);");
             StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);");
+            StringAssert.Contains(codeBehind, "var listWidth = GetAvailableHotkeysListWidth();");
+            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, listWidth);");
             StringAssert.Contains(codeBehind, "Left = Math.Max(bounds.Left, Math.Min(centeredLeft, maxLeft));");
             StringAssert.Contains(codeBehind, "Top = Math.Max(bounds.Top, Math.Min(centeredTop, maxTop));");
             StringAssert.Contains(codeBehind, "Dispatcher.BeginInvoke(new Action(() =>");
