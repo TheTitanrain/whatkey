@@ -46,11 +46,11 @@
 - Modify: `Views/OverlayWindow.xaml.cs`
 - Modify: `ViewModels/OverlayViewModel.cs`
 
-- [ ] При ShowWithHotkeys рассчитывать и применять целевое число колонок с учетом фактического списка hotkeys
-- [ ] Убедиться, что при смене активного приложения (разное количество hotkeys) layout корректно пересчитывается
-- [ ] Проверить, что центрирование/анимация/показ оверлея не ломаются после изменений layout
-- [ ] write tests for this task
-- [ ] run project test suite - must pass before task 4
+- [x] При ShowWithHotkeys рассчитывать и применять целевое число колонок с учетом фактического списка hotkeys
+- [x] Убедиться, что при смене активного приложения (разное количество hotkeys) layout корректно пересчитывается
+- [x] Проверить, что центрирование/анимация/показ оверлея не ломаются после изменений layout
+- [x] write tests for this task
+- [x] run project test suite - must pass before task 4
 
 ### Task 4: Verify acceptance criteria
 

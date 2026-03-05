@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Linq;
 using WhatKey.ViewModels;
 
 namespace WhatKey.Tests
@@ -95,20 +96,53 @@ namespace WhatKey.Tests
             Assert.AreEqual(1, columns);
         }
 
+        [TestMethod]
+        public void UpdateLayoutForHotkeysCount_RecalculatesColumns_WhenCountChanges()
+        {
+            var viewModel = new OverlayViewModel();
+            var rowsPerColumn = (int)(OverlayViewModel.DefaultHotkeysListMaxHeight / OverlayViewModel.DefaultHotkeyRowHeight);
+
+            viewModel.UpdateLayoutForHotkeysCount(rowsPerColumn);
+            Assert.AreEqual(1, viewModel.OverlayColumns);
+
+            viewModel.UpdateLayoutForHotkeysCount(rowsPerColumn + 1);
+            Assert.AreEqual(2, viewModel.OverlayColumns);
+
+            viewModel.UpdateLayoutForHotkeysCount((rowsPerColumn * 2) + 1);
+            Assert.AreEqual(3, viewModel.OverlayColumns);
+        }
+
+        [TestMethod]
+        public void OverlayWindowCodeBehind_ShowWithHotkeys_UpdatesColumnsAndKeepsShowPipeline()
+        {
+            var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");
+
+            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);");
+            StringAssert.Contains(codeBehind, "Dispatcher.BeginInvoke(new Action(() =>");
+            StringAssert.Contains(codeBehind, "BeginAnimation(OpacityProperty, fadeIn);");
+            StringAssert.Contains(codeBehind, "if (!IsVisible)");
+            StringAssert.Contains(codeBehind, "Show();");
+        }
+
         private static string LoadOverlayWindowXaml()
+        {
+            return LoadSourceFile("Views", "OverlayWindow.xaml");
+        }
+
+        private static string LoadSourceFile(params string[] relativePathParts)
         {
             var directory = AppContext.BaseDirectory;
 
             while (!string.IsNullOrEmpty(directory))
             {
-                var xamlPath = Path.Combine(directory, "Views", "OverlayWindow.xaml");
-                if (File.Exists(xamlPath))
-                    return File.ReadAllText(xamlPath);
+                var sourcePath = Path.Combine(relativePathParts.Prepend(directory).ToArray());
+                if (File.Exists(sourcePath))
+                    return File.ReadAllText(sourcePath);
 
                 directory = Directory.GetParent(directory)?.FullName;
             }
 
-            Assert.Fail("Unable to locate Views/OverlayWindow.xaml from test base directory.");
+            Assert.Fail($"Unable to locate {Path.Combine(relativePathParts)} from test base directory.");
             return string.Empty;
         }
     }

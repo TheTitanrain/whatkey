@@ -43,7 +43,9 @@ namespace WhatKey.Views
 
         public void ShowWithHotkeys(List<HotkeyEntry> hotkeys, string processName, IntPtr sourceHwnd = default)
         {
-            _viewModel.Hotkeys = new ObservableCollection<HotkeyEntry>(hotkeys);
+            var safeHotkeys = hotkeys ?? new List<HotkeyEntry>();
+            _viewModel.Hotkeys = new ObservableCollection<HotkeyEntry>(safeHotkeys);
+            _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);
             _viewModel.AppTitle = string.IsNullOrEmpty(processName) ? "Unknown Application" : processName;
 
             // Recenter on active monitor each time it's shown
@@ -57,7 +59,7 @@ namespace WhatKey.Views
             {
                 var bounds = GetMonitorWorkAreaDips(sourceHwnd);
                 Left = bounds.Left + (bounds.Width - ActualWidth) / 2;
-                Top  = bounds.Top  + (bounds.Height - ActualHeight) / 2;
+                Top = bounds.Top + (bounds.Height - ActualHeight) / 2;
             }));
 
             var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150));
@@ -80,7 +82,7 @@ namespace WhatKey.Views
             if (source?.CompositionTarget == null) return fallback;
 
             var m = source.CompositionTarget.TransformFromDevice;
-            var topLeft     = m.Transform(new Point(info.rcWork.Left,  info.rcWork.Top));
+            var topLeft = m.Transform(new Point(info.rcWork.Left, info.rcWork.Top));
             var bottomRight = m.Transform(new Point(info.rcWork.Right, info.rcWork.Bottom));
             return new Rect(topLeft, bottomRight);
         }

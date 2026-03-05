@@ -66,5 +66,10 @@ namespace WhatKey.ViewModels
 
             return requiredColumns > maxColumns ? maxColumns : requiredColumns;
         }
+
+        public void UpdateLayoutForHotkeysCount(int hotkeysCount)
+        {
+            OverlayColumns = CalculateOverlayColumns(hotkeysCount);
+        }
     }
 }
