@@ -58,8 +58,18 @@ namespace WhatKey.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 var bounds = GetMonitorWorkAreaDips(sourceHwnd);
-                Left = bounds.Left + (bounds.Width - ActualWidth) / 2;
-                Top = bounds.Top + (bounds.Height - ActualHeight) / 2;
+                MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);
+                _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);
+                UpdateLayout();
+
+                var centeredLeft = bounds.Left + (bounds.Width - ActualWidth) / 2;
+                var centeredTop = bounds.Top + (bounds.Height - ActualHeight) / 2;
+
+                var maxLeft = bounds.Right - ActualWidth;
+                var maxTop = bounds.Bottom - ActualHeight;
+
+                Left = Math.Max(bounds.Left, Math.Min(centeredLeft, maxLeft));
+                Top = Math.Max(bounds.Top, Math.Min(centeredTop, maxTop));
             }));
 
             var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150));

@@ -121,11 +121,50 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
+        public void CalculateOverlayColumns_WhenWidthLimitsToOneColumn_UsesOneColumn()
+        {
+            var rowsPerColumn = (int)(OverlayViewModel.DefaultHotkeysListMaxHeight / OverlayViewModel.DefaultHotkeyRowHeight);
+
+            var columns = OverlayViewModel.CalculateOverlayColumns(
+                hotkeysCount: rowsPerColumn + 10,
+                availableWidth: OverlayViewModel.DefaultMinColumnWidth + 10d);
+
+            Assert.AreEqual(1, columns);
+        }
+
+        [TestMethod]
+        public void CalculateOverlayColumns_WhenWidthLimitsToTwoColumns_CapsAtTwoColumns()
+        {
+            var rowsPerColumn = (int)(OverlayViewModel.DefaultHotkeysListMaxHeight / OverlayViewModel.DefaultHotkeyRowHeight);
+
+            var columns = OverlayViewModel.CalculateOverlayColumns(
+                hotkeysCount: (rowsPerColumn * 3),
+                availableWidth: (OverlayViewModel.DefaultMinColumnWidth * 2d) + 20d);
+
+            Assert.AreEqual(2, columns);
+        }
+
+        [TestMethod]
+        public void CalculateOverlayColumns_WithFiniteWidthAndInvalidMinColumnWidth_ReturnsOneColumn()
+        {
+            var columns = OverlayViewModel.CalculateOverlayColumns(
+                hotkeysCount: 20,
+                availableWidth: 600d,
+                minColumnWidth: 0d);
+
+            Assert.AreEqual(1, columns);
+        }
+
+        [TestMethod]
         public void OverlayWindowCodeBehind_ShowWithHotkeys_UpdatesColumnsAndKeepsShowPipeline()
         {
             var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");
 
             StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);");
+            StringAssert.Contains(codeBehind, "MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);");
+            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);");
+            StringAssert.Contains(codeBehind, "Left = Math.Max(bounds.Left, Math.Min(centeredLeft, maxLeft));");
+            StringAssert.Contains(codeBehind, "Top = Math.Max(bounds.Top, Math.Min(centeredTop, maxTop));");
             StringAssert.Contains(codeBehind, "Dispatcher.BeginInvoke(new Action(() =>");
             StringAssert.Contains(codeBehind, "BeginAnimation(OpacityProperty, fadeIn);");
             StringAssert.Contains(codeBehind, "if (!IsVisible)");

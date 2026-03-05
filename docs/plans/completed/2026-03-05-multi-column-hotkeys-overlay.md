@@ -70,3 +70,5 @@
 ## Post-Review Fixes (2026-03-05)
 - Синхронизирован лимит высоты списка: `OverlayViewModel.DefaultHotkeysListMaxHeight` теперь соответствует UI-ограничению и используется в XAML через биндинг `HotkeysListMaxHeight`.
 - Обновлены тесты `OverlayLayoutTests` для проверки единого источника ограничения высоты между ViewModel и XAML.
+- Добавлен учет доступной ширины экрана в расчете числа колонок (`OverlayViewModel.CalculateOverlayColumns`), чтобы не выбирать 3 колонки там, где они не помещаются.
+- В `OverlayWindow.ShowWithHotkeys` добавлены ограничение `MaxWidth` по рабочей области монитора и кламп позиции `Left/Top`, чтобы оверлей не выходил за границы экрана.

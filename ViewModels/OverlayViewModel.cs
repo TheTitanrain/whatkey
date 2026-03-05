@@ -8,6 +8,8 @@ namespace WhatKey.ViewModels
     {
         public const double DefaultHotkeysListMaxHeight = 460d;
         public const double DefaultHotkeyRowHeight = 30d;
+        public const double DefaultMinColumnWidth = 240d;
+        public const double DefaultOverlayMaxWidth = 980d;
         public const int MinOverlayColumns = 1;
         public const int MaxOverlayColumns = 3;
 
@@ -46,7 +48,9 @@ namespace WhatKey.ViewModels
             int hotkeysCount,
             double maxListHeight = DefaultHotkeysListMaxHeight,
             double estimatedRowHeight = DefaultHotkeyRowHeight,
-            int maxColumns = MaxOverlayColumns)
+            int maxColumns = MaxOverlayColumns,
+            double availableWidth = double.PositiveInfinity,
+            double minColumnWidth = DefaultMinColumnWidth)
         {
             if (hotkeysCount <= 0)
                 return MinOverlayColumns;
@@ -57,6 +61,17 @@ namespace WhatKey.ViewModels
             if (maxColumns < MinOverlayColumns)
                 return MinOverlayColumns;
 
+            var widthLimitedMaxColumns = maxColumns;
+            if (!double.IsInfinity(availableWidth) && !double.IsNaN(availableWidth) && availableWidth > 0d)
+            {
+                if (minColumnWidth <= 0d)
+                    return MinOverlayColumns;
+
+                widthLimitedMaxColumns = (int)(availableWidth / minColumnWidth);
+                if (widthLimitedMaxColumns < MinOverlayColumns)
+                    widthLimitedMaxColumns = MinOverlayColumns;
+            }
+
             var rowsPerColumn = (int)(maxListHeight / estimatedRowHeight);
             if (rowsPerColumn < 1)
                 rowsPerColumn = 1;
@@ -66,12 +81,12 @@ namespace WhatKey.ViewModels
             if (requiredColumns < MinOverlayColumns)
                 return MinOverlayColumns;
 
-            return requiredColumns > maxColumns ? maxColumns : requiredColumns;
+            return requiredColumns > widthLimitedMaxColumns ? widthLimitedMaxColumns : requiredColumns;
         }
 
-        public void UpdateLayoutForHotkeysCount(int hotkeysCount)
+        public void UpdateLayoutForHotkeysCount(int hotkeysCount, double availableWidth = double.PositiveInfinity)
         {
-            OverlayColumns = CalculateOverlayColumns(hotkeysCount);
+            OverlayColumns = CalculateOverlayColumns(hotkeysCount, availableWidth: availableWidth);
         }
     }
 }
