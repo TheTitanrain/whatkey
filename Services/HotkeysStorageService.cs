@@ -64,8 +64,17 @@ namespace WhatKey.Services
 
         public void LoadDefaultsAndSave()
         {
+            var previous = _data;
             LoadDefaults();
-            Save();
+            try
+            {
+                Save();
+            }
+            catch
+            {
+                _data = previous;
+                throw;
+            }
         }
 
         public void Save()
