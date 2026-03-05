@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatKey — CheatSheet for Windows</title>
+  <meta name="description" content="WhatKey shows a transparent hotkey overlay for any app when you hold Left Ctrl. CheatSheet-inspired, built for Windows." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header>
+  <div class="container header-inner">
+    <span class="logo">What<span>Key</span></span>
+    <a href="https://github.com/TheTitanrain/whatkey" class="gh-link" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+          0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+          -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+          .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+          -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0
+          1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+          1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
+          1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      GitHub
+    </a>
+  </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="container">
+    <h1>Your app's hotkeys,<br /><em>always within reach</em></h1>
+    <p>Hold <kbd>Left Ctrl</kbd> to reveal a transparent overlay with every shortcut for the active window. Release to hide. Zero friction.</p>
+    <a href="https://github.com/TheTitanrain/whatkey/releases/latest" class="btn-primary" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <path fill="currentColor" d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0
+          00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0
+          00-1.06 1.06l3.75 3.75zM1.75 13a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H1.75z"/>
+      </svg>
+      Download latest release
+    </a>
+  </div>
+</section>
+
+<!-- ========== SCREENSHOT ========== -->
+<section class="screenshot-section">
+  <div class="container">
+    <div class="screenshot-wrapper">
+      <!-- Replace src with your actual screenshot -->
+      <img src="images/overlay.png" alt="WhatKey hotkey overlay"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="screenshot-placeholder">
+        <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94l.32-1.427A1.75
+            1.75 0 014.696 10.5H12a.75.75 0 000-1.5H4.696a.25.25 0 01-.244-.197L4.094
+            7.25h8.662a.75.75 0 00.732-.582l.75-3.5A.75.75 0 0013.5 2.5H1.75z"/>
+        </svg>
+        <span>Screenshot placeholder<br />Add <code>docs/images/overlay.png</code> to show the overlay here</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="how-it-works">
+  <div class="container">
+    <h2 class="section-title">How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Hold Left Ctrl</h3>
+        <p>Keep the key held for 500 ms (configurable). WhatKey detects the active window automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Overlay appears</h3>
+        <p>A transparent, always-on-top panel fades in with every hotkey defined for the current app.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Release to hide</h3>
+        <p>Let go of the key and the overlay fades out — no clicks, no menus, no distractions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="features-section">
+  <div class="container">
+    <h2 class="section-title">Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⌨️</div>
+        <h3>Hold-key trigger</h3>
+        <p>Activate the overlay by holding Left Ctrl (or any key you choose) for a configurable delay.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔀</div>
+        <h3>Toggle hotkey</h3>
+        <p>Pin the overlay with <kbd>Ctrl+Alt+H</kbd> — handy when you need to keep shortcuts visible while working.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🪟</div>
+        <h3>Per-app profiles</h3>
+        <p>Separate hotkey lists for every application. Supports multiple process names per entry for app variants.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✏️</div>
+        <h3>Built-in editor</h3>
+        <p>Add, edit, and remove hotkeys without touching any config file. Changes apply instantly — no restart needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌑</div>
+        <h3>Transparent overlay</h3>
+        <p>Frameless, dark, semi-transparent window that doesn't steal focus or interrupt your workflow.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Tray-resident</h3>
+        <p>Runs quietly in the system tray. Access the editor or quit from the right-click context menu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BUILT-IN PROFILES ========== -->
+<section class="profiles-section">
+  <div class="container">
+    <h2 class="section-title">Built-in app profiles</h2>
+    <div class="profiles-grid">
+      <div class="profile-badge">VS Code</div>
+      <div class="profile-badge">Google Chrome</div>
+      <div class="profile-badge">Firefox</div>
+      <div class="profile-badge">Total Commander</div>
+      <div class="profile-badge">Notepad++</div>
+      <div class="profile-badge">Windows Explorer</div>
+      <div class="profile-badge">Sublime Text</div>
+      <div class="profile-badge">IntelliJ IDEA</div>
+      <div class="profile-badge">Slack</div>
+      <div class="profile-badge">Microsoft Word</div>
+      <div class="profile-badge">Microsoft Excel</div>
+      <div class="profile-badge">Photoshop</div>
+      <div class="profile-badge">Figma</div>
+      <div class="profile-badge">VLC</div>
+      <div class="profile-badge">Windows Terminal</div>
+      <div class="profile-badge">+ your own</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== DOWNLOAD ========== -->
+<section class="download-section">
+  <div class="container">
+    <div class="download-box">
+      <h2>Get WhatKey</h2>
+      <p>Free and open-source. No installer required — just unzip and run.</p>
+      <a href="https://github.com/TheTitanrain/whatkey/releases/latest" class="btn-primary" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor" d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0
+            00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0
+            00-1.06 1.06l3.75 3.75zM1.75 13a.75.75 0 000 1.5h12.5a.75.75 0 000-1.5H1.75z"/>
+        </svg>
+        Download from GitHub Releases
+      </a>
+      <ul class="requirements">
+        <li>Windows 7 or later (64-bit recommended)</li>
+        <li>.NET Framework 4.8 Runtime</li>
+        <li>~5 MB disk space</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <a href="https://github.com/TheTitanrain/whatkey" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:4px">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+            0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+            -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+            .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+            -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0
+            1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+            1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
+            1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        TheTitanrain/whatkey
+      </a>
+      <span>&middot;</span>
+      <span>MIT License</span>
+      <span>&middot;</span>
+      <a href="https://github.com/TheTitanrain/whatkey/releases" target="_blank" rel="noopener">Releases</a>
+      <span>&middot;</span>
+      <a href="https://github.com/TheTitanrain/whatkey/issues" target="_blank" rel="noopener">Issues</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
