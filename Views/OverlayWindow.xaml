@@ -9,13 +9,13 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
+        MinWidth="420"
         MaxHeight="650">
 
     <Border Background="#CC1E1E2E"
             CornerRadius="12"
             Padding="28,20"
-            MinWidth="420"
-            MaxWidth="680">
+            MaxWidth="980">
         <StackPanel>
             <!-- Header -->
             <DockPanel Margin="0,0,0,14">
@@ -29,11 +29,19 @@
             <Rectangle Height="1" Fill="#313244" Margin="0,0,0,14"/>
 
             <!-- Hotkeys list -->
-            <ScrollViewer MaxHeight="500" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer x:Name="HotkeysScrollViewer"
+                          MaxHeight="{Binding HotkeysListMaxHeight}"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Hotkeys}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="{Binding OverlayColumns, FallbackValue=1}"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="0,3">
+                            <Grid Margin="0,3,10,3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" MinWidth="140"/>
                                     <ColumnDefinition Width="*"/>

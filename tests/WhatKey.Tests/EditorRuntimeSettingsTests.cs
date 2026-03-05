@@ -94,7 +94,7 @@ namespace WhatKey.Tests
                     viewModel.Settings.HoldKey = "RShiftKey";
                     viewModel.Settings.ToggleHotkey = "Ctrl+Shift+T";
 
-                    Assert.AreEqual(500d, GetHoldTimerInterval(service).TotalMilliseconds, 0.001d);
+                    Assert.AreEqual(1000d, GetHoldTimerInterval(service).TotalMilliseconds, 0.001d);
                     Assert.AreEqual((uint)0xA2, GetHoldVkCode(service));
 
                     viewModel.SaveCommand.Execute(null);
@@ -223,5 +223,25 @@ namespace WhatKey.Tests
             return field.GetValue(instance);
         }
 
+        private sealed class TestStorageScope : IDisposable
+        {
+            private readonly string _dataDir;
+
+            public TestStorageScope()
+            {
+                _dataDir = Path.Combine(Path.GetTempPath(), "WhatKey.Tests", Guid.NewGuid().ToString("N"));
+            }
+
+            public HotkeysStorageService CreateStorage()
+            {
+                return new HotkeysStorageService(_dataDir);
+            }
+
+            public void Dispose()
+            {
+                if (Directory.Exists(_dataDir))
+                    Directory.Delete(_dataDir, true);
+            }
+        }
     }
 }

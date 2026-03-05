@@ -24,3 +24,10 @@
 - Runtime updates must be applied without app restart when editor settings are saved.
 - Preserve tests in `tests/WhatKey.Tests` that guard Save -> runtime apply behavior.
 - Tests must not touch real `%APPDATA%` user settings; use isolated temporary storage paths.
+
+## Overlay layout behavior
+
+- `OverlayViewModel` owns deterministic column count selection for the hotkeys overlay (`1/2/3` columns).
+- Column count is recalculated in `ShowWithHotkeys(...)` based on current hotkey count and max overlay height constraints.
+- `Views/OverlayWindow.xaml` binds layout columns from the view model instead of hardcoding a single vertical list.
+- Keep column selection logic UI-independent so it remains covered by `tests/WhatKey.Tests/OverlayLayoutTests.cs`.

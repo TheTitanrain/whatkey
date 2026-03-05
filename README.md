@@ -14,6 +14,7 @@ You can also press **Ctrl+Alt+H** to toggle the overlay in pinned mode.
 
 - Overlay appears automatically while the trigger key is held
 - Hotkey list is selected by the active window process name
+- Long hotkey lists are split into up to three columns to keep the overlay compact
 - Built-in editor for apps and hotkeys
 - `Detect App` button auto-detects the target process within 3 seconds
 - Configurable trigger key, hold delay, and toggle hotkey

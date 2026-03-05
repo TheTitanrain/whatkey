@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WhatKey.Models;
@@ -43,7 +44,9 @@ namespace WhatKey.Views
 
         public void ShowWithHotkeys(List<HotkeyEntry> hotkeys, string processName, IntPtr sourceHwnd = default)
         {
-            _viewModel.Hotkeys = new ObservableCollection<HotkeyEntry>(hotkeys);
+            var safeHotkeys = hotkeys ?? new List<HotkeyEntry>();
+            _viewModel.Hotkeys = new ObservableCollection<HotkeyEntry>(safeHotkeys);
+            _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);
             _viewModel.AppTitle = string.IsNullOrEmpty(processName) ? "Unknown Application" : processName;
 
             // Recenter on active monitor each time it's shown
@@ -56,12 +59,38 @@ namespace WhatKey.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 var bounds = GetMonitorWorkAreaDips(sourceHwnd);
-                Left = bounds.Left + (bounds.Width - ActualWidth) / 2;
-                Top  = bounds.Top  + (bounds.Height - ActualHeight) / 2;
+                MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);
+                MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);
+                _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);
+                UpdateLayout();
+                var listWidth = GetAvailableHotkeysListWidth();
+                _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, listWidth);
+                UpdateLayout();
+
+                var centeredLeft = bounds.Left + (bounds.Width - ActualWidth) / 2;
+                var centeredTop = bounds.Top + (bounds.Height - ActualHeight) / 2;
+
+                var maxLeft = bounds.Right - ActualWidth;
+                var maxTop = bounds.Bottom - ActualHeight;
+
+                Left = Math.Max(bounds.Left, Math.Min(centeredLeft, maxLeft));
+                Top = Math.Max(bounds.Top, Math.Min(centeredTop, maxTop));
             }));
 
             var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150));
             BeginAnimation(OpacityProperty, fadeIn);
+        }
+
+        private double GetAvailableHotkeysListWidth()
+        {
+            var width = HotkeysScrollViewer.ActualWidth;
+            if (width <= 0d || double.IsNaN(width))
+                return MaxWidth;
+
+            if (HotkeysScrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                width -= SystemParameters.VerticalScrollBarWidth;
+
+            return width > 0d ? width : OverlayViewModel.DefaultMinColumnWidth;
         }
 
         private Rect GetMonitorWorkAreaDips(IntPtr hwnd)
@@ -80,7 +109,7 @@ namespace WhatKey.Views
             if (source?.CompositionTarget == null) return fallback;
 
             var m = source.CompositionTarget.TransformFromDevice;
-            var topLeft     = m.Transform(new Point(info.rcWork.Left,  info.rcWork.Top));
+            var topLeft = m.Transform(new Point(info.rcWork.Left, info.rcWork.Top));
             var bottomRight = m.Transform(new Point(info.rcWork.Right, info.rcWork.Bottom));
             return new Rect(topLeft, bottomRight);
         }
