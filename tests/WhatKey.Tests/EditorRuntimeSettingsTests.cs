@@ -152,7 +152,7 @@ namespace WhatKey.Tests
                 storage.Apps.Clear();
                 storage.Apps.Add(new AppHotkeys
                 {
-                    ProcessName = "existing",
+                    ProcessNames = new System.Collections.Generic.List<string> { "existing" },
                     Title = "Existing App"
                 });
 
@@ -160,7 +160,7 @@ namespace WhatKey.Tests
                 viewModel.Apps.Clear();
                 viewModel.Apps.Add(new AppHotkeys
                 {
-                    ProcessName = "newapp",
+                    ProcessNames = new System.Collections.Generic.List<string> { "newapp" },
                     Title = "New App"
                 });
 
@@ -168,7 +168,7 @@ namespace WhatKey.Tests
 
                 Assert.ThrowsException<InvalidOperationException>(() => viewModel.SaveCommand.Execute(null));
                 Assert.AreEqual(1, storage.Apps.Count);
-                Assert.AreEqual("existing", storage.Apps[0].ProcessName);
+                Assert.IsTrue(storage.Apps[0].ProcessNames.Contains("existing"));
                 Assert.AreEqual("Existing App", storage.Apps[0].Title);
             }
         }

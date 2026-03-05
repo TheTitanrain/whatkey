@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using WhatKey.Models;
@@ -92,8 +93,11 @@ namespace WhatKey.Services
             var lower = processName.ToLower();
             foreach (var app in _data.Apps)
             {
-                if (string.Equals(app.ProcessName, lower, StringComparison.OrdinalIgnoreCase))
-                    return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
+                foreach (var name in app.ProcessNames)
+                {
+                    if (string.Equals(name, lower, StringComparison.OrdinalIgnoreCase))
+                        return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
+                }
             }
 
             return GetDefaultHotkeys();
@@ -103,7 +107,7 @@ namespace WhatKey.Services
         {
             foreach (var app in _data.Apps)
             {
-                if (string.Equals(app.ProcessName, "default", StringComparison.OrdinalIgnoreCase))
+                if (app.ProcessNames.Contains("default", StringComparer.OrdinalIgnoreCase))
                     return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
             }
             return new List<HotkeyEntry>();
@@ -128,6 +132,11 @@ namespace WhatKey.Services
 
             foreach (var app in _data.Apps)
             {
+                if (app.ProcessNames == null) app.ProcessNames = new List<string>();
+                if (app.ProcessNames.Count == 0 && !string.IsNullOrWhiteSpace(app.ProcessName))
+                    app.ProcessNames.Add(app.ProcessName.ToLower());
+                app.ProcessNames = app.ProcessNames.Select(p => p.ToLower()).ToList();
+                app.ProcessName = null;
                 if (app.Hotkeys == null)
                     app.Hotkeys = new ObservableCollection<HotkeyEntry>();
             }

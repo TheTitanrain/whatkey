@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WhatKey.Models;
@@ -15,6 +17,7 @@ namespace WhatKey.ViewModels
 
         private ObservableCollection<AppHotkeys> _apps;
         private AppHotkeys _selectedApp;
+        private string _processNamesRaw;
         private HotkeyEntry _selectedHotkey;
         private AppSettings _settings;
         private string _detectButtonText = "Detect";
@@ -32,7 +35,35 @@ namespace WhatKey.ViewModels
         public AppHotkeys SelectedApp
         {
             get => _selectedApp;
-            set => SetField(ref _selectedApp, value);
+            set
+            {
+                FlushProcessNamesText();
+                if (SetField(ref _selectedApp, value))
+                {
+                    _processNamesRaw = value != null ? string.Join(", ", value.ProcessNames) : "";
+                    OnPropertyChanged(nameof(ProcessNamesText));
+                }
+            }
+        }
+
+        public string ProcessNamesText
+        {
+            get => _processNamesRaw ?? string.Join(", ", _selectedApp?.ProcessNames ?? Enumerable.Empty<string>());
+            set
+            {
+                _processNamesRaw = value ?? "";
+                OnPropertyChanged();
+            }
+        }
+
+        private void FlushProcessNamesText()
+        {
+            if (_selectedApp == null || _processNamesRaw == null) return;
+            _selectedApp.ProcessNames = _processNamesRaw
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim().ToLower())
+                .Where(p => p.Length > 0)
+                .ToList();
         }
 
         public HotkeyEntry SelectedHotkey
@@ -92,7 +123,7 @@ namespace WhatKey.ViewModels
         {
             var app = new AppHotkeys
             {
-                ProcessName = "newapp",
+                ProcessNames = new List<string> { "newapp" },
                 Title = "New Application"
             };
             Apps.Add(app);
@@ -138,7 +169,7 @@ namespace WhatKey.ViewModels
             // Check if we already have this app
             foreach (var app in Apps)
             {
-                if (string.Equals(app.ProcessName, processName, StringComparison.OrdinalIgnoreCase))
+                if (app.ProcessNames.Any(n => string.Equals(n, processName, StringComparison.OrdinalIgnoreCase)))
                 {
                     SelectedApp = app;
                     DetectButtonText = "Detect";
@@ -150,7 +181,7 @@ namespace WhatKey.ViewModels
             // Create new entry
             var newApp = new AppHotkeys
             {
-                ProcessName = processName,
+                ProcessNames = new List<string> { processName },
                 Title = processName
             };
             Apps.Add(newApp);
@@ -223,6 +254,7 @@ namespace WhatKey.ViewModels
 
         private void Save()
         {
+            FlushProcessNamesText();
             var previousApps = CloneApps(_storage.Apps);
             var newApps = CloneApps(Apps);
 
@@ -249,9 +281,9 @@ namespace WhatKey.ViewModels
             }
         }
 
-        private static System.Collections.Generic.List<AppHotkeys> CloneApps(System.Collections.Generic.IEnumerable<AppHotkeys> source)
+        private static List<AppHotkeys> CloneApps(IEnumerable<AppHotkeys> source)
         {
-            var result = new System.Collections.Generic.List<AppHotkeys>();
+            var result = new List<AppHotkeys>();
             if (source == null)
                 return result;
 
@@ -259,7 +291,7 @@ namespace WhatKey.ViewModels
             {
                 var clone = new AppHotkeys
                 {
-                    ProcessName = app?.ProcessName,
+                    ProcessNames = new List<string>(app?.ProcessNames ?? new List<string>()),
                     Title = app?.Title
                 };
 

@@ -223,7 +223,7 @@
                         <DataTemplate>
                             <StackPanel Margin="0,2">
                                 <TextBlock Text="{Binding Title}" FontSize="13"/>
-                                <TextBlock Text="{Binding ProcessName}" FontSize="10" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding ProcessNamesDisplay}" FontSize="10" Foreground="#6C7086"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -259,9 +259,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Process:" Foreground="#6C7086" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
-                        <TextBox Width="100" Margin="0,0,12,0" FontSize="11"
-                                 Text="{Binding SelectedApp.ProcessName, UpdateSourceTrigger=PropertyChanged}"
-                                 ToolTip="Executable name used to match the active window (e.g. &quot;chrome&quot;)"/>
+                        <TextBox Width="180" Margin="0,0,12,0" FontSize="11"
+                                 Text="{Binding ProcessNamesText, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Process name(s) to match. Separate multiple with commas (e.g. totalcmd, totalcmd64)"/>
                         <TextBlock Text="Title:" Foreground="#6C7086" FontSize="11"
                                    VerticalAlignment="Center" Margin="0,0,5,0"/>
                         <TextBox Width="160" FontSize="11"

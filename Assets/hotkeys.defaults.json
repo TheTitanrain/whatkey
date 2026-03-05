@@ -6,7 +6,7 @@
   },
   "apps": [
     {
-      "processName": "code",
+      "processNames": ["code"],
       "title": "VS Code",
       "hotkeys": [
         { "keys": "Ctrl+P", "description": "Quick Open" },
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "processName": "chrome",
+      "processNames": ["chrome"],
       "title": "Google Chrome",
       "hotkeys": [
         { "keys": "Ctrl+T", "description": "New Tab" },
@@ -56,7 +56,7 @@
       ]
     },
     {
-      "processName": "firefox",
+      "processNames": ["firefox"],
       "title": "Firefox",
       "hotkeys": [
         { "keys": "Ctrl+T", "description": "New Tab" },
@@ -80,7 +80,7 @@
       ]
     },
     {
-      "processName": "msedge",
+      "processNames": ["msedge"],
       "title": "Microsoft Edge",
       "hotkeys": [
         { "keys": "Ctrl+T", "description": "New Tab" },
@@ -101,7 +101,7 @@
       ]
     },
     {
-      "processName": "explorer",
+      "processNames": ["explorer"],
       "title": "Windows Explorer",
       "hotkeys": [
         { "keys": "Alt+Up", "description": "Go Up One Level" },
@@ -122,7 +122,7 @@
       ]
     },
     {
-      "processName": "notepad++",
+      "processNames": ["notepad++"],
       "title": "Notepad++",
       "hotkeys": [
         { "keys": "Ctrl+S", "description": "Save" },
@@ -145,7 +145,7 @@
       ]
     },
     {
-      "processName": "winword",
+      "processNames": ["winword"],
       "title": "Microsoft Word",
       "hotkeys": [
         { "keys": "Ctrl+S", "description": "Save" },
@@ -173,7 +173,7 @@
       ]
     },
     {
-      "processName": "excel",
+      "processNames": ["excel"],
       "title": "Microsoft Excel",
       "hotkeys": [
         { "keys": "Ctrl+S", "description": "Save" },
@@ -201,7 +201,7 @@
       ]
     },
     {
-      "processName": "powerpnt",
+      "processNames": ["powerpnt"],
       "title": "Microsoft PowerPoint",
       "hotkeys": [
         { "keys": "Ctrl+N", "description": "New Presentation" },
@@ -224,7 +224,7 @@
       ]
     },
     {
-      "processName": "photoshop",
+      "processNames": ["photoshop"],
       "title": "Adobe Photoshop",
       "hotkeys": [
         { "keys": "Ctrl+N", "description": "New Document" },
@@ -249,7 +249,7 @@
       ]
     },
     {
-      "processName": "windowsterminal",
+      "processNames": ["windowsterminal"],
       "title": "Windows Terminal",
       "hotkeys": [
         { "keys": "Ctrl+Shift+T", "description": "New Tab" },
@@ -270,7 +270,7 @@
       ]
     },
     {
-      "processName": "slack",
+      "processNames": ["slack"],
       "title": "Slack",
       "hotkeys": [
         { "keys": "Ctrl+K", "description": "Quick Switcher" },
@@ -289,7 +289,7 @@
       ]
     },
     {
-      "processName": "telegram",
+      "processNames": ["telegram"],
       "title": "Telegram",
       "hotkeys": [
         { "keys": "Ctrl+N", "description": "New Private Message" },
@@ -308,7 +308,7 @@
       ]
     },
     {
-      "processName": "vlc",
+      "processNames": ["vlc"],
       "title": "VLC Media Player",
       "hotkeys": [
         { "keys": "Space", "description": "Play/Pause" },
@@ -332,7 +332,7 @@
       ]
     },
     {
-      "processName": "idea64",
+      "processNames": ["idea64"],
       "title": "IntelliJ IDEA",
       "hotkeys": [
         { "keys": "Shift+Shift", "description": "Search Everywhere" },
@@ -356,7 +356,7 @@
       ]
     },
     {
-      "processName": "figma",
+      "processNames": ["figma"],
       "title": "Figma",
       "hotkeys": [
         { "keys": "Ctrl+Z", "description": "Undo" },
@@ -382,7 +382,7 @@
       ]
     },
     {
-      "processName": "obsidian",
+      "processNames": ["obsidian"],
       "title": "Obsidian",
       "hotkeys": [
         { "keys": "Ctrl+P", "description": "Command Palette" },
@@ -403,41 +403,8 @@
       ]
     },
     {
-      "processName": "totalcmd",
+      "processNames": ["totalcmd", "totalcmd64"],
       "title": "Total Commander",
-      "hotkeys": [
-        { "keys": "F3", "description": "View File" },
-        { "keys": "F4", "description": "Edit File" },
-        { "keys": "F5", "description": "Copy File(s)" },
-        { "keys": "F6", "description": "Move / Rename" },
-        { "keys": "F7", "description": "Create Directory" },
-        { "keys": "F8", "description": "Delete File(s)" },
-        { "keys": "Tab", "description": "Switch Active Panel" },
-        { "keys": "Ctrl+U", "description": "Swap Panels" },
-        { "keys": "Ctrl+R", "description": "Refresh Panel" },
-        { "keys": "Insert", "description": "Select / Deselect File" },
-        { "keys": "Num*", "description": "Invert Selection" },
-        { "keys": "Num+", "description": "Select by Mask" },
-        { "keys": "Num-", "description": "Deselect by Mask" },
-        { "keys": "Ctrl+A", "description": "Select All" },
-        { "keys": "Ctrl+Q", "description": "Quick View Panel" },
-        { "keys": "Alt+F1", "description": "Change Left Panel Drive" },
-        { "keys": "Alt+F2", "description": "Change Right Panel Drive" },
-        { "keys": "Alt+Left", "description": "Navigate Back" },
-        { "keys": "Alt+Right", "description": "Navigate Forward" },
-        { "keys": "Ctrl+M", "description": "Multi-Rename Tool" },
-        { "keys": "Ctrl+F", "description": "Filter Files" },
-        { "keys": "Ctrl+P", "description": "Copy Full Path to Clipboard" },
-        { "keys": "Ctrl+B", "description": "View All Files in Subdirectory" },
-        { "keys": "F10", "description": "Activate Left Menu" },
-        { "keys": "Shift+F2", "description": "Compare File Lists" },
-        { "keys": "Shift+F4", "description": "Create New File in Editor" },
-        { "keys": "Delete", "description": "Delete to Recycle Bin" }
-      ]
-    },
-    {
-      "processName": "totalcmd64",
-      "title": "Total Commander (64-bit)",
       "hotkeys": [
         { "keys": "F3", "description": "View File" },
         { "keys": "F4", "description": "Edit File" },
