@@ -204,7 +204,7 @@ namespace WhatKey.ViewModels
 
                 SettingsSaved?.Invoke(this, _storage.Settings);
             }
-            catch
+            catch (Exception ex)
             {
                 _storage.Apps.Clear();
                 foreach (var app in previousApps)
@@ -213,7 +213,11 @@ namespace WhatKey.ViewModels
                 Apps = new ObservableCollection<AppHotkeys>(_storage.Apps);
                 Settings = _storage.Settings;
 
-                throw;
+                System.Windows.MessageBox.Show(
+                    "Restore Defaults failed:\n" + ex.Message,
+                    "Restore Defaults",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
             }
         }
 
