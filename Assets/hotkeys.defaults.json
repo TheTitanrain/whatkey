@@ -49,7 +49,10 @@
         { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
         { "keys": "Alt+Left", "description": "Go Back" },
         { "keys": "Alt+Right", "description": "Go Forward" },
-        { "keys": "F11", "description": "Toggle Fullscreen" }
+        { "keys": "F11", "description": "Toggle Fullscreen" },
+        { "keys": "Ctrl+Shift+W", "description": "Close All Tabs" },
+        { "keys": "Ctrl+N", "description": "New Window" },
+        { "keys": "Ctrl+U", "description": "View Page Source" }
       ]
     },
     {
@@ -71,7 +74,9 @@
         { "keys": "Ctrl+K", "description": "Search with Default Engine" },
         { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
         { "keys": "Alt+Left", "description": "Go Back" },
-        { "keys": "Alt+Right", "description": "Go Forward" }
+        { "keys": "Alt+Right", "description": "Go Forward" },
+        { "keys": "Ctrl+Shift+W", "description": "Close All Tabs" },
+        { "keys": "Ctrl+N", "description": "New Window" }
       ]
     },
     {
@@ -161,7 +166,10 @@
         { "keys": "Ctrl+L", "description": "Align Left" },
         { "keys": "Ctrl+R", "description": "Align Right" },
         { "keys": "Ctrl+E", "description": "Center" },
-        { "keys": "Ctrl+J", "description": "Justify" }
+        { "keys": "Ctrl+J", "description": "Justify" },
+        { "keys": "Ctrl+X", "description": "Cut" },
+        { "keys": "Ctrl+C", "description": "Copy" },
+        { "keys": "Ctrl+V", "description": "Paste" }
       ]
     },
     {
@@ -186,7 +194,58 @@
         { "keys": "Ctrl+D", "description": "Fill Down" },
         { "keys": "Ctrl+R", "description": "Fill Right" },
         { "keys": "Ctrl+PageDown", "description": "Next Worksheet" },
-        { "keys": "Ctrl+PageUp", "description": "Previous Worksheet" }
+        { "keys": "Ctrl+PageUp", "description": "Previous Worksheet" },
+        { "keys": "Ctrl+Shift+~", "description": "General Number Format" },
+        { "keys": "Ctrl+Shift+$", "description": "Currency Format" },
+        { "keys": "Ctrl+Shift+%", "description": "Percentage Format" }
+      ]
+    },
+    {
+      "processName": "powerpnt",
+      "title": "Microsoft PowerPoint",
+      "hotkeys": [
+        { "keys": "Ctrl+N", "description": "New Presentation" },
+        { "keys": "Ctrl+O", "description": "Open Presentation" },
+        { "keys": "Ctrl+S", "description": "Save" },
+        { "keys": "Ctrl+M", "description": "New Slide" },
+        { "keys": "Ctrl+K", "description": "Insert Hyperlink" },
+        { "keys": "Ctrl+D", "description": "Duplicate Slide" },
+        { "keys": "Ctrl+Z", "description": "Undo" },
+        { "keys": "Ctrl+Y", "description": "Redo" },
+        { "keys": "Ctrl+B", "description": "Bold" },
+        { "keys": "Ctrl+I", "description": "Italic" },
+        { "keys": "Ctrl+U", "description": "Underline" },
+        { "keys": "Ctrl+F", "description": "Find" },
+        { "keys": "F5", "description": "Start Slideshow from Beginning" },
+        { "keys": "Shift+F5", "description": "Start Slideshow from Current Slide" },
+        { "keys": "Page Down", "description": "Next Slide" },
+        { "keys": "Page Up", "description": "Previous Slide" },
+        { "keys": "Esc", "description": "End Slideshow" }
+      ]
+    },
+    {
+      "processName": "photoshop",
+      "title": "Adobe Photoshop",
+      "hotkeys": [
+        { "keys": "Ctrl+N", "description": "New Document" },
+        { "keys": "Ctrl+O", "description": "Open File" },
+        { "keys": "Ctrl+S", "description": "Save" },
+        { "keys": "Ctrl+Shift+S", "description": "Save As" },
+        { "keys": "Ctrl+Z", "description": "Undo" },
+        { "keys": "Ctrl+Shift+Z", "description": "Redo" },
+        { "keys": "Ctrl+Shift+N", "description": "New Layer" },
+        { "keys": "Ctrl+J", "description": "Duplicate Layer" },
+        { "keys": "Ctrl+T", "description": "Free Transform" },
+        { "keys": "Ctrl+D", "description": "Deselect" },
+        { "keys": "Ctrl+A", "description": "Select All" },
+        { "keys": "Ctrl+Shift+E", "description": "Merge Visible Layers" },
+        { "keys": "Ctrl+Shift+U", "description": "Desaturate" },
+        { "keys": "Ctrl+0", "description": "Fit to Window" },
+        { "keys": "Ctrl+Alt+Shift+S", "description": "Save for Web" },
+        { "keys": "B", "description": "Brush Tool" },
+        { "keys": "E", "description": "Eraser Tool" },
+        { "keys": "M", "description": "Marquee / Selection Tool" },
+        { "keys": "V", "description": "Move Tool" }
       ]
     },
     {
