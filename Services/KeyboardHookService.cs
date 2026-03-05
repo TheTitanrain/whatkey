@@ -401,6 +401,10 @@ namespace WhatKey.Services
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             TriggerHide?.Invoke(this, EventArgs.Empty)));
                     }
+                    else if (_isHoldKeyDown && hookStruct.vkCode != _holdVkCode)
+                    {
+                        _holdTimer.Stop();
+                    }
                 }
                 else if (isKeyUp)
                 {
