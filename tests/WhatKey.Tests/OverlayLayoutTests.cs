@@ -32,8 +32,16 @@ namespace WhatKey.Tests
         {
             var xaml = LoadOverlayWindowXaml();
 
-            StringAssert.Contains(xaml, "<ScrollViewer MaxHeight=\"460\"");
+            StringAssert.Contains(xaml, "<ScrollViewer MaxHeight=\"{Binding HotkeysListMaxHeight}\"");
             StringAssert.Contains(xaml, "VerticalScrollBarVisibility=\"Auto\"");
+        }
+
+        [TestMethod]
+        public void OverlayViewModel_UsesSharedHotkeysListMaxHeightForUiAndCalculation()
+        {
+            var viewModel = new OverlayViewModel();
+
+            Assert.AreEqual(OverlayViewModel.DefaultHotkeysListMaxHeight, viewModel.HotkeysListMaxHeight);
         }
 
         [TestMethod]

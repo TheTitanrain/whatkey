@@ -29,7 +29,7 @@
             <Rectangle Height="1" Fill="#313244" Margin="0,0,0,14"/>
 
             <!-- Hotkeys list -->
-            <ScrollViewer MaxHeight="460"
+            <ScrollViewer MaxHeight="{Binding HotkeysListMaxHeight}"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Hotkeys}">

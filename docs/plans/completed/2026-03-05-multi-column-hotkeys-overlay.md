@@ -66,3 +66,7 @@
 - [x] update README.md if user-facing changes
 - [x] update CLAUDE.md if internal patterns changed
 - [x] move this plan to `docs/plans/completed/`
+
+## Post-Review Fixes (2026-03-05)
+- Синхронизирован лимит высоты списка: `OverlayViewModel.DefaultHotkeysListMaxHeight` теперь соответствует UI-ограничению и используется в XAML через биндинг `HotkeysListMaxHeight`.
+- Обновлены тесты `OverlayLayoutTests` для проверки единого источника ограничения высоты между ViewModel и XAML.

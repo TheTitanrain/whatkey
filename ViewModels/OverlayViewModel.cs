@@ -6,7 +6,7 @@ namespace WhatKey.ViewModels
 {
     public class OverlayViewModel : BaseViewModel
     {
-        public const double DefaultHotkeysListMaxHeight = 500d;
+        public const double DefaultHotkeysListMaxHeight = 460d;
         public const double DefaultHotkeyRowHeight = 30d;
         public const int MinOverlayColumns = 1;
         public const int MaxOverlayColumns = 3;
@@ -39,6 +39,8 @@ namespace WhatKey.ViewModels
 
         public Visibility EmptyMessageVisibility =>
             _hotkeys == null || _hotkeys.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        public double HotkeysListMaxHeight => DefaultHotkeysListMaxHeight;
 
         public static int CalculateOverlayColumns(
             int hotkeysCount,
