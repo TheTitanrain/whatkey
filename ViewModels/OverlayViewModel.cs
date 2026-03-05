@@ -70,6 +70,8 @@ namespace WhatKey.ViewModels
                 widthLimitedMaxColumns = (int)(availableWidth / minColumnWidth);
                 if (widthLimitedMaxColumns < MinOverlayColumns)
                     widthLimitedMaxColumns = MinOverlayColumns;
+                else if (widthLimitedMaxColumns > maxColumns)
+                    widthLimitedMaxColumns = maxColumns;
             }
 
             var rowsPerColumn = (int)(maxListHeight / estimatedRowHeight);

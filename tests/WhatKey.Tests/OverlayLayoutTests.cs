@@ -156,6 +156,18 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
+        public void CalculateOverlayColumns_WithWideFiniteWidth_StillCapsAtThreeColumns()
+        {
+            var rowsPerColumn = (int)(OverlayViewModel.DefaultHotkeysListMaxHeight / OverlayViewModel.DefaultHotkeyRowHeight);
+
+            var columns = OverlayViewModel.CalculateOverlayColumns(
+                hotkeysCount: (rowsPerColumn * 3) + 10,
+                availableWidth: OverlayViewModel.DefaultOverlayMaxWidth);
+
+            Assert.AreEqual(OverlayViewModel.MaxOverlayColumns, columns);
+        }
+
+        [TestMethod]
         public void OverlayWindowCodeBehind_ShowWithHotkeys_UpdatesColumnsAndKeepsShowPipeline()
         {
             var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");

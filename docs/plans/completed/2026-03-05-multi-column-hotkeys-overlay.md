@@ -72,3 +72,7 @@
 - Обновлены тесты `OverlayLayoutTests` для проверки единого источника ограничения высоты между ViewModel и XAML.
 - Добавлен учет доступной ширины экрана в расчете числа колонок (`OverlayViewModel.CalculateOverlayColumns`), чтобы не выбирать 3 колонки там, где они не помещаются.
 - В `OverlayWindow.ShowWithHotkeys` добавлены ограничение `MaxWidth` по рабочей области монитора и кламп позиции `Left/Top`, чтобы оверлей не выходил за границы экрана.
+
+## Post-Review Fixes (2026-03-05, pass 2)
+- Исправлено ограничение ширины в `OverlayViewModel.CalculateOverlayColumns`: результат расчета по `availableWidth/minColumnWidth` теперь дополнительно ограничивается `maxColumns`, чтобы не выходить за контракт 1/2/3 колонок.
+- Добавлен тест `CalculateOverlayColumns_WithWideFiniteWidth_StillCapsAtThreeColumns` в `tests/WhatKey.Tests/OverlayLayoutTests.cs`, фиксирующий регрессию с потенциальным выбором 4+ колонок.
