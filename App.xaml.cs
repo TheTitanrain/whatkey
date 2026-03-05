@@ -91,6 +91,8 @@ namespace WhatKey
 
                 try
                 {
+                    var applied = _hookService.GetAppliedSettingsSnapshot();
+                    RestoreSettingsSnapshot(_storageService.Settings, applied);
                     _storageService.Save();
                 }
                 catch (Exception ex)
