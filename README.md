@@ -14,6 +14,7 @@ You can also press **Ctrl+Alt+H** to toggle the overlay in pinned mode.
 
 - Overlay appears automatically while the trigger key is held
 - Hotkey list is selected by the active window process name
+- One app entry can match multiple process names (e.g. 32-bit and 64-bit variants of the same app)
 - Long hotkey lists are split into up to three columns to keep the overlay compact
 - Built-in editor for apps and hotkeys
 - `Detect App` button auto-detects the target process within 3 seconds
@@ -23,9 +24,9 @@ You can also press **Ctrl+Alt+H** to toggle the overlay in pinned mode.
 
 ## Built-in profiles
 
-On first launch, profiles for 16 apps are created automatically:
+On first launch, profiles for 18 apps are created automatically:
 
-| Application | Process |
+| Application | Process(es) |
 |---|---|
 | VS Code | `code` |
 | Google Chrome | `chrome` |
@@ -35,14 +36,16 @@ On first launch, profiles for 16 apps are created automatically:
 | Notepad++ | `notepad++` |
 | Microsoft Word | `winword` |
 | Microsoft Excel | `excel` |
+| Microsoft PowerPoint | `powerpnt` |
+| Adobe Photoshop | `photoshop` |
 | Windows Terminal | `windowsterminal` |
 | Slack | `slack` |
 | Telegram | `telegram` |
 | VLC Media Player | `vlc` |
-| JetBrains Rider | `rider64` |
 | IntelliJ IDEA | `idea64` |
 | Figma | `figma` |
 | Obsidian | `obsidian` |
+| Total Commander | `totalcmd`, `totalcmd64` |
 
 ## Requirements
 
@@ -73,18 +76,27 @@ Data is stored in `%APPDATA%\WhatKey\hotkeys.json`. File format:
   },
   "apps": [
     {
-      "processName": "code",
+      "processNames": ["code"],
       "title": "VS Code",
       "hotkeys": [
         { "keys": "Ctrl+P", "description": "Quick Open" },
         { "keys": "Ctrl+Shift+P", "description": "Command Palette" }
+      ]
+    },
+    {
+      "processNames": ["totalcmd", "totalcmd64"],
+      "title": "Total Commander",
+      "hotkeys": [
+        { "keys": "F5", "description": "Copy File(s)" }
       ]
     }
   ]
 }
 ```
 
-`processName` must be lowercase (check Task Manager or use `Detect App` in the editor).
+`processNames` is an array of lowercase process names that will all match this entry. Use `Detect App` in the editor or check Task Manager to find the process name. In the editor the field accepts a comma-separated list (e.g. `totalcmd, totalcmd64`).
+
+Old files with a single `"processName": "..."` string are migrated automatically on load.
 
 Available values for `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
 

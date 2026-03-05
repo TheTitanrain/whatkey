@@ -25,6 +25,15 @@
 - Preserve tests in `tests/WhatKey.Tests` that guard Save -> runtime apply behavior.
 - Tests must not touch real `%APPDATA%` user settings; use isolated temporary storage paths.
 
+## Multiple process names per app entry
+
+- `AppHotkeys.ProcessNames` (`List<string>`, JSON key `processNames`) is the canonical list of process names for an entry.
+- Legacy `processName` (single string) is kept on the model with `NullValueHandling.Ignore` for backwards-compat JSON reading only; it is never written back to disk.
+- `NormalizeData()` migrates old `processName` → `ProcessNames`, lowercases all names, and sets `ProcessName = null`.
+- `GetHotkeysForProcess()` and `GetDefaultHotkeys()` iterate `ProcessNames`; "default" entry is also detected via `ProcessNames.Contains("default")`.
+- `EditorViewModel.ProcessNamesText` is a raw-string property backed by `_processNamesRaw` (no normalization in the setter) so the TextBox accepts mid-entry input like `totalcmd,` without rewriting it on every keypress.
+- Parsing into `ProcessNames` happens in `FlushProcessNamesText()`, called when `SelectedApp` changes and at the top of `Save()`.
+
 ## Overlay layout behavior
 
 - `OverlayViewModel` owns deterministic column count selection for the hotkeys overlay (`1/2/3` columns).

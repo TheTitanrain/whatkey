@@ -12,6 +12,8 @@
 
 - Оверлей появляется автоматически при удержании клавиши
 - Список хоткеев определяется по имени процесса активного окна
+- Один профиль может соответствовать нескольким именам процессов (например, 32- и 64-битные версии одного приложения)
+- Длинные списки хоткеев разбиваются на до трёх колонок для компактного отображения
 - Встроенный редактор для добавления приложений и хоткеев
 - Кнопка «Detect App» автоматически определяет процесс целевого окна за 3 секунды
 - Настраиваемая триггерная клавиша, задержка и toggle-хоткей
@@ -20,9 +22,9 @@
 
 ## Встроенные профили
 
-При первом запуске автоматически создаются профили для 16 приложений:
+При первом запуске автоматически создаются профили для 18 приложений:
 
-| Приложение | Процесс |
+| Приложение | Процесс(ы) |
 |---|---|
 | VS Code | `code` |
 | Google Chrome | `chrome` |
@@ -32,14 +34,16 @@
 | Notepad++ | `notepad++` |
 | Microsoft Word | `winword` |
 | Microsoft Excel | `excel` |
+| Microsoft PowerPoint | `powerpnt` |
+| Adobe Photoshop | `photoshop` |
 | Windows Terminal | `windowsterminal` |
 | Slack | `slack` |
 | Telegram | `telegram` |
 | VLC Media Player | `vlc` |
-| JetBrains Rider | `rider64` |
 | IntelliJ IDEA | `idea64` |
 | Figma | `figma` |
 | Obsidian | `obsidian` |
+| Total Commander | `totalcmd`, `totalcmd64` |
 
 ## Требования
 
@@ -70,18 +74,27 @@ dotnet build -c Release
   },
   "apps": [
     {
-      "processName": "code",
+      "processNames": ["code"],
       "title": "VS Code",
       "hotkeys": [
         { "keys": "Ctrl+P", "description": "Quick Open" },
         { "keys": "Ctrl+Shift+P", "description": "Command Palette" }
+      ]
+    },
+    {
+      "processNames": ["totalcmd", "totalcmd64"],
+      "title": "Total Commander",
+      "hotkeys": [
+        { "keys": "F5", "description": "Copy File(s)" }
       ]
     }
   ]
 }
 ```
 
-`processName` — имя процесса в нижнем регистре (узнать в Диспетчере задач или кнопкой «Detect App» в редакторе).
+`processNames` — массив имён процессов в нижнем регистре, которые будут соответствовать этому профилю. Имя процесса можно узнать в Диспетчере задач или кнопкой «Detect App» в редакторе. В редакторе поле принимает список через запятую (например, `totalcmd, totalcmd64`).
+
+Старые файлы с одиночным `"processName": "..."` автоматически мигрируются при загрузке.
 
 Доступные значения `holdKey`: `LControlKey`, `RControlKey`, `LShiftKey`, `RShiftKey`, `LMenu`, `RMenu`, `LWin`, `RWin`.
 
