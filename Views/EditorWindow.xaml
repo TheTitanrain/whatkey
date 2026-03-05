@@ -345,6 +345,9 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Restore Defaults" Command="{Binding RestoreDefaultsCommand}"
+                            Width="120" Height="30" Margin="0,0,8,0"
+                            ToolTip="Reset all hotkeys and settings to built-in defaults"/>
                     <Button Content="Open File Location" Command="{Binding OpenFolderCommand}"
                             Width="130" Height="30" Margin="0,0,8,0"
                             ToolTip="Open the folder containing hotkeys.json in Explorer"/>

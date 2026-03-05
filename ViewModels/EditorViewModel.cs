@@ -66,6 +66,7 @@ namespace WhatKey.ViewModels
         public ICommand RemoveHotkeyCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand OpenFolderCommand { get; }
+        public ICommand RestoreDefaultsCommand { get; }
 
         public event EventHandler<AppSettings> SettingsSaved;
 
@@ -84,6 +85,7 @@ namespace WhatKey.ViewModels
             RemoveHotkeyCommand = new RelayCommand(RemoveHotkey, () => SelectedApp != null && SelectedHotkey != null);
             SaveCommand = new RelayCommand(Save);
             OpenFolderCommand = new RelayCommand(OpenFolder);
+            RestoreDefaultsCommand = new RelayCommand(RestoreDefaults);
         }
 
         private void AddApp()
@@ -178,6 +180,25 @@ namespace WhatKey.ViewModels
         private void OpenFolder()
         {
             Process.Start("explorer.exe", HotkeysStorageService.DataDir);
+        }
+
+        private void RestoreDefaults()
+        {
+            var result = System.Windows.MessageBox.Show(
+                "This will replace all hotkeys and settings with the built-in defaults.\nContinue?",
+                "Restore Defaults",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Warning);
+
+            if (result != System.Windows.MessageBoxResult.Yes)
+                return;
+
+            _storage.LoadDefaultsAndSave();
+
+            Apps = new ObservableCollection<AppHotkeys>(_storage.Apps);
+            Settings = _storage.Settings;
+
+            SettingsSaved?.Invoke(this, _storage.Settings);
         }
 
         private void Save()
