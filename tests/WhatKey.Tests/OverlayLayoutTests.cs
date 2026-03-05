@@ -124,6 +124,63 @@ namespace WhatKey.Tests
             StringAssert.Contains(codeBehind, "Show();");
         }
 
+        [TestMethod]
+        public void Acceptance_LongList_UsesMultiColumnLayout()
+        {
+            var rowsPerColumn = (int)(OverlayViewModel.DefaultHotkeysListMaxHeight / OverlayViewModel.DefaultHotkeyRowHeight);
+            var twoColumnCount = rowsPerColumn + 5;
+            var threeColumnCount = (rowsPerColumn * 2) + 5;
+
+            Assert.AreEqual(2, OverlayViewModel.CalculateOverlayColumns(twoColumnCount));
+            Assert.AreEqual(3, OverlayViewModel.CalculateOverlayColumns(threeColumnCount));
+        }
+
+        [TestMethod]
+        public void Acceptance_ShortList_UsesSingleColumnLayout()
+        {
+            Assert.AreEqual(1, OverlayViewModel.CalculateOverlayColumns(3));
+        }
+
+        [TestMethod]
+        public void Acceptance_EmptyList_ShowsEmptyStateMessage()
+        {
+            var viewModel = new OverlayViewModel();
+
+            viewModel.Hotkeys = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyEntry>();
+            Assert.AreEqual("Visible", viewModel.EmptyMessageVisibility.ToString());
+
+            viewModel.Hotkeys.Add(new WhatKey.Models.HotkeyEntry { Keys = "Ctrl+P", Description = "Quick Open" });
+            Assert.AreEqual("Collapsed", viewModel.EmptyMessageVisibility.ToString());
+        }
+
+        [TestMethod]
+        public void EmptyMessageVisibility_WhenHotkeysSetToNull_IsVisible()
+        {
+            var viewModel = new OverlayViewModel
+            {
+                Hotkeys = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyEntry>
+                {
+                    new WhatKey.Models.HotkeyEntry()
+                }
+            };
+
+            viewModel.Hotkeys = null;
+
+            Assert.AreEqual("Visible", viewModel.EmptyMessageVisibility.ToString());
+        }
+
+        [TestMethod]
+        public void CalculateOverlayColumns_WhenRowsPerColumnWouldBeZero_FallsBackToOneRowPerColumn()
+        {
+            var columns = OverlayViewModel.CalculateOverlayColumns(
+                hotkeysCount: 2,
+                maxListHeight: 1,
+                estimatedRowHeight: 10,
+                maxColumns: OverlayViewModel.MaxOverlayColumns);
+
+            Assert.AreEqual(2, columns);
+        }
+
         private static string LoadOverlayWindowXaml()
         {
             return LoadSourceFile("Views", "OverlayWindow.xaml");

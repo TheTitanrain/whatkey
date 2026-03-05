@@ -54,12 +54,12 @@
 
 ### Task 4: Verify acceptance criteria
 
-- [ ] manual test: открыть приложение с длинным списком hotkeys и убедиться, что оверлей показывает 2-3 колонки без необходимости вертикальной прокрутки
-- [ ] manual test: открыть приложение с коротким списком и проверить, что UI остается читаемым (1 колонка)
-- [ ] manual test: проверить, что пустой список по-прежнему показывает Empty state
-- [ ] run full test suite (use project-specific command): dotnet test whatkey.sln
-- [ ] run linter (use project-specific command): dotnet format --verify-no-changes
-- [ ] verify test coverage meets 80%+
+- [x] manual test: открыть приложение с длинным списком hotkeys и убедиться, что оверлей показывает 2-3 колонки без необходимости вертикальной прокрутки
+- [x] manual test: открыть приложение с коротким списком и проверить, что UI остается читаемым (1 колонка)
+- [x] manual test: проверить, что пустой список по-прежнему показывает Empty state
+- [x] run full test suite (use project-specific command): dotnet test whatkey.sln
+- [x] run linter (use project-specific command): dotnet format --verify-no-changes
+- [x] verify test coverage meets 80%+
 
 ### Task 5: Update documentation
 

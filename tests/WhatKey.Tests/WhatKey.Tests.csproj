@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\WhatKey.csproj" />
   </ItemGroup>
 </Project>
