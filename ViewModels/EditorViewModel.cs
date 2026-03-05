@@ -193,12 +193,28 @@ namespace WhatKey.ViewModels
             if (result != System.Windows.MessageBoxResult.Yes)
                 return;
 
-            _storage.LoadDefaultsAndSave();
+            var previousApps = CloneApps(_storage.Apps);
 
-            Apps = new ObservableCollection<AppHotkeys>(_storage.Apps);
-            Settings = _storage.Settings;
+            try
+            {
+                _storage.LoadDefaultsAndSave();
 
-            SettingsSaved?.Invoke(this, _storage.Settings);
+                Apps = new ObservableCollection<AppHotkeys>(_storage.Apps);
+                Settings = _storage.Settings;
+
+                SettingsSaved?.Invoke(this, _storage.Settings);
+            }
+            catch
+            {
+                _storage.Apps.Clear();
+                foreach (var app in previousApps)
+                    _storage.Apps.Add(app);
+
+                Apps = new ObservableCollection<AppHotkeys>(_storage.Apps);
+                Settings = _storage.Settings;
+
+                throw;
+            }
         }
 
         private void Save()
