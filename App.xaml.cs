@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
 using WhatKey.Models;
 using WhatKey.Services;
@@ -124,6 +126,7 @@ namespace WhatKey
                 }
             });
             _editorWindow = new EditorWindow(editorViewModel);
+            _editorWindow.Icon = LoadSvgIcon(32);
 
             // Setup tray
             InitializeTray();
@@ -284,6 +287,7 @@ namespace WhatKey
             if (_aboutWindow == null)
             {
                 _aboutWindow = new AboutWindow();
+                _aboutWindow.Icon = LoadSvgIcon(32);
                 _aboutWindow.Closed += (s, e) => _aboutWindow = null;
             }
             _aboutWindow.Show();
@@ -337,33 +341,44 @@ namespace WhatKey
             }
         }
 
+        private static System.IO.Stream OpenSvgStream()
+        {
+            return GetResourceStream(new Uri("pack://application:,,,/Assets/whatkey.svg")).Stream;
+        }
+
         private static System.Drawing.Icon CreateTrayIcon()
         {
-            var bmp = new System.Drawing.Bitmap(16, 16);
-            using (var g = System.Drawing.Graphics.FromImage(bmp))
+            using (var stream = OpenSvgStream())
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                g.Clear(System.Drawing.Color.Transparent);
-
-                // Draw keyboard body
-                var bodyColor = System.Drawing.Color.FromArgb(137, 180, 250); // blue
-                g.FillRoundedRectangle(
-                    new System.Drawing.SolidBrush(bodyColor),
-                    1, 3, 14, 10, 2);
-
-                // Draw key squares (white)
-                var keyBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(30, 30, 46));
-                g.FillRectangle(keyBrush, 2, 5, 3, 2);
-                g.FillRectangle(keyBrush, 6, 5, 3, 2);
-                g.FillRectangle(keyBrush, 10, 5, 3, 2);
-                g.FillRectangle(keyBrush, 2, 8, 3, 2);
-                g.FillRectangle(keyBrush, 6, 8, 5, 2);
-                g.FillRectangle(keyBrush, 10, 8, 3, 2);
+                var svgDoc = Svg.SvgDocument.Open<Svg.SvgDocument>(stream);
+                var bmp = svgDoc.Draw(16, 16);
+                return System.Drawing.Icon.FromHandle(bmp.GetHicon());
             }
-
-            var hIcon = bmp.GetHicon();
-            return System.Drawing.Icon.FromHandle(hIcon);
         }
+
+        private static System.Windows.Media.ImageSource LoadSvgIcon(int size)
+        {
+            using (var stream = OpenSvgStream())
+            {
+                var svgDoc = Svg.SvgDocument.Open<Svg.SvgDocument>(stream);
+                using (var bmp = svgDoc.Draw(size, size))
+                {
+                    var hbmp = bmp.GetHbitmap();
+                    try
+                    {
+                        return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                            hbmp, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    }
+                    finally
+                    {
+                        DeleteObject(hbmp);
+                    }
+                }
+            }
+        }
+
+        [DllImport("gdi32.dll")]
+        private static extern bool DeleteObject(IntPtr hObject);
 
         protected override void OnExit(ExitEventArgs e)
         {
@@ -384,22 +399,4 @@ namespace WhatKey
         }
     }
 
-    // Extension method for rounded rectangle
-    internal static class GraphicsExtensions
-    {
-        public static void FillRoundedRectangle(
-            this System.Drawing.Graphics g,
-            System.Drawing.Brush brush,
-            float x, float y, float width, float height, float radius)
-        {
-            float d = radius * 2;
-            var path = new System.Drawing.Drawing2D.GraphicsPath();
-            path.AddArc(x, y, d, d, 180, 90);
-            path.AddArc(x + width - d, y, d, d, 270, 90);
-            path.AddArc(x + width - d, y + height - d, d, d, 0, 90);
-            path.AddArc(x, y + height - d, d, d, 90, 90);
-            path.CloseFigure();
-            g.FillPath(brush, path);
-        }
-    }
 }
