@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -126,7 +125,7 @@ namespace WhatKey
                 }
             });
             _editorWindow = new EditorWindow(editorViewModel);
-            _editorWindow.Icon = LoadSvgIcon(32);
+            _editorWindow.Icon = LoadPngIcon();
 
             // Setup tray
             InitializeTray();
@@ -287,7 +286,7 @@ namespace WhatKey
             if (_aboutWindow == null)
             {
                 _aboutWindow = new AboutWindow();
-                _aboutWindow.Icon = LoadSvgIcon(32);
+                _aboutWindow.Icon = LoadPngIcon();
                 _aboutWindow.Closed += (s, e) => _aboutWindow = null;
             }
             _aboutWindow.Show();
@@ -341,44 +340,20 @@ namespace WhatKey
             }
         }
 
-        private static System.IO.Stream OpenSvgStream()
-        {
-            return GetResourceStream(new Uri("pack://application:,,,/Assets/whatkey.svg")).Stream;
-        }
-
         private static System.Drawing.Icon CreateTrayIcon()
         {
-            using (var stream = OpenSvgStream())
+            var stream = GetResourceStream(new Uri("pack://application:,,,/Assets/whatkey.png")).Stream;
+            using (var original = new System.Drawing.Bitmap(stream))
+            using (var bmp = new System.Drawing.Bitmap(original, 16, 16))
             {
-                var svgDoc = Svg.SvgDocument.Open<Svg.SvgDocument>(stream);
-                var bmp = svgDoc.Draw(16, 16);
                 return System.Drawing.Icon.FromHandle(bmp.GetHicon());
             }
         }
 
-        private static System.Windows.Media.ImageSource LoadSvgIcon(int size)
+        private static System.Windows.Media.ImageSource LoadPngIcon()
         {
-            using (var stream = OpenSvgStream())
-            {
-                var svgDoc = Svg.SvgDocument.Open<Svg.SvgDocument>(stream);
-                using (var bmp = svgDoc.Draw(size, size))
-                {
-                    var hbmp = bmp.GetHbitmap();
-                    try
-                    {
-                        return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                            hbmp, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                    }
-                    finally
-                    {
-                        DeleteObject(hbmp);
-                    }
-                }
-            }
+            return new BitmapImage(new Uri("pack://application:,,,/Assets/whatkey.png"));
         }
-
-        [DllImport("gdi32.dll")]
-        private static extern bool DeleteObject(IntPtr hObject);
 
         protected override void OnExit(ExitEventArgs e)
         {
