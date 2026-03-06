@@ -24,9 +24,13 @@
   <ItemGroup>
     <Compile Remove="tests\**\*.cs" />
     <Compile Remove="ViewModels\* (*).cs" />
+    <Compile Remove="artifacts\**\*" />
     <EmbeddedResource Remove="tests\**\*" />
+    <EmbeddedResource Remove="artifacts\**\*" />
     <None Remove="tests\**\*" />
+    <None Remove="artifacts\**\*" />
     <Page Remove="tests\**\*" />
+    <Page Remove="artifacts\**\*" />
   </ItemGroup>
 
 </Project>
