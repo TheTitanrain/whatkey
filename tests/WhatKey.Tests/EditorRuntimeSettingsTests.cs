@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WhatKey.Models;
 using WhatKey.Services;
@@ -193,7 +193,7 @@ namespace WhatKey.Tests
                     viewModel.SaveCommand.Execute(null);
 
                     var json = File.ReadAllText(storage.DataFilePath);
-                    var savedData = JsonConvert.DeserializeObject<HotkeysData>(json);
+                    var savedData = JsonSerializer.Deserialize<HotkeysData>(json);
                     Assert.AreEqual(0, savedData.Settings.HoldDelayMs);
                 }
                 finally

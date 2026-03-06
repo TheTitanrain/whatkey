@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace WhatKey.Models
 {
     public class AppHotkeys
     {
-        [JsonProperty("processName", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("processName")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string ProcessName { get; set; }
 
-        [JsonProperty("processNames")]
+        [JsonPropertyName("processNames")]
         public List<string> ProcessNames { get; set; } = new List<string>();
 
         public string Title { get; set; }

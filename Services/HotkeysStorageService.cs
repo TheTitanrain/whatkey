@@ -4,13 +4,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
 using WhatKey.Models;
 
 namespace WhatKey.Services
 {
     public class HotkeysStorageService
     {
+        private static readonly JsonSerializerOptions _readOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         public static readonly string DataDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WhatKey");
 
@@ -40,7 +45,7 @@ namespace WhatKey.Services
             try
             {
                 var json = File.ReadAllText(_dataFile);
-                _data = JsonConvert.DeserializeObject<HotkeysData>(json) ?? new HotkeysData();
+                _data = JsonSerializer.Deserialize<HotkeysData>(json, _readOptions) ?? new HotkeysData();
                 NormalizeData();
                 return HotkeysLoadResult.Ok(_dataFile);
             }
@@ -81,7 +86,7 @@ namespace WhatKey.Services
         public void Save()
         {
             Directory.CreateDirectory(_dataDir);
-            var json = JsonConvert.SerializeObject(_data, Formatting.Indented);
+            var json = JsonSerializer.Serialize(_data, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_dataFile, json);
         }
 
@@ -119,7 +124,7 @@ namespace WhatKey.Services
             using (var stream = assembly.GetManifestResourceStream("WhatKey.Assets.hotkeys.defaults.json"))
             using (var reader = new StreamReader(stream))
             {
-                _data = JsonConvert.DeserializeObject<HotkeysData>(reader.ReadToEnd()) ?? new HotkeysData();
+                _data = JsonSerializer.Deserialize<HotkeysData>(reader.ReadToEnd(), _readOptions) ?? new HotkeysData();
             }
 
             NormalizeData();

@@ -38,7 +38,16 @@ Name: "startupicon"; Description: "Start WhatKey automatically with Windows"; Gr
 Source: "{#SourceDir}\WhatKey.exe";                           DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceDir}\WhatKey.exe.config";                    DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceDir}\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourceDir}\Newtonsoft.Json.dll";                   DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Text.Json.dll";                        DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Text.Encodings.Web.dll";              DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Buffers.dll";                         DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Memory.dll";                          DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Numerics.Vectors.dll";                DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.IO.Pipelines.dll";                    DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.Threading.Tasks.Extensions.dll";      DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\Microsoft.Bcl.AsyncInterfaces.dll";          DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\System.ValueTuple.dll";                      DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#AppName}";           Filename: "{app}\{#AppExeName}"
