@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace WhatKey.Services
 {
-    public class ActiveWindowService
+    public class ActiveWindowService : IActiveWindowService
     {
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();

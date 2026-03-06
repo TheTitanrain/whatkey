@@ -13,7 +13,7 @@ namespace WhatKey.ViewModels
     public class EditorViewModel : BaseViewModel
     {
         private readonly HotkeysStorageService _storage;
-        private readonly ActiveWindowService _activeWindow;
+        private readonly IActiveWindowService _activeWindow;
 
         private ObservableCollection<AppHotkeys> _apps;
         private AppHotkeys _selectedApp;
@@ -101,7 +101,7 @@ namespace WhatKey.ViewModels
 
         public event EventHandler<AppSettings> SettingsSaved;
 
-        public EditorViewModel(HotkeysStorageService storage, ActiveWindowService activeWindow)
+        public EditorViewModel(HotkeysStorageService storage, IActiveWindowService activeWindow)
         {
             _storage = storage;
             _activeWindow = activeWindow;
