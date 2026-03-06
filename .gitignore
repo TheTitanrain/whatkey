@@ -7,9 +7,6 @@ obj/
 *.user
 *.suo
 
-# Rider
-.idea/
-
 # NuGet
 *.nupkg
 packages/
@@ -32,3 +29,5 @@ installer/output/
 
 # Test results
 TestResults/
+
+artifacts/
