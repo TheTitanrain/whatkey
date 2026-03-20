@@ -1,3 +1,8 @@
+[Support Titanrain](https://donatr.ee/titanrain)
+
+<!-- GitHub badge -->
+[![Support Titanrain](https://img.shields.io/badge/Donate-donatr.ee-6C5CE7?style=for-the-badge)](https://donatr.ee/titanrain)
+
 # WhatKey
 
 Russian version: [README.ru.md](README.ru.md)
