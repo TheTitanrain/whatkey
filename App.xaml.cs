@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.Win32;
 using WhatKey.Models;
 using WhatKey.Services;
 using WhatKey.ViewModels;
@@ -54,6 +55,9 @@ namespace WhatKey
                 Shutdown();
                 return;
             }
+
+            SystemEvents.SessionSwitch += OnSessionSwitch;
+            SystemEvents.PowerModeChanged += OnPowerModeChanged;
 
             // Create windows (but don't show them)
             _overlayWindow = new OverlayWindow();
@@ -222,6 +226,22 @@ namespace WhatKey
             }
         }
 
+        private void OnSessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            if (e.Reason == SessionSwitchReason.SessionLock ||
+                e.Reason == SessionSwitchReason.RemoteDisconnect ||
+                e.Reason == SessionSwitchReason.ConsoleDisconnect)
+            {
+                _hookService?.ForceResetHoldState();
+            }
+        }
+
+        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            if (e.Mode == PowerModes.Suspend)
+                _hookService?.ForceResetHoldState();
+        }
+
         private void OnTriggerShow(object sender, EventArgs e)
         {
             var (processName, hwnd) = _activeWindowService.GetActiveWindowInfo();
@@ -357,6 +377,8 @@ namespace WhatKey
 
         protected override void OnExit(ExitEventArgs e)
         {
+            SystemEvents.SessionSwitch -= OnSessionSwitch;
+            SystemEvents.PowerModeChanged -= OnPowerModeChanged;
             _hookService?.Dispose();
             _trayIcon?.Dispose();
             base.OnExit(e);
