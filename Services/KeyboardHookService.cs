@@ -20,11 +20,16 @@ namespace WhatKey.Services
     {
         // Hook constants
         private const int WH_KEYBOARD_LL = 13;
+        private const int WH_MOUSE_LL = 14;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_KEYUP = 0x0101;
         private const int WM_SYSKEYDOWN = 0x0104;
         private const int WM_SYSKEYUP = 0x0105;
         private const int WM_HOTKEY = 0x0312;
+        private const int WM_LBUTTONDOWN = 0x0201;
+        private const int WM_RBUTTONDOWN = 0x0204;
+        private const int WM_MBUTTONDOWN = 0x0207;
+        private const int WM_XBUTTONDOWN = 0x020B;
 
         // Hotkey modifier constants
         private const int MOD_ALT = 0x0001;
@@ -72,6 +77,9 @@ namespace WhatKey.Services
 
         private IntPtr _hookId = IntPtr.Zero;
         private readonly LowLevelKeyboardProc _hookProc; // keep alive to prevent GC
+        private IntPtr _mouseHookId = IntPtr.Zero;
+        private readonly LowLevelKeyboardProc _mouseHookProc; // keep alive to prevent GC
+        private Func<IntPtr> _installMouseHook;
         private DispatcherTimer _holdTimer;
         private HwndSource _hwndSource;
         private IntPtr _hotkeyWindowHandle = IntPtr.Zero;
@@ -111,6 +119,8 @@ namespace WhatKey.Services
             _unregisterHotKey = UnregisterHotKeyNative;
             _getLastWin32Error = Marshal.GetLastWin32Error;
             _installKeyboardHook = InstallKeyboardHookNative;
+            _mouseHookProc = MouseHookCallback;
+            _installMouseHook = InstallMouseHookNative;
 
             _holdTimer = new DispatcherTimer
             {
@@ -144,6 +154,10 @@ namespace WhatKey.Services
                 throw new InvalidOperationException(
                     $"Failed to install keyboard hook. Win32 error: {error}.");
             }
+
+            _mouseHookId = _installMouseHook();
+            if (_mouseHookId == IntPtr.Zero)
+                Trace.TraceWarning("Failed to install mouse hook. Win32 error: {0}.", _getLastWin32Error());
 
             if (!RegisterToggleHotkey(_appliedToggleHotkey))
                 throw new InvalidOperationException("Failed to register toggle hotkey.");
@@ -191,7 +205,7 @@ namespace WhatKey.Services
             _settings.ToggleHotkey = normalizedToggleHotkey;
             _holdVkCode = GetHoldKeyVkCode(_settings.HoldKey);
             _holdTimer.Interval = TimeSpan.FromMilliseconds(_settings.HoldDelayMs);
-            ResetHoldStateForRuntimeUpdate();
+            ResetHoldState();
 
             if (!RegisterToggleHotkey(_settings.ToggleHotkey))
             {
@@ -201,7 +215,7 @@ namespace WhatKey.Services
                 _settings.ToggleHotkey = oldToggleHotkey;
                 _holdVkCode = oldHoldVkCode;
                 _holdTimer.Interval = TimeSpan.FromMilliseconds(_settings.HoldDelayMs);
-                ResetHoldStateForRuntimeUpdate();
+                ResetHoldState();
 
                 if (_hotkeyWindowHandle != IntPtr.Zero && !RegisterToggleHotkey(_settings.ToggleHotkey))
                     throw new HotkeyRecoveryException("Failed to restore previous toggle hotkey after update rollback.");
@@ -257,7 +271,7 @@ namespace WhatKey.Services
             return true;
         }
 
-        private void ResetHoldStateForRuntimeUpdate()
+        private void ResetHoldState()
         {
             _holdTimer.Stop();
             _isHoldKeyDown = false;
@@ -267,6 +281,43 @@ namespace WhatKey.Services
                 _isOverlayVisible = false;
                 TriggerHide?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public void ForceResetHoldState()
+        {
+            if (_holdTimer != null && !_holdTimer.Dispatcher.CheckAccess())
+            {
+                _holdTimer.Dispatcher.Invoke(ResetHoldState);
+                return;
+            }
+            ResetHoldState();
+        }
+
+        private IntPtr InstallMouseHookNative()
+        {
+            using (var process = Process.GetCurrentProcess())
+            using (var module = process.MainModule)
+            {
+                return SetWindowsHookEx(
+                    WH_MOUSE_LL,
+                    _mouseHookProc,
+                    GetModuleHandle(module.ModuleName),
+                    0);
+            }
+        }
+
+        private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0)
+            {
+                int msg = wParam.ToInt32();
+                if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN ||
+                    msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
+                {
+                    ResetHoldState();
+                }
+            }
+            return CallNextHookEx(_mouseHookId, nCode, wParam, lParam);
         }
 
         private IntPtr InstallKeyboardHookNative()
@@ -444,6 +495,12 @@ namespace WhatKey.Services
             {
                 UnhookWindowsHookEx(_hookId);
                 _hookId = IntPtr.Zero;
+            }
+
+            if (_mouseHookId != IntPtr.Zero)
+            {
+                UnhookWindowsHookEx(_mouseHookId);
+                _mouseHookId = IntPtr.Zero;
             }
 
             if (_hotkeyWindowHandle != IntPtr.Zero)
