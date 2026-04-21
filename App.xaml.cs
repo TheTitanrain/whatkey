@@ -246,8 +246,8 @@ namespace WhatKey
         private void OnTriggerShow(object sender, EventArgs e)
         {
             var (processName, hwnd) = _activeWindowService.GetActiveWindowInfo();
-            var hotkeys = _storageService.GetHotkeysForProcess(processName);
-            _overlayWindow.ShowWithHotkeys(hotkeys, processName, hwnd);
+            var groups = _storageService.GetGroupsForProcess(processName);
+            _overlayWindow.ShowWithGroups(groups, processName, hwnd);
         }
 
         private void OnTriggerHide(object sender, EventArgs e)

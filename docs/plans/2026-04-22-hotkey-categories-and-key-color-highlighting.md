@@ -63,14 +63,14 @@ Add `HotkeyGroup` model that organizes hotkeys into named categories per app. Th
 - Modify: `App.xaml.cs`
 - Modify: `tests/WhatKey.Tests/OverlayLayoutTests.cs`
 
-- [ ] Create `KeyAccentBrushConverter : IValueConverter` in `Converters/` — input is the Keys string of a `HotkeyEntry`; split on `+` and trim each token; priority order: if any token matches a function key pattern (`F([1-9]|1[0-2])`, case-insensitive, exact token) return green brush `#A6E3A1`; else if any token matches a modifier key set (`Ctrl`, `Alt`, `Shift`, `Win`, `Esc`, `Tab`, `Meta`, case-insensitive) return yellow brush `#F9E2AF`; else return default brush `#89DCEB`; return default on null/exception
-- [ ] Write `KeyAccentBrushConverterTests`: verify F1 → green, F12 → green, non-F-prefix tokens not matched (e.g., "File" should not match); Ctrl+S → yellow, Alt+F4 → green (F-key wins), Shift+A → yellow, plain letter → default
-- [ ] `OverlayViewModel`: replace `Hotkeys: ObservableCollection<HotkeyEntry>` with `Groups: ObservableCollection<HotkeyGroup>`; update `EmptyMessageVisibility` to check `Groups == null || !Groups.Any(g => g.Hotkeys?.Count > 0)`; keep `CalculateOverlayColumns` and `UpdateLayoutForHotkeysCount` (caller computes total count)
-- [ ] `OverlayWindow.xaml`: replace flat `ItemsControl ItemsSource="{Binding Hotkeys}"` with outer `ItemsControl ItemsSource="{Binding Groups}"` (StackPanel panel); each group item shows a `TextBlock` header (group name, styled as section label with separator line) followed by inner `ItemsControl` for that group's hotkeys; apply `KeyAccentBrushConverter` to key TextBlock foreground (binding to `Keys` property); register converter in `Window.Resources`
-- [ ] `OverlayWindow.xaml.cs`: rename `ShowWithHotkeys` to `ShowWithGroups(List<HotkeyGroup> groups, string processName, IntPtr sourceHwnd)`; compute `var totalHotkeys = groups.Sum(g => g.Hotkeys?.Count ?? 0)` and pass to `UpdateLayoutForHotkeysCount`; set `_viewModel.Groups`
-- [ ] `App.xaml.cs`: call `GetGroupsForProcess` instead of `GetHotkeysForProcess`; call `ShowWithGroups`
-- [ ] Update `OverlayLayoutTests`: update checks to reflect groups-based binding; update code-behind checks for `ShowWithGroups` method; keep all `CalculateOverlayColumns` pure-function tests unchanged
-- [ ] Run `dotnet test` — must pass before Task 3
+- [x] Create `KeyAccentBrushConverter : IValueConverter` in `Converters/` — input is the Keys string of a `HotkeyEntry`; split on `+` and trim each token; priority order: if any token matches a function key pattern (`F([1-9]|1[0-2])`, case-insensitive, exact token) return green brush `#A6E3A1`; else if any token matches a modifier key set (`Ctrl`, `Alt`, `Shift`, `Win`, `Esc`, `Tab`, `Meta`, case-insensitive) return yellow brush `#F9E2AF`; else return default brush `#89DCEB`; return default on null/exception
+- [x] Write `KeyAccentBrushConverterTests`: verify F1 → green, F12 → green, non-F-prefix tokens not matched (e.g., "File" should not match); Ctrl+S → yellow, Alt+F4 → green (F-key wins), Shift+A → yellow, plain letter → default
+- [x] `OverlayViewModel`: replace `Hotkeys: ObservableCollection<HotkeyEntry>` with `Groups: ObservableCollection<HotkeyGroup>`; update `EmptyMessageVisibility` to check `Groups == null || !Groups.Any(g => g.Hotkeys?.Count > 0)`; keep `CalculateOverlayColumns` and `UpdateLayoutForHotkeysCount` (caller computes total count)
+- [x] `OverlayWindow.xaml`: replace flat `ItemsControl ItemsSource="{Binding Hotkeys}"` with outer `ItemsControl ItemsSource="{Binding Groups}"` (StackPanel panel); each group item shows a `TextBlock` header (group name, styled as section label with separator line) followed by inner `ItemsControl` for that group's hotkeys; apply `KeyAccentBrushConverter` to key TextBlock foreground (binding to `Keys` property); register converter in `Window.Resources`
+- [x] `OverlayWindow.xaml.cs`: rename `ShowWithHotkeys` to `ShowWithGroups(List<HotkeyGroup> groups, string processName, IntPtr sourceHwnd)`; compute `var totalHotkeys = groups.Sum(g => g.Hotkeys?.Count ?? 0)` and pass to `UpdateLayoutForHotkeysCount`; set `_viewModel.Groups`
+- [x] `App.xaml.cs`: call `GetGroupsForProcess` instead of `GetHotkeysForProcess`; call `ShowWithGroups`
+- [x] Update `OverlayLayoutTests`: update checks to reflect groups-based binding; update code-behind checks for `ShowWithGroups` method; keep all `CalculateOverlayColumns` pure-function tests unchanged
+- [x] Run `dotnet test` — must pass before Task 3
 
 ### Task 3: Editor — group management UI
 

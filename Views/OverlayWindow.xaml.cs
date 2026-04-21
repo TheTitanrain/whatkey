@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,11 +43,12 @@ namespace WhatKey.Views
             DataContext = _viewModel;
         }
 
-        public void ShowWithHotkeys(List<HotkeyEntry> hotkeys, string processName, IntPtr sourceHwnd = default)
+        public void ShowWithGroups(List<HotkeyGroup> groups, string processName, IntPtr sourceHwnd = default)
         {
-            var safeHotkeys = hotkeys ?? new List<HotkeyEntry>();
-            _viewModel.Hotkeys = new ObservableCollection<HotkeyEntry>(safeHotkeys);
-            _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);
+            var safeGroups = groups ?? new List<HotkeyGroup>();
+            var totalHotkeys = safeGroups.Sum(g => g.Hotkeys != null ? g.Hotkeys.Count : 0);
+            _viewModel.Groups = new ObservableCollection<HotkeyGroup>(safeGroups);
+            _viewModel.UpdateLayoutForHotkeysCount(totalHotkeys);
             _viewModel.AppTitle = string.IsNullOrEmpty(processName) ? "Unknown Application" : processName;
 
             // Recenter on active monitor each time it's shown
@@ -61,10 +63,10 @@ namespace WhatKey.Views
                 var bounds = GetMonitorWorkAreaDips(sourceHwnd);
                 MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);
                 MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);
-                _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);
+                _viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, MaxWidth);
                 UpdateLayout();
                 var listWidth = GetAvailableHotkeysListWidth();
-                _viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, listWidth);
+                _viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, listWidth);
                 UpdateLayout();
 
                 var centeredLeft = bounds.Left + (bounds.Width - ActualWidth) / 2;
