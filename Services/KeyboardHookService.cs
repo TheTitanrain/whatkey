@@ -313,7 +313,8 @@ namespace WhatKey.Services
                 if (wParam == (IntPtr)WM_LBUTTONDOWN || wParam == (IntPtr)WM_RBUTTONDOWN ||
                     wParam == (IntPtr)WM_MBUTTONDOWN || wParam == (IntPtr)WM_XBUTTONDOWN)
                 {
-                    ResetHoldState();
+                    if (_isHoldKeyDown || _holdTimer.IsEnabled)
+                        ResetHoldState();
                 }
             }
             return CallNextHookEx(_mouseHookId, nCode, wParam, lParam);

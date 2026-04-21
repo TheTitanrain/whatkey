@@ -36,7 +36,7 @@
 ## Hold state reset
 
 - `KeyboardHookService` installs a low-level mouse hook (`WH_MOUSE_LL`) alongside the keyboard hook at construction time.
-- Any `WM_LBUTTONDOWN`, `WM_RBUTTONDOWN`, `WM_MBUTTONDOWN`, or `WM_XBUTTONDOWN` event calls `ResetHoldState()` internally: stops the hold timer, fires `TriggerHide` if the overlay was visible, clears `_isHoldKeyDown` and `_isOverlayVisible`.
+- Any `WM_LBUTTONDOWN`, `WM_RBUTTONDOWN`, `WM_MBUTTONDOWN`, or `WM_XBUTTONDOWN` event calls `ResetHoldState()` internally **only when hold mode is active** (`_isHoldKeyDown || _holdTimer.IsEnabled`): stops the hold timer, fires `TriggerHide` if the overlay was visible, clears `_isHoldKeyDown` and `_isOverlayVisible`. Toggle-pinned overlays (hold key not active, timer stopped) are not dismissed by mouse clicks.
 - `ForceResetHoldState()` is the public entry point for external callers (session lock, sleep); delegates to the same private `ResetHoldState()`.
 - `App.xaml.cs` subscribes to `SystemEvents.SessionSwitch` and `SystemEvents.PowerModeChanged` at startup and calls `_hookService.ForceResetHoldState()` on `SessionLock`, `RemoteDisconnect`, `ConsoleDisconnect`, and `Suspend`.
 - Both `SystemEvents` subscriptions are removed on app shutdown to avoid static event leaks.

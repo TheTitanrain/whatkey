@@ -217,6 +217,30 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
+        public void MouseHookCallback_OnButtonDown_WhenTogglePinnedAndNoHoldKey_DoesNotDismissOverlay()
+        {
+            // Toggle-mode overlay: visible but hold key is not down and timer is not running.
+            // Mouse click must not dismiss it — only the toggle hotkey should.
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", false);
+            SetPrivateField(service, "_isOverlayVisible", true);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_LBUTTONDOWN = 0x0201;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_LBUTTONDOWN, IntPtr.Zero);
+
+            Assert.AreEqual(0, hideCalls);
+            Assert.IsTrue((bool)GetPrivateField(service, "_isOverlayVisible"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
         public void MouseHookCallback_OnNonButtonMessage_DoesNotResetState()
         {
             var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
