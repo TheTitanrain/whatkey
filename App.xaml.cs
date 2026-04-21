@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.Win32;
 using WhatKey.Models;
 using WhatKey.Services;
 using WhatKey.ViewModels;
@@ -55,10 +56,13 @@ namespace WhatKey
                 return;
             }
 
+            SystemEvents.SessionSwitch += OnSessionSwitch;
+            SystemEvents.PowerModeChanged += OnPowerModeChanged;
+
             // Create windows (but don't show them)
             _overlayWindow = new OverlayWindow();
             var editorViewModel = new EditorViewModel(_storageService, _activeWindowService);
-            RuntimeSettingsCoordinator.Attach(editorViewModel, settings =>
+            editorViewModel.SettingsSaved += (sender, settings) =>
             {
                 var previousApplied = _hookService.GetAppliedSettingsSnapshot();
                 try
@@ -76,6 +80,7 @@ namespace WhatKey
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     Shutdown();
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -123,7 +128,7 @@ namespace WhatKey
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                 }
-            });
+            };
             _editorWindow = new EditorWindow(editorViewModel);
             _editorWindow.Icon = LoadPngIcon();
 
@@ -222,6 +227,22 @@ namespace WhatKey
             }
         }
 
+        private void OnSessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            if (e.Reason == SessionSwitchReason.SessionLock ||
+                e.Reason == SessionSwitchReason.RemoteDisconnect ||
+                e.Reason == SessionSwitchReason.ConsoleDisconnect)
+            {
+                _hookService?.ForceResetHoldState();
+            }
+        }
+
+        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            if (e.Mode == PowerModes.Suspend)
+                _hookService?.ForceResetHoldState();
+        }
+
         private void OnTriggerShow(object sender, EventArgs e)
         {
             var (processName, hwnd) = _activeWindowService.GetActiveWindowInfo();
@@ -268,7 +289,7 @@ namespace WhatKey
             menu.Items.Add(new Separator());
 
             var exitItem = new MenuItem { Header = "Exit" };
-            exitItem.Click += (s, e) => ExitApp();
+            exitItem.Click += (s, e) => Shutdown();
             menu.Items.Add(exitItem);
 
             _trayIcon.ContextMenu = menu;
@@ -291,13 +312,6 @@ namespace WhatKey
             }
             _aboutWindow.Show();
             _aboutWindow.Activate();
-        }
-
-        private void ExitApp()
-        {
-            _hookService?.Dispose();
-            _trayIcon?.Dispose();
-            Shutdown();
         }
 
         private static void RestoreSettingsSnapshot(AppSettings target, AppSettings source)
@@ -323,9 +337,10 @@ namespace WhatKey
                 {
                     _hookService.UpdateSettings(rollbackSnapshot);
                 }
-                catch
+                catch (Exception runtimeEx)
                 {
                     // Best-effort runtime alignment before shutdown.
+                    Trace.TraceWarning("Failed to realign runtime state during rollback save failure: {0}", runtimeEx.Message);
                 }
 
                 MessageBox.Show(
@@ -357,20 +372,11 @@ namespace WhatKey
 
         protected override void OnExit(ExitEventArgs e)
         {
+            SystemEvents.SessionSwitch -= OnSessionSwitch;
+            SystemEvents.PowerModeChanged -= OnPowerModeChanged;
             _hookService?.Dispose();
             _trayIcon?.Dispose();
             base.OnExit(e);
-        }
-    }
-
-    public static class RuntimeSettingsCoordinator
-    {
-        public static void Attach(EditorViewModel editorViewModel, Action<Models.AppSettings> applySettings)
-        {
-            if (editorViewModel == null) throw new ArgumentNullException(nameof(editorViewModel));
-            if (applySettings == null) throw new ArgumentNullException(nameof(applySettings));
-
-            editorViewModel.SettingsSaved += (sender, settings) => applySettings(settings);
         }
     }
 

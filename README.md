@@ -18,6 +18,8 @@ You can also press **Ctrl+Alt+H** to toggle the overlay in pinned mode.
 ## Features
 
 - Overlay appears automatically while the trigger key is held
+- Overlay is dismissed when a mouse button is clicked while the trigger key is held
+- Overlay state resets on screen lock and system sleep so no stuck overlay appears after unlock or wake
 - Hotkey list is selected by the active window process name
 - One app entry can match multiple process names (e.g. 32-bit and 64-bit variants of the same app)
 - Long hotkey lists are split into up to three columns to keep the overlay compact
