@@ -34,6 +34,15 @@
 - `EditorViewModel.ProcessNamesText` is a raw-string property backed by `_processNamesRaw` (no normalization in the setter) so the TextBox accepts mid-entry input like `totalcmd,` without rewriting it on every keypress.
 - Parsing into `ProcessNames` happens in `FlushProcessNamesText()`, called when `SelectedApp` changes and at the top of `Save()`.
 
+## Hold state reset
+
+- `KeyboardHookService` installs a low-level mouse hook (`WH_MOUSE_LL`) alongside the keyboard hook at construction time.
+- Any `WM_LBUTTONDOWN`, `WM_RBUTTONDOWN`, `WM_MBUTTONDOWN`, or `WM_XBUTTONDOWN` event calls `ResetHoldState()` internally: stops the hold timer, fires `TriggerHide` if the overlay was visible, clears `_isHoldKeyDown` and `_isOverlayVisible`.
+- `ForceResetHoldState()` is the public entry point for external callers (session lock, sleep); delegates to the same private `ResetHoldState()`.
+- `App.xaml.cs` subscribes to `SystemEvents.SessionSwitch` and `SystemEvents.PowerModeChanged` at startup and calls `_hookService.ForceResetHoldState()` on `SessionLock`, `RemoteDisconnect`, `ConsoleDisconnect`, and `Suspend`.
+- Both `SystemEvents` subscriptions are removed on app shutdown to avoid static event leaks.
+- Mouse hook is uninstalled in `KeyboardHookService.Dispose()` via `UnhookWindowsHookEx`.
+
 ## Overlay layout behavior
 
 - `OverlayViewModel` owns deterministic column count selection for the hotkeys overlay (`1/2/3` columns).

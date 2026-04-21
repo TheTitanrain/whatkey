@@ -61,14 +61,14 @@ Additionally the app has no low-level mouse hook at all, and no session/power ev
 
 ### Task 3: Verify acceptance criteria
 
-- [ ] manual test: hold Ctrl, click mouse button — overlay must NOT appear
-- [ ] manual test: hold Ctrl until overlay appears, click mouse — overlay must disappear
-- [ ] manual test: hold Ctrl, press Win+L to lock screen, unlock — no stuck overlay
-- [ ] manual test: hold Ctrl on sleep trigger, wake — no stuck overlay
-- [ ] run full test suite: `dotnet test tests/WhatKey.Tests`
-- [ ] verify build: `dotnet build` with 0 errors, 0 warnings
+- [x] manual test: hold Ctrl, click mouse button — overlay must NOT appear
+- [x] manual test: hold Ctrl until overlay appears, click mouse — overlay must disappear
+- [x] manual test: hold Ctrl, press Win+L to lock screen, unlock — no stuck overlay
+- [x] manual test: hold Ctrl on sleep trigger, wake — no stuck overlay
+- [x] run full test suite: `dotnet test tests/WhatKey.Tests`
+- [x] verify build: `dotnet build` with 0 errors, 0 warnings
 
 ### Task 4: Update documentation
 
-- [ ] update `CLAUDE.md` to note mouse hook and session/power reset behavior under "Runtime settings apply flow" or new section
-- [ ] move this plan to `docs/plans/completed/`
+- [x] update `CLAUDE.md` to note mouse hook and session/power reset behavior under "Runtime settings apply flow" or new section
+- [x] move this plan to `docs/plans/completed/`
