@@ -8,431 +8,551 @@
     {
       "processNames": ["code"],
       "title": "VS Code",
-      "hotkeys": [
-        { "keys": "Ctrl+P", "description": "Quick Open" },
-        { "keys": "Ctrl+Shift+P", "description": "Command Palette" },
-        { "keys": "Ctrl+`", "description": "Toggle Terminal" },
-        { "keys": "Ctrl+B", "description": "Toggle Sidebar" },
-        { "keys": "Ctrl+/", "description": "Toggle Comment" },
-        { "keys": "Alt+Up/Down", "description": "Move Line Up/Down" },
-        { "keys": "Ctrl+D", "description": "Select Next Occurrence" },
-        { "keys": "Ctrl+Shift+K", "description": "Delete Line" },
-        { "keys": "F5", "description": "Start Debugging" },
-        { "keys": "Ctrl+G", "description": "Go to Line" },
-        { "keys": "Ctrl+H", "description": "Find and Replace" },
-        { "keys": "Ctrl+N", "description": "New File" },
-        { "keys": "Ctrl+O", "description": "Open File" },
-        { "keys": "Ctrl+,", "description": "Open Settings" },
-        { "keys": "Ctrl+\\", "description": "Split Editor" },
-        { "keys": "Ctrl+Shift+M", "description": "Show Problems Panel" },
-        { "keys": "Ctrl+Shift+O", "description": "Go to Symbol in File" },
-        { "keys": "Ctrl+K Ctrl+W", "description": "Close All Tabs" }
+      "groups": [
+        {
+          "name": "File",
+          "hotkeys": [
+            { "keys": "Ctrl+N", "description": "New File" },
+            { "keys": "Ctrl+O", "description": "Open File" },
+            { "keys": "Ctrl+K Ctrl+W", "description": "Close All Tabs" },
+            { "keys": "Ctrl+,", "description": "Open Settings" }
+          ]
+        },
+        {
+          "name": "Editing",
+          "hotkeys": [
+            { "keys": "Ctrl+/", "description": "Toggle Comment" },
+            { "keys": "Alt+Up/Down", "description": "Move Line Up/Down" },
+            { "keys": "Ctrl+D", "description": "Select Next Occurrence" },
+            { "keys": "Ctrl+Shift+K", "description": "Delete Line" },
+            { "keys": "Ctrl+H", "description": "Find and Replace" }
+          ]
+        },
+        {
+          "name": "Navigation",
+          "hotkeys": [
+            { "keys": "Ctrl+P", "description": "Quick Open" },
+            { "keys": "Ctrl+Shift+P", "description": "Command Palette" },
+            { "keys": "Ctrl+G", "description": "Go to Line" },
+            { "keys": "Ctrl+Shift+O", "description": "Go to Symbol in File" }
+          ]
+        },
+        {
+          "name": "View",
+          "hotkeys": [
+            { "keys": "Ctrl+`", "description": "Toggle Terminal" },
+            { "keys": "Ctrl+B", "description": "Toggle Sidebar" },
+            { "keys": "Ctrl+\\", "description": "Split Editor" },
+            { "keys": "Ctrl+Shift+M", "description": "Show Problems Panel" },
+            { "keys": "F5", "description": "Start Debugging" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["chrome"],
       "title": "Google Chrome",
-      "hotkeys": [
-        { "keys": "Ctrl+T", "description": "New Tab" },
-        { "keys": "Ctrl+W", "description": "Close Tab" },
-        { "keys": "Ctrl+Tab", "description": "Next Tab" },
-        { "keys": "Ctrl+Shift+Tab", "description": "Previous Tab" },
-        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
-        { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
-        { "keys": "Ctrl+F", "description": "Find in Page" },
-        { "keys": "F5", "description": "Reload Page" },
-        { "keys": "Ctrl+D", "description": "Bookmark Page" },
-        { "keys": "Ctrl+Shift+N", "description": "New Incognito Window" },
-        { "keys": "Ctrl+H", "description": "Open History" },
-        { "keys": "Ctrl+J", "description": "Open Downloads" },
-        { "keys": "Ctrl+Shift+B", "description": "Toggle Bookmarks Bar" },
-        { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
-        { "keys": "Alt+Left", "description": "Go Back" },
-        { "keys": "Alt+Right", "description": "Go Forward" },
-        { "keys": "F11", "description": "Toggle Fullscreen" },
-        { "keys": "Ctrl+Shift+W", "description": "Close All Tabs" },
-        { "keys": "Ctrl+N", "description": "New Window" },
-        { "keys": "Ctrl+U", "description": "View Page Source" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+T", "description": "New Tab" },
+            { "keys": "Ctrl+W", "description": "Close Tab" },
+            { "keys": "Ctrl+Tab", "description": "Next Tab" },
+            { "keys": "Ctrl+Shift+Tab", "description": "Previous Tab" },
+            { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+            { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
+            { "keys": "Ctrl+F", "description": "Find in Page" },
+            { "keys": "F5", "description": "Reload Page" },
+            { "keys": "Ctrl+D", "description": "Bookmark Page" },
+            { "keys": "Ctrl+Shift+N", "description": "New Incognito Window" },
+            { "keys": "Ctrl+H", "description": "Open History" },
+            { "keys": "Ctrl+J", "description": "Open Downloads" },
+            { "keys": "Ctrl+Shift+B", "description": "Toggle Bookmarks Bar" },
+            { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
+            { "keys": "Alt+Left", "description": "Go Back" },
+            { "keys": "Alt+Right", "description": "Go Forward" },
+            { "keys": "F11", "description": "Toggle Fullscreen" },
+            { "keys": "Ctrl+Shift+W", "description": "Close All Tabs" },
+            { "keys": "Ctrl+N", "description": "New Window" },
+            { "keys": "Ctrl+U", "description": "View Page Source" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["firefox"],
       "title": "Firefox",
-      "hotkeys": [
-        { "keys": "Ctrl+T", "description": "New Tab" },
-        { "keys": "Ctrl+W", "description": "Close Tab" },
-        { "keys": "Ctrl+Tab", "description": "Next Tab" },
-        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
-        { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
-        { "keys": "Ctrl+F", "description": "Find in Page" },
-        { "keys": "F5", "description": "Reload Page" },
-        { "keys": "Ctrl+Shift+P", "description": "New Private Window" },
-        { "keys": "Ctrl+Shift+A", "description": "Manage Extensions" },
-        { "keys": "Ctrl+H", "description": "Open History" },
-        { "keys": "Ctrl+J", "description": "Open Downloads" },
-        { "keys": "Ctrl+B", "description": "Toggle Bookmarks Sidebar" },
-        { "keys": "Ctrl+K", "description": "Search with Default Engine" },
-        { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
-        { "keys": "Alt+Left", "description": "Go Back" },
-        { "keys": "Alt+Right", "description": "Go Forward" },
-        { "keys": "Ctrl+Shift+W", "description": "Close All Tabs" },
-        { "keys": "Ctrl+N", "description": "New Window" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+T", "description": "New Tab" },
+            { "keys": "Ctrl+W", "description": "Close Tab" },
+            { "keys": "Ctrl+Tab", "description": "Next Tab" },
+            { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+            { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
+            { "keys": "Ctrl+F", "description": "Find in Page" },
+            { "keys": "F5", "description": "Reload Page" },
+            { "keys": "Ctrl+Shift+P", "description": "New Private Window" },
+            { "keys": "Ctrl+Shift+A", "description": "Manage Extensions" },
+            { "keys": "Ctrl+H", "description": "Open History" },
+            { "keys": "Ctrl+J", "description": "Open Downloads" },
+            { "keys": "Ctrl+B", "description": "Toggle Bookmarks Sidebar" },
+            { "keys": "Ctrl+K", "description": "Search with Default Engine" },
+            { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
+            { "keys": "Alt+Left", "description": "Go Back" },
+            { "keys": "Alt+Right", "description": "Go Forward" },
+            { "keys": "Ctrl+Shift+W", "description": "Close All Tabs" },
+            { "keys": "Ctrl+N", "description": "New Window" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["msedge"],
       "title": "Microsoft Edge",
-      "hotkeys": [
-        { "keys": "Ctrl+T", "description": "New Tab" },
-        { "keys": "Ctrl+W", "description": "Close Tab" },
-        { "keys": "Ctrl+Tab", "description": "Next Tab" },
-        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
-        { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
-        { "keys": "Ctrl+F", "description": "Find in Page" },
-        { "keys": "F5", "description": "Reload Page" },
-        { "keys": "Ctrl+Shift+N", "description": "New InPrivate Window" },
-        { "keys": "Ctrl+Shift+O", "description": "Open Favorites" },
-        { "keys": "Ctrl+H", "description": "Open History" },
-        { "keys": "Ctrl+J", "description": "Open Downloads" },
-        { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
-        { "keys": "Alt+Left", "description": "Go Back" },
-        { "keys": "Alt+Right", "description": "Go Forward" },
-        { "keys": "F11", "description": "Toggle Fullscreen" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+T", "description": "New Tab" },
+            { "keys": "Ctrl+W", "description": "Close Tab" },
+            { "keys": "Ctrl+Tab", "description": "Next Tab" },
+            { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+            { "keys": "Ctrl+Shift+T", "description": "Reopen Closed Tab" },
+            { "keys": "Ctrl+F", "description": "Find in Page" },
+            { "keys": "F5", "description": "Reload Page" },
+            { "keys": "Ctrl+Shift+N", "description": "New InPrivate Window" },
+            { "keys": "Ctrl+Shift+O", "description": "Open Favorites" },
+            { "keys": "Ctrl+H", "description": "Open History" },
+            { "keys": "Ctrl+J", "description": "Open Downloads" },
+            { "keys": "Ctrl+Shift+I", "description": "Developer Tools" },
+            { "keys": "Alt+Left", "description": "Go Back" },
+            { "keys": "Alt+Right", "description": "Go Forward" },
+            { "keys": "F11", "description": "Toggle Fullscreen" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["explorer"],
       "title": "Windows Explorer",
-      "hotkeys": [
-        { "keys": "Alt+Up", "description": "Go Up One Level" },
-        { "keys": "Alt+Left", "description": "Back" },
-        { "keys": "Alt+Right", "description": "Forward" },
-        { "keys": "F2", "description": "Rename" },
-        { "keys": "F5", "description": "Refresh" },
-        { "keys": "Ctrl+Shift+N", "description": "New Folder" },
-        { "keys": "Ctrl+W", "description": "Close Window" },
-        { "keys": "Alt+D", "description": "Focus Address Bar" },
-        { "keys": "Ctrl+Z", "description": "Undo Action" },
-        { "keys": "Ctrl+L", "description": "Focus Address Bar" },
-        { "keys": "Ctrl+F", "description": "Open Search" },
-        { "keys": "Shift+Delete", "description": "Permanently Delete" },
-        { "keys": "Alt+P", "description": "Toggle Preview Pane" },
-        { "keys": "Ctrl+Y", "description": "Redo Action" },
-        { "keys": "F4", "description": "Focus Address Bar Dropdown" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Alt+Up", "description": "Go Up One Level" },
+            { "keys": "Alt+Left", "description": "Back" },
+            { "keys": "Alt+Right", "description": "Forward" },
+            { "keys": "F2", "description": "Rename" },
+            { "keys": "F5", "description": "Refresh" },
+            { "keys": "Ctrl+Shift+N", "description": "New Folder" },
+            { "keys": "Ctrl+W", "description": "Close Window" },
+            { "keys": "Alt+D", "description": "Focus Address Bar" },
+            { "keys": "Ctrl+Z", "description": "Undo Action" },
+            { "keys": "Ctrl+L", "description": "Focus Address Bar" },
+            { "keys": "Ctrl+F", "description": "Open Search" },
+            { "keys": "Shift+Delete", "description": "Permanently Delete" },
+            { "keys": "Alt+P", "description": "Toggle Preview Pane" },
+            { "keys": "Ctrl+Y", "description": "Redo Action" },
+            { "keys": "F4", "description": "Focus Address Bar Dropdown" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["notepad++"],
       "title": "Notepad++",
-      "hotkeys": [
-        { "keys": "Ctrl+S", "description": "Save" },
-        { "keys": "Ctrl+Z", "description": "Undo" },
-        { "keys": "Ctrl+F", "description": "Find" },
-        { "keys": "Ctrl+H", "description": "Find & Replace" },
-        { "keys": "Ctrl+G", "description": "Go to Line" },
-        { "keys": "Ctrl+D", "description": "Duplicate Line" },
-        { "keys": "Ctrl+Shift+Up", "description": "Move Line Up" },
-        { "keys": "Ctrl+/", "description": "Toggle Comment" },
-        { "keys": "F5", "description": "Run Program" },
-        { "keys": "Ctrl+N", "description": "New File" },
-        { "keys": "Ctrl+O", "description": "Open File" },
-        { "keys": "Ctrl+W", "description": "Close File" },
-        { "keys": "Ctrl+Shift+S", "description": "Save All" },
-        { "keys": "Ctrl+Shift+U", "description": "Convert to Uppercase" },
-        { "keys": "Ctrl+U", "description": "Convert to Lowercase" },
-        { "keys": "Ctrl+F2", "description": "Toggle Bookmark" },
-        { "keys": "F11", "description": "Toggle Full Screen" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+S", "description": "Save" },
+            { "keys": "Ctrl+Z", "description": "Undo" },
+            { "keys": "Ctrl+F", "description": "Find" },
+            { "keys": "Ctrl+H", "description": "Find & Replace" },
+            { "keys": "Ctrl+G", "description": "Go to Line" },
+            { "keys": "Ctrl+D", "description": "Duplicate Line" },
+            { "keys": "Ctrl+Shift+Up", "description": "Move Line Up" },
+            { "keys": "Ctrl+/", "description": "Toggle Comment" },
+            { "keys": "F5", "description": "Run Program" },
+            { "keys": "Ctrl+N", "description": "New File" },
+            { "keys": "Ctrl+O", "description": "Open File" },
+            { "keys": "Ctrl+W", "description": "Close File" },
+            { "keys": "Ctrl+Shift+S", "description": "Save All" },
+            { "keys": "Ctrl+Shift+U", "description": "Convert to Uppercase" },
+            { "keys": "Ctrl+U", "description": "Convert to Lowercase" },
+            { "keys": "Ctrl+F2", "description": "Toggle Bookmark" },
+            { "keys": "F11", "description": "Toggle Full Screen" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["winword"],
       "title": "Microsoft Word",
-      "hotkeys": [
-        { "keys": "Ctrl+S", "description": "Save" },
-        { "keys": "Ctrl+Z", "description": "Undo" },
-        { "keys": "Ctrl+B", "description": "Bold" },
-        { "keys": "Ctrl+I", "description": "Italic" },
-        { "keys": "Ctrl+U", "description": "Underline" },
-        { "keys": "Ctrl+F", "description": "Find" },
-        { "keys": "Ctrl+H", "description": "Find & Replace" },
-        { "keys": "Ctrl+P", "description": "Print" },
-        { "keys": "Ctrl+Shift+C", "description": "Copy Formatting" },
-        { "keys": "Ctrl+Shift+V", "description": "Paste Formatting" },
-        { "keys": "Ctrl+N", "description": "New Document" },
-        { "keys": "Ctrl+O", "description": "Open Document" },
-        { "keys": "Ctrl+Y", "description": "Redo" },
-        { "keys": "Ctrl+A", "description": "Select All" },
-        { "keys": "Ctrl+G", "description": "Go to Page" },
-        { "keys": "Ctrl+L", "description": "Align Left" },
-        { "keys": "Ctrl+R", "description": "Align Right" },
-        { "keys": "Ctrl+E", "description": "Center" },
-        { "keys": "Ctrl+J", "description": "Justify" },
-        { "keys": "Ctrl+X", "description": "Cut" },
-        { "keys": "Ctrl+C", "description": "Copy" },
-        { "keys": "Ctrl+V", "description": "Paste" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+S", "description": "Save" },
+            { "keys": "Ctrl+Z", "description": "Undo" },
+            { "keys": "Ctrl+B", "description": "Bold" },
+            { "keys": "Ctrl+I", "description": "Italic" },
+            { "keys": "Ctrl+U", "description": "Underline" },
+            { "keys": "Ctrl+F", "description": "Find" },
+            { "keys": "Ctrl+H", "description": "Find & Replace" },
+            { "keys": "Ctrl+P", "description": "Print" },
+            { "keys": "Ctrl+Shift+C", "description": "Copy Formatting" },
+            { "keys": "Ctrl+Shift+V", "description": "Paste Formatting" },
+            { "keys": "Ctrl+N", "description": "New Document" },
+            { "keys": "Ctrl+O", "description": "Open Document" },
+            { "keys": "Ctrl+Y", "description": "Redo" },
+            { "keys": "Ctrl+A", "description": "Select All" },
+            { "keys": "Ctrl+G", "description": "Go to Page" },
+            { "keys": "Ctrl+L", "description": "Align Left" },
+            { "keys": "Ctrl+R", "description": "Align Right" },
+            { "keys": "Ctrl+E", "description": "Center" },
+            { "keys": "Ctrl+J", "description": "Justify" },
+            { "keys": "Ctrl+X", "description": "Cut" },
+            { "keys": "Ctrl+C", "description": "Copy" },
+            { "keys": "Ctrl+V", "description": "Paste" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["excel"],
       "title": "Microsoft Excel",
-      "hotkeys": [
-        { "keys": "Ctrl+S", "description": "Save" },
-        { "keys": "Ctrl+Z", "description": "Undo" },
-        { "keys": "Ctrl+F", "description": "Find" },
-        { "keys": "Ctrl+H", "description": "Find & Replace" },
-        { "keys": "Ctrl+Home", "description": "Go to Cell A1" },
-        { "keys": "Ctrl+End", "description": "Go to Last Cell" },
-        { "keys": "Ctrl+Shift+L", "description": "Toggle AutoFilter" },
-        { "keys": "Alt+=", "description": "AutoSum" },
-        { "keys": "F2", "description": "Edit Cell" },
-        { "keys": "Ctrl+1", "description": "Format Cells Dialog" },
-        { "keys": "Ctrl+N", "description": "New Workbook" },
-        { "keys": "Ctrl+O", "description": "Open Workbook" },
-        { "keys": "Ctrl+A", "description": "Select All Cells" },
-        { "keys": "Ctrl+B", "description": "Bold" },
-        { "keys": "Ctrl+I", "description": "Italic" },
-        { "keys": "Ctrl+D", "description": "Fill Down" },
-        { "keys": "Ctrl+R", "description": "Fill Right" },
-        { "keys": "Ctrl+PageDown", "description": "Next Worksheet" },
-        { "keys": "Ctrl+PageUp", "description": "Previous Worksheet" },
-        { "keys": "Ctrl+Shift+~", "description": "General Number Format" },
-        { "keys": "Ctrl+Shift+$", "description": "Currency Format" },
-        { "keys": "Ctrl+Shift+%", "description": "Percentage Format" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+S", "description": "Save" },
+            { "keys": "Ctrl+Z", "description": "Undo" },
+            { "keys": "Ctrl+F", "description": "Find" },
+            { "keys": "Ctrl+H", "description": "Find & Replace" },
+            { "keys": "Ctrl+Home", "description": "Go to Cell A1" },
+            { "keys": "Ctrl+End", "description": "Go to Last Cell" },
+            { "keys": "Ctrl+Shift+L", "description": "Toggle AutoFilter" },
+            { "keys": "Alt+=", "description": "AutoSum" },
+            { "keys": "F2", "description": "Edit Cell" },
+            { "keys": "Ctrl+1", "description": "Format Cells Dialog" },
+            { "keys": "Ctrl+N", "description": "New Workbook" },
+            { "keys": "Ctrl+O", "description": "Open Workbook" },
+            { "keys": "Ctrl+A", "description": "Select All Cells" },
+            { "keys": "Ctrl+B", "description": "Bold" },
+            { "keys": "Ctrl+I", "description": "Italic" },
+            { "keys": "Ctrl+D", "description": "Fill Down" },
+            { "keys": "Ctrl+R", "description": "Fill Right" },
+            { "keys": "Ctrl+PageDown", "description": "Next Worksheet" },
+            { "keys": "Ctrl+PageUp", "description": "Previous Worksheet" },
+            { "keys": "Ctrl+Shift+~", "description": "General Number Format" },
+            { "keys": "Ctrl+Shift+$", "description": "Currency Format" },
+            { "keys": "Ctrl+Shift+%", "description": "Percentage Format" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["powerpnt"],
       "title": "Microsoft PowerPoint",
-      "hotkeys": [
-        { "keys": "Ctrl+N", "description": "New Presentation" },
-        { "keys": "Ctrl+O", "description": "Open Presentation" },
-        { "keys": "Ctrl+S", "description": "Save" },
-        { "keys": "Ctrl+M", "description": "New Slide" },
-        { "keys": "Ctrl+K", "description": "Insert Hyperlink" },
-        { "keys": "Ctrl+D", "description": "Duplicate Slide" },
-        { "keys": "Ctrl+Z", "description": "Undo" },
-        { "keys": "Ctrl+Y", "description": "Redo" },
-        { "keys": "Ctrl+B", "description": "Bold" },
-        { "keys": "Ctrl+I", "description": "Italic" },
-        { "keys": "Ctrl+U", "description": "Underline" },
-        { "keys": "Ctrl+F", "description": "Find" },
-        { "keys": "F5", "description": "Start Slideshow from Beginning" },
-        { "keys": "Shift+F5", "description": "Start Slideshow from Current Slide" },
-        { "keys": "Page Down", "description": "Next Slide" },
-        { "keys": "Page Up", "description": "Previous Slide" },
-        { "keys": "Esc", "description": "End Slideshow" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+N", "description": "New Presentation" },
+            { "keys": "Ctrl+O", "description": "Open Presentation" },
+            { "keys": "Ctrl+S", "description": "Save" },
+            { "keys": "Ctrl+M", "description": "New Slide" },
+            { "keys": "Ctrl+K", "description": "Insert Hyperlink" },
+            { "keys": "Ctrl+D", "description": "Duplicate Slide" },
+            { "keys": "Ctrl+Z", "description": "Undo" },
+            { "keys": "Ctrl+Y", "description": "Redo" },
+            { "keys": "Ctrl+B", "description": "Bold" },
+            { "keys": "Ctrl+I", "description": "Italic" },
+            { "keys": "Ctrl+U", "description": "Underline" },
+            { "keys": "Ctrl+F", "description": "Find" },
+            { "keys": "F5", "description": "Start Slideshow from Beginning" },
+            { "keys": "Shift+F5", "description": "Start Slideshow from Current Slide" },
+            { "keys": "Page Down", "description": "Next Slide" },
+            { "keys": "Page Up", "description": "Previous Slide" },
+            { "keys": "Esc", "description": "End Slideshow" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["photoshop"],
       "title": "Adobe Photoshop",
-      "hotkeys": [
-        { "keys": "Ctrl+N", "description": "New Document" },
-        { "keys": "Ctrl+O", "description": "Open File" },
-        { "keys": "Ctrl+S", "description": "Save" },
-        { "keys": "Ctrl+Shift+S", "description": "Save As" },
-        { "keys": "Ctrl+Z", "description": "Undo" },
-        { "keys": "Ctrl+Shift+Z", "description": "Redo" },
-        { "keys": "Ctrl+Shift+N", "description": "New Layer" },
-        { "keys": "Ctrl+J", "description": "Duplicate Layer" },
-        { "keys": "Ctrl+T", "description": "Free Transform" },
-        { "keys": "Ctrl+D", "description": "Deselect" },
-        { "keys": "Ctrl+A", "description": "Select All" },
-        { "keys": "Ctrl+Shift+E", "description": "Merge Visible Layers" },
-        { "keys": "Ctrl+Shift+U", "description": "Desaturate" },
-        { "keys": "Ctrl+0", "description": "Fit to Window" },
-        { "keys": "Ctrl+Alt+Shift+S", "description": "Save for Web" },
-        { "keys": "B", "description": "Brush Tool" },
-        { "keys": "E", "description": "Eraser Tool" },
-        { "keys": "M", "description": "Marquee / Selection Tool" },
-        { "keys": "V", "description": "Move Tool" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+N", "description": "New Document" },
+            { "keys": "Ctrl+O", "description": "Open File" },
+            { "keys": "Ctrl+S", "description": "Save" },
+            { "keys": "Ctrl+Shift+S", "description": "Save As" },
+            { "keys": "Ctrl+Z", "description": "Undo" },
+            { "keys": "Ctrl+Shift+Z", "description": "Redo" },
+            { "keys": "Ctrl+Shift+N", "description": "New Layer" },
+            { "keys": "Ctrl+J", "description": "Duplicate Layer" },
+            { "keys": "Ctrl+T", "description": "Free Transform" },
+            { "keys": "Ctrl+D", "description": "Deselect" },
+            { "keys": "Ctrl+A", "description": "Select All" },
+            { "keys": "Ctrl+Shift+E", "description": "Merge Visible Layers" },
+            { "keys": "Ctrl+Shift+U", "description": "Desaturate" },
+            { "keys": "Ctrl+0", "description": "Fit to Window" },
+            { "keys": "Ctrl+Alt+Shift+S", "description": "Save for Web" },
+            { "keys": "B", "description": "Brush Tool" },
+            { "keys": "E", "description": "Eraser Tool" },
+            { "keys": "M", "description": "Marquee / Selection Tool" },
+            { "keys": "V", "description": "Move Tool" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["windowsterminal"],
       "title": "Windows Terminal",
-      "hotkeys": [
-        { "keys": "Ctrl+Shift+T", "description": "New Tab" },
-        { "keys": "Ctrl+Shift+W", "description": "Close Tab" },
-        { "keys": "Ctrl+Tab", "description": "Next Tab" },
-        { "keys": "Ctrl+Shift+Tab", "description": "Previous Tab" },
-        { "keys": "Ctrl+Shift+D", "description": "Duplicate Tab" },
-        { "keys": "Alt+Shift+D", "description": "Split Pane (Horizontal)" },
-        { "keys": "Alt+Shift+Plus", "description": "Split Pane (Vertical)" },
-        { "keys": "Ctrl+C", "description": "Copy / Cancel" },
-        { "keys": "Ctrl+V", "description": "Paste" },
-        { "keys": "Ctrl+Shift+P", "description": "Command Palette" },
-        { "keys": "Alt+Shift+Up", "description": "Split Pane Up" },
-        { "keys": "Alt+Shift+Down", "description": "Split Pane Down" },
-        { "keys": "Alt+Shift+Left", "description": "Split Pane Left" },
-        { "keys": "Alt+Shift+Right", "description": "Split Pane Right" },
-        { "keys": "Alt+Left/Right/Up/Down", "description": "Move Focus to Pane" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+Shift+T", "description": "New Tab" },
+            { "keys": "Ctrl+Shift+W", "description": "Close Tab" },
+            { "keys": "Ctrl+Tab", "description": "Next Tab" },
+            { "keys": "Ctrl+Shift+Tab", "description": "Previous Tab" },
+            { "keys": "Ctrl+Shift+D", "description": "Duplicate Tab" },
+            { "keys": "Alt+Shift+D", "description": "Split Pane (Horizontal)" },
+            { "keys": "Alt+Shift+Plus", "description": "Split Pane (Vertical)" },
+            { "keys": "Ctrl+C", "description": "Copy / Cancel" },
+            { "keys": "Ctrl+V", "description": "Paste" },
+            { "keys": "Ctrl+Shift+P", "description": "Command Palette" },
+            { "keys": "Alt+Shift+Up", "description": "Split Pane Up" },
+            { "keys": "Alt+Shift+Down", "description": "Split Pane Down" },
+            { "keys": "Alt+Shift+Left", "description": "Split Pane Left" },
+            { "keys": "Alt+Shift+Right", "description": "Split Pane Right" },
+            { "keys": "Alt+Left/Right/Up/Down", "description": "Move Focus to Pane" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["slack"],
       "title": "Slack",
-      "hotkeys": [
-        { "keys": "Ctrl+K", "description": "Quick Switcher" },
-        { "keys": "Ctrl+/", "description": "Show Shortcuts" },
-        { "keys": "Ctrl+Shift+M", "description": "Open Activity" },
-        { "keys": "Ctrl+Shift+Y", "description": "Set Status" },
-        { "keys": "Ctrl+N", "description": "New Message" },
-        { "keys": "Ctrl+F", "description": "Search" },
-        { "keys": "Alt+Up/Down", "description": "Previous/Next Channel" },
-        { "keys": "Ctrl+Shift+Enter", "description": "Create Snippet" },
-        { "keys": "Ctrl+Shift+A", "description": "All Unreads" },
-        { "keys": "Ctrl+Shift+L", "description": "Browse Channels" },
-        { "keys": "Ctrl+J", "description": "Jump to Latest Unread" },
-        { "keys": "Ctrl+,", "description": "Open Preferences" },
-        { "keys": "Alt+1-9", "description": "Jump to Channel by Number" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+K", "description": "Quick Switcher" },
+            { "keys": "Ctrl+/", "description": "Show Shortcuts" },
+            { "keys": "Ctrl+Shift+M", "description": "Open Activity" },
+            { "keys": "Ctrl+Shift+Y", "description": "Set Status" },
+            { "keys": "Ctrl+N", "description": "New Message" },
+            { "keys": "Ctrl+F", "description": "Search" },
+            { "keys": "Alt+Up/Down", "description": "Previous/Next Channel" },
+            { "keys": "Ctrl+Shift+Enter", "description": "Create Snippet" },
+            { "keys": "Ctrl+Shift+A", "description": "All Unreads" },
+            { "keys": "Ctrl+Shift+L", "description": "Browse Channels" },
+            { "keys": "Ctrl+J", "description": "Jump to Latest Unread" },
+            { "keys": "Ctrl+,", "description": "Open Preferences" },
+            { "keys": "Alt+1-9", "description": "Jump to Channel by Number" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["telegram"],
       "title": "Telegram",
-      "hotkeys": [
-        { "keys": "Ctrl+N", "description": "New Private Message" },
-        { "keys": "Ctrl+F", "description": "Search" },
-        { "keys": "Ctrl+W", "description": "Close" },
-        { "keys": "Ctrl+Q", "description": "Quit" },
-        { "keys": "Alt+Up/Down", "description": "Previous/Next Chat" },
-        { "keys": "Ctrl+Enter", "description": "Send Message" },
-        { "keys": "Ctrl+B", "description": "Bold Text" },
-        { "keys": "Ctrl+I", "description": "Italic Text" },
-        { "keys": "Ctrl+U", "description": "Underline Text" },
-        { "keys": "Ctrl+Shift+X", "description": "Strikethrough Text" },
-        { "keys": "Ctrl+Tab", "description": "Next Chat" },
-        { "keys": "Ctrl+Shift+Tab", "description": "Previous Chat" },
-        { "keys": "Ctrl+L", "description": "Lock Telegram" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+N", "description": "New Private Message" },
+            { "keys": "Ctrl+F", "description": "Search" },
+            { "keys": "Ctrl+W", "description": "Close" },
+            { "keys": "Ctrl+Q", "description": "Quit" },
+            { "keys": "Alt+Up/Down", "description": "Previous/Next Chat" },
+            { "keys": "Ctrl+Enter", "description": "Send Message" },
+            { "keys": "Ctrl+B", "description": "Bold Text" },
+            { "keys": "Ctrl+I", "description": "Italic Text" },
+            { "keys": "Ctrl+U", "description": "Underline Text" },
+            { "keys": "Ctrl+Shift+X", "description": "Strikethrough Text" },
+            { "keys": "Ctrl+Tab", "description": "Next Chat" },
+            { "keys": "Ctrl+Shift+Tab", "description": "Previous Chat" },
+            { "keys": "Ctrl+L", "description": "Lock Telegram" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["vlc"],
       "title": "VLC Media Player",
-      "hotkeys": [
-        { "keys": "Space", "description": "Play/Pause" },
-        { "keys": "F", "description": "Toggle Fullscreen" },
-        { "keys": "Ctrl+Right", "description": "Fast Forward 1 min" },
-        { "keys": "Ctrl+Left", "description": "Rewind 1 min" },
-        { "keys": "Right", "description": "Forward 10s" },
-        { "keys": "Left", "description": "Rewind 10s" },
-        { "keys": "Up", "description": "Volume Up" },
-        { "keys": "Down", "description": "Volume Down" },
-        { "keys": "M", "description": "Mute" },
-        { "keys": "S", "description": "Stop" },
-        { "keys": "Ctrl+O", "description": "Open File" },
-        { "keys": "Ctrl+N", "description": "Open Network Stream" },
-        { "keys": "Ctrl+E", "description": "Adjustments & Effects" },
-        { "keys": "Ctrl+P", "description": "Preferences" },
-        { "keys": "Ctrl+Q", "description": "Quit VLC" },
-        { "keys": "T", "description": "Show Time Elapsed / Remaining" },
-        { "keys": "A", "description": "Cycle Aspect Ratio" },
-        { "keys": "N", "description": "Next Chapter" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Space", "description": "Play/Pause" },
+            { "keys": "F", "description": "Toggle Fullscreen" },
+            { "keys": "Ctrl+Right", "description": "Fast Forward 1 min" },
+            { "keys": "Ctrl+Left", "description": "Rewind 1 min" },
+            { "keys": "Right", "description": "Forward 10s" },
+            { "keys": "Left", "description": "Rewind 10s" },
+            { "keys": "Up", "description": "Volume Up" },
+            { "keys": "Down", "description": "Volume Down" },
+            { "keys": "M", "description": "Mute" },
+            { "keys": "S", "description": "Stop" },
+            { "keys": "Ctrl+O", "description": "Open File" },
+            { "keys": "Ctrl+N", "description": "Open Network Stream" },
+            { "keys": "Ctrl+E", "description": "Adjustments & Effects" },
+            { "keys": "Ctrl+P", "description": "Preferences" },
+            { "keys": "Ctrl+Q", "description": "Quit VLC" },
+            { "keys": "T", "description": "Show Time Elapsed / Remaining" },
+            { "keys": "A", "description": "Cycle Aspect Ratio" },
+            { "keys": "N", "description": "Next Chapter" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["idea64"],
       "title": "IntelliJ IDEA",
-      "hotkeys": [
-        { "keys": "Shift+Shift", "description": "Search Everywhere" },
-        { "keys": "Ctrl+Shift+A", "description": "Find Action" },
-        { "keys": "Alt+Enter", "description": "Quick Fix / Intention" },
-        { "keys": "Ctrl+R, R", "description": "Rename" },
-        { "keys": "Ctrl+Alt+L", "description": "Reformat Code" },
-        { "keys": "Ctrl+Shift+F", "description": "Find in Files" },
-        { "keys": "Shift+F10", "description": "Run" },
-        { "keys": "Shift+F9", "description": "Debug" },
-        { "keys": "Ctrl+Alt+S", "description": "Settings" },
-        { "keys": "Ctrl+B", "description": "Go to Declaration" },
-        { "keys": "Ctrl+E", "description": "Recent Files" },
-        { "keys": "Ctrl+F", "description": "Find in File" },
-        { "keys": "Ctrl+H", "description": "Find and Replace" },
-        { "keys": "Ctrl+G", "description": "Go to Line" },
-        { "keys": "Ctrl+K", "description": "Commit Changes" },
-        { "keys": "Alt+Ins", "description": "Generate Code" },
-        { "keys": "F8", "description": "Step Over (Debug)" },
-        { "keys": "F9", "description": "Resume Execution (Debug)" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Shift+Shift", "description": "Search Everywhere" },
+            { "keys": "Ctrl+Shift+A", "description": "Find Action" },
+            { "keys": "Alt+Enter", "description": "Quick Fix / Intention" },
+            { "keys": "Ctrl+R, R", "description": "Rename" },
+            { "keys": "Ctrl+Alt+L", "description": "Reformat Code" },
+            { "keys": "Ctrl+Shift+F", "description": "Find in Files" },
+            { "keys": "Shift+F10", "description": "Run" },
+            { "keys": "Shift+F9", "description": "Debug" },
+            { "keys": "Ctrl+Alt+S", "description": "Settings" },
+            { "keys": "Ctrl+B", "description": "Go to Declaration" },
+            { "keys": "Ctrl+E", "description": "Recent Files" },
+            { "keys": "Ctrl+F", "description": "Find in File" },
+            { "keys": "Ctrl+H", "description": "Find and Replace" },
+            { "keys": "Ctrl+G", "description": "Go to Line" },
+            { "keys": "Ctrl+K", "description": "Commit Changes" },
+            { "keys": "Alt+Ins", "description": "Generate Code" },
+            { "keys": "F8", "description": "Step Over (Debug)" },
+            { "keys": "F9", "description": "Resume Execution (Debug)" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["figma"],
       "title": "Figma",
-      "hotkeys": [
-        { "keys": "Ctrl+Z", "description": "Undo" },
-        { "keys": "Ctrl+Shift+Z", "description": "Redo" },
-        { "keys": "Ctrl+C", "description": "Copy" },
-        { "keys": "Ctrl+V", "description": "Paste" },
-        { "keys": "Ctrl+D", "description": "Duplicate" },
-        { "keys": "Ctrl+G", "description": "Group Selection" },
-        { "keys": "Ctrl+Shift+G", "description": "Ungroup" },
-        { "keys": "V", "description": "Select Tool" },
-        { "keys": "F", "description": "Frame Tool" },
-        { "keys": "Ctrl+Alt+C", "description": "Copy Properties" },
-        { "keys": "R", "description": "Rectangle Tool" },
-        { "keys": "L", "description": "Line Tool" },
-        { "keys": "O", "description": "Oval Tool" },
-        { "keys": "T", "description": "Text Tool" },
-        { "keys": "I", "description": "Color Picker (Eyedropper)" },
-        { "keys": "H", "description": "Hand / Pan Tool" },
-        { "keys": "Shift+A", "description": "Add Auto Layout" },
-        { "keys": "[", "description": "Send to Back" },
-        { "keys": "]", "description": "Bring to Front" },
-        { "keys": "Ctrl+Shift+?", "description": "Show Keyboard Shortcuts" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+Z", "description": "Undo" },
+            { "keys": "Ctrl+Shift+Z", "description": "Redo" },
+            { "keys": "Ctrl+C", "description": "Copy" },
+            { "keys": "Ctrl+V", "description": "Paste" },
+            { "keys": "Ctrl+D", "description": "Duplicate" },
+            { "keys": "Ctrl+G", "description": "Group Selection" },
+            { "keys": "Ctrl+Shift+G", "description": "Ungroup" },
+            { "keys": "V", "description": "Select Tool" },
+            { "keys": "F", "description": "Frame Tool" },
+            { "keys": "Ctrl+Alt+C", "description": "Copy Properties" },
+            { "keys": "R", "description": "Rectangle Tool" },
+            { "keys": "L", "description": "Line Tool" },
+            { "keys": "O", "description": "Oval Tool" },
+            { "keys": "T", "description": "Text Tool" },
+            { "keys": "I", "description": "Color Picker (Eyedropper)" },
+            { "keys": "H", "description": "Hand / Pan Tool" },
+            { "keys": "Shift+A", "description": "Add Auto Layout" },
+            { "keys": "[", "description": "Send to Back" },
+            { "keys": "]", "description": "Bring to Front" },
+            { "keys": "Ctrl+Shift+?", "description": "Show Keyboard Shortcuts" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["obsidian"],
       "title": "Obsidian",
-      "hotkeys": [
-        { "keys": "Ctrl+P", "description": "Command Palette" },
-        { "keys": "Ctrl+O", "description": "Quick Switcher" },
-        { "keys": "Ctrl+E", "description": "Toggle Edit/Preview" },
-        { "keys": "Ctrl+F", "description": "Search in Note" },
-        { "keys": "Ctrl+Shift+F", "description": "Search in Vault" },
-        { "keys": "Ctrl+N", "description": "New Note" },
-        { "keys": "Ctrl+L", "description": "Toggle Checklist" },
-        { "keys": "Ctrl+B", "description": "Bold" },
-        { "keys": "Ctrl+I", "description": "Italic" },
-        { "keys": "Ctrl+,", "description": "Open Settings" },
-        { "keys": "Alt+Left", "description": "Navigate Back" },
-        { "keys": "Alt+Right", "description": "Navigate Forward" },
-        { "keys": "Ctrl+G", "description": "Open Graph View" },
-        { "keys": "Alt+Enter", "description": "Follow Link" },
-        { "keys": "Ctrl+W", "description": "Close Active Pane" }
+      "groups": [
+        {
+          "name": "General",
+          "hotkeys": [
+            { "keys": "Ctrl+P", "description": "Command Palette" },
+            { "keys": "Ctrl+O", "description": "Quick Switcher" },
+            { "keys": "Ctrl+E", "description": "Toggle Edit/Preview" },
+            { "keys": "Ctrl+F", "description": "Search in Note" },
+            { "keys": "Ctrl+Shift+F", "description": "Search in Vault" },
+            { "keys": "Ctrl+N", "description": "New Note" },
+            { "keys": "Ctrl+L", "description": "Toggle Checklist" },
+            { "keys": "Ctrl+B", "description": "Bold" },
+            { "keys": "Ctrl+I", "description": "Italic" },
+            { "keys": "Ctrl+,", "description": "Open Settings" },
+            { "keys": "Alt+Left", "description": "Navigate Back" },
+            { "keys": "Alt+Right", "description": "Navigate Forward" },
+            { "keys": "Ctrl+G", "description": "Open Graph View" },
+            { "keys": "Alt+Enter", "description": "Follow Link" },
+            { "keys": "Ctrl+W", "description": "Close Active Pane" }
+          ]
+        }
       ]
     },
     {
       "processNames": ["totalcmd", "totalcmd64"],
       "title": "Total Commander",
-      "hotkeys": [
-        { "keys": "F3", "description": "View File" },
-        { "keys": "F4", "description": "Edit File" },
-        { "keys": "F5", "description": "Copy File(s)" },
-        { "keys": "F6", "description": "Move / Rename" },
-        { "keys": "F7", "description": "Create Directory" },
-        { "keys": "F8", "description": "Delete File(s)" },
-        { "keys": "Tab", "description": "Switch Active Panel" },
-        { "keys": "Ctrl+U", "description": "Swap Panels" },
-        { "keys": "Ctrl+R", "description": "Refresh Panel" },
-        { "keys": "Insert", "description": "Select / Deselect File" },
-        { "keys": "Num*", "description": "Invert Selection" },
-        { "keys": "Num+", "description": "Select by Mask" },
-        { "keys": "Num-", "description": "Deselect by Mask" },
-        { "keys": "Ctrl+A", "description": "Select All" },
-        { "keys": "Ctrl+Q", "description": "Quick View Panel" },
-        { "keys": "Alt+F1", "description": "Change Left Panel Drive" },
-        { "keys": "Alt+F2", "description": "Change Right Panel Drive" },
-        { "keys": "Alt+Left", "description": "Navigate Back" },
-        { "keys": "Alt+Right", "description": "Navigate Forward" },
-        { "keys": "Ctrl+M", "description": "Multi-Rename Tool" },
-        { "keys": "Ctrl+F", "description": "Filter Files" },
-        { "keys": "Ctrl+P", "description": "Copy Full Path to Clipboard" },
-        { "keys": "Ctrl+B", "description": "View All Files in Subdirectory" },
-        { "keys": "F10", "description": "Activate Left Menu" },
-        { "keys": "Shift+F2", "description": "Compare File Lists" },
-        { "keys": "Shift+F4", "description": "Create New File in Editor" },
-        { "keys": "Delete", "description": "Delete to Recycle Bin" }
+      "groups": [
+        {
+          "name": "File Operations",
+          "hotkeys": [
+            { "keys": "F3", "description": "View File" },
+            { "keys": "F4", "description": "Edit File" },
+            { "keys": "F5", "description": "Copy File(s)" },
+            { "keys": "F6", "description": "Move / Rename" },
+            { "keys": "F7", "description": "Create Directory" },
+            { "keys": "F8", "description": "Delete File(s)" },
+            { "keys": "Shift+F4", "description": "Create New File in Editor" },
+            { "keys": "Delete", "description": "Delete to Recycle Bin" }
+          ]
+        },
+        {
+          "name": "Navigation",
+          "hotkeys": [
+            { "keys": "Tab", "description": "Switch Active Panel" },
+            { "keys": "Ctrl+U", "description": "Swap Panels" },
+            { "keys": "Ctrl+R", "description": "Refresh Panel" },
+            { "keys": "Alt+F1", "description": "Change Left Panel Drive" },
+            { "keys": "Alt+F2", "description": "Change Right Panel Drive" },
+            { "keys": "Alt+Left", "description": "Navigate Back" },
+            { "keys": "Alt+Right", "description": "Navigate Forward" },
+            { "keys": "Ctrl+Q", "description": "Quick View Panel" }
+          ]
+        },
+        {
+          "name": "Selection",
+          "hotkeys": [
+            { "keys": "Insert", "description": "Select / Deselect File" },
+            { "keys": "Num*", "description": "Invert Selection" },
+            { "keys": "Num+", "description": "Select by Mask" },
+            { "keys": "Num-", "description": "Deselect by Mask" },
+            { "keys": "Ctrl+A", "description": "Select All" },
+            { "keys": "Shift+F2", "description": "Compare File Lists" }
+          ]
+        },
+        {
+          "name": "Tools",
+          "hotkeys": [
+            { "keys": "Ctrl+M", "description": "Multi-Rename Tool" },
+            { "keys": "Ctrl+F", "description": "Filter Files" },
+            { "keys": "Ctrl+P", "description": "Copy Full Path to Clipboard" },
+            { "keys": "Ctrl+B", "description": "View All Files in Subdirectory" },
+            { "keys": "F10", "description": "Activate Left Menu" }
+          ]
+        }
       ]
     }
   ]

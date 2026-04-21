@@ -90,10 +90,10 @@ namespace WhatKey.Services
             File.WriteAllText(_dataFile, json);
         }
 
-        public List<HotkeyEntry> GetHotkeysForProcess(string processName)
+        public List<HotkeyGroup> GetGroupsForProcess(string processName)
         {
             if (string.IsNullOrEmpty(processName))
-                return GetDefaultHotkeys();
+                return GetDefaultGroups();
 
             var lower = processName.ToLower();
             foreach (var app in _data.Apps)
@@ -101,21 +101,28 @@ namespace WhatKey.Services
                 foreach (var name in app.ProcessNames)
                 {
                     if (string.Equals(name, lower, StringComparison.OrdinalIgnoreCase))
-                        return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
+                        return new List<HotkeyGroup>(app.Groups ?? new ObservableCollection<HotkeyGroup>());
                 }
             }
 
-            return GetDefaultHotkeys();
+            return GetDefaultGroups();
         }
 
-        private List<HotkeyEntry> GetDefaultHotkeys()
+        public List<HotkeyEntry> GetHotkeysForProcess(string processName)
+        {
+            return GetGroupsForProcess(processName)
+                .SelectMany(g => g.Hotkeys ?? Enumerable.Empty<HotkeyEntry>())
+                .ToList();
+        }
+
+        private List<HotkeyGroup> GetDefaultGroups()
         {
             foreach (var app in _data.Apps)
             {
                 if (app.ProcessNames.Contains("default", StringComparer.OrdinalIgnoreCase))
-                    return new List<HotkeyEntry>(app.Hotkeys ?? new ObservableCollection<HotkeyEntry>());
+                    return new List<HotkeyGroup>(app.Groups ?? new ObservableCollection<HotkeyGroup>());
             }
-            return new List<HotkeyEntry>();
+            return new List<HotkeyGroup>();
         }
 
         private void LoadDefaults()
@@ -142,8 +149,11 @@ namespace WhatKey.Services
                     app.ProcessNames.Add(app.ProcessName.ToLower());
                 app.ProcessNames = app.ProcessNames.Select(p => p.ToLower()).ToList();
                 app.ProcessName = null;
-                if (app.Hotkeys == null)
-                    app.Hotkeys = new ObservableCollection<HotkeyEntry>();
+
+                if (app.Groups == null) app.Groups = new ObservableCollection<HotkeyGroup>();
+                if (app.Hotkeys != null && app.Hotkeys.Count > 0)
+                    app.Groups.Add(new HotkeyGroup { Name = "General", Hotkeys = app.Hotkeys });
+                app.Hotkeys = null;
             }
         }
     }

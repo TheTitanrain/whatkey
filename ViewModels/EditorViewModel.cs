@@ -124,7 +124,9 @@ namespace WhatKey.ViewModels
             var app = new AppHotkeys
             {
                 ProcessNames = new List<string> { "newapp" },
-                Title = "New Application"
+                Title = "New Application",
+                Groups = new ObservableCollection<HotkeyGroup> { new HotkeyGroup { Name = "General" } },
+                Hotkeys = null
             };
             Apps.Add(app);
             _storage.Apps.Add(app);
@@ -292,18 +294,28 @@ namespace WhatKey.ViewModels
                 var clone = new AppHotkeys
                 {
                     ProcessNames = new List<string>(app?.ProcessNames ?? new List<string>()),
-                    Title = app?.Title
+                    Title = app?.Title,
+                    Hotkeys = null
                 };
 
-                if (app?.Hotkeys != null)
+                if (app?.Groups != null)
                 {
-                    foreach (var hotkey in app.Hotkeys)
+                    clone.Groups = new ObservableCollection<HotkeyGroup>();
+                    foreach (var group in app.Groups)
                     {
-                        clone.Hotkeys.Add(new HotkeyEntry
+                        var groupClone = new HotkeyGroup { Name = group.Name };
+                        if (group.Hotkeys != null)
                         {
-                            Keys = hotkey?.Keys,
-                            Description = hotkey?.Description
-                        });
+                            foreach (var hotkey in group.Hotkeys)
+                            {
+                                groupClone.Hotkeys.Add(new HotkeyEntry
+                                {
+                                    Keys = hotkey?.Keys,
+                                    Description = hotkey?.Description
+                                });
+                            }
+                        }
+                        clone.Groups.Add(groupClone);
                     }
                 }
 
