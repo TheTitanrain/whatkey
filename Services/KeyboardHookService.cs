@@ -291,7 +291,7 @@ namespace WhatKey.Services
         {
             if (_holdTimer != null && !_holdTimer.Dispatcher.CheckAccess())
             {
-                _holdTimer.Dispatcher.Invoke(new Action(ResetHoldState));
+                _holdTimer.Dispatcher.BeginInvoke(new Action(ResetHoldState));
                 return;
             }
             ResetHoldState();

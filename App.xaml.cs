@@ -80,6 +80,7 @@ namespace WhatKey
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     Shutdown();
+                    return;
                 }
                 catch (Exception ex)
                 {
