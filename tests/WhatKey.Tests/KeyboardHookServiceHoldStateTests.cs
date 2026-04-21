@@ -102,6 +102,100 @@ namespace WhatKey.Tests
             service.Dispose();
         }
 
+        [TestMethod]
+        public void MouseHookCallback_OnButtonDown_ResetsHoldStateAndFiresTriggerHide()
+        {
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", true);
+            SetPrivateField(service, "_isOverlayVisible", true);
+
+            var hideCalls = 0;
+            var showCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+            service.TriggerShow += (_, __) => showCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_LBUTTONDOWN = 0x0201;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_LBUTTONDOWN, IntPtr.Zero);
+
+            Assert.AreEqual(1, hideCalls);
+            Assert.AreEqual(0, showCalls);
+            Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
+            Assert.IsFalse((bool)GetPrivateField(service, "_isOverlayVisible"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
+        public void MouseHookCallback_OnButtonDown_WhenOverlayNotVisible_DoesNotFireTriggerHide()
+        {
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", true);
+            SetPrivateField(service, "_isOverlayVisible", false);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_RBUTTONDOWN = 0x0204;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_RBUTTONDOWN, IntPtr.Zero);
+
+            Assert.AreEqual(0, hideCalls);
+            Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
+        public void MouseHookCallback_WhenNCodeNegative_DoesNotResetState()
+        {
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", true);
+            SetPrivateField(service, "_isOverlayVisible", true);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_LBUTTONDOWN = 0x0201;
+            mouseHookProc.DynamicInvoke(-1, (IntPtr)WM_LBUTTONDOWN, IntPtr.Zero);
+
+            Assert.AreEqual(0, hideCalls);
+            Assert.IsTrue((bool)GetPrivateField(service, "_isHoldKeyDown"));
+            Assert.IsTrue((bool)GetPrivateField(service, "_isOverlayVisible"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
+        public void MouseHookCallback_OnNonButtonMessage_DoesNotResetState()
+        {
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", true);
+            SetPrivateField(service, "_isOverlayVisible", true);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_MOUSEMOVE = 0x0200;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_MOUSEMOVE, IntPtr.Zero);
+
+            Assert.AreEqual(0, hideCalls);
+            Assert.IsTrue((bool)GetPrivateField(service, "_isHoldKeyDown"));
+            Assert.IsTrue((bool)GetPrivateField(service, "_isOverlayVisible"));
+
+            service.Dispose();
+        }
+
         private static object GetPrivateField(object instance, string fieldName)
         {
             var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);

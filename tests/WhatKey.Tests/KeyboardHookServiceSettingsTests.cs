@@ -318,6 +318,27 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
+        public void Install_WhenMouseHookInstallationFails_DoesNotThrow()
+        {
+            var settings = new AppSettings();
+            var service = new KeyboardHookService(settings);
+            try
+            {
+                SetPrivateField(service, "_installKeyboardHook", new Func<IntPtr>(() => (IntPtr)1));
+                SetPrivateField(service, "_installMouseHook", new Func<IntPtr>(() => IntPtr.Zero));
+                SetPrivateField(service, "_registerHotKey", new Func<IntPtr, int, int, int, bool>((h, id, m, v) => true));
+                SetPrivateField(service, "_unregisterHotKey", new Func<IntPtr, int, bool>((h, id) => true));
+                SetLastErrorDelegate(service, () => 5);
+
+                service.Install();
+            }
+            finally
+            {
+                service.Dispose();
+            }
+        }
+
+        [TestMethod]
         public void Constructor_WithInvalidPersistedToggleHotkey_DisablesToggleHotkey()
         {
             var settings = new AppSettings

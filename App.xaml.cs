@@ -315,8 +315,6 @@ namespace WhatKey
 
         private void ExitApp()
         {
-            _hookService?.Dispose();
-            _trayIcon?.Dispose();
             Shutdown();
         }
 
