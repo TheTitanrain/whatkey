@@ -287,7 +287,7 @@ namespace WhatKey.Services
         {
             if (_holdTimer != null && !_holdTimer.Dispatcher.CheckAccess())
             {
-                _holdTimer.Dispatcher.Invoke(ResetHoldState);
+                _holdTimer.Dispatcher.Invoke(new Action(ResetHoldState));
                 return;
             }
             ResetHoldState();
@@ -310,11 +310,10 @@ namespace WhatKey.Services
         {
             if (nCode >= 0)
             {
-                int msg = wParam.ToInt32();
-                if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN ||
-                    msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
+                if (wParam == (IntPtr)WM_LBUTTONDOWN || wParam == (IntPtr)WM_RBUTTONDOWN ||
+                    wParam == (IntPtr)WM_MBUTTONDOWN || wParam == (IntPtr)WM_XBUTTONDOWN)
                 {
-                    ForceResetHoldState();
+                    ResetHoldState();
                 }
             }
             return CallNextHookEx(_mouseHookId, nCode, wParam, lParam);

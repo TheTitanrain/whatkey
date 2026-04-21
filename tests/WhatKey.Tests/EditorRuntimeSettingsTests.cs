@@ -36,49 +36,6 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
-        public void RuntimeSettingsCoordinator_Attach_InvokesCallbackAfterSave()
-        {
-            using (var scope = new TestStorageScope())
-            {
-                var storage = scope.CreateStorage();
-                var viewModel = new EditorViewModel(storage, new ActiveWindowService());
-
-                var calls = 0;
-                AppSettings payload = null;
-
-                RuntimeSettingsCoordinator.Attach(viewModel, settings =>
-                {
-                    calls++;
-                    payload = settings;
-                });
-
-                viewModel.SaveCommand.Execute(null);
-
-                Assert.AreEqual(1, calls);
-                Assert.AreSame(storage.Settings, payload);
-            }
-        }
-
-        [TestMethod]
-        public void RuntimeSettingsCoordinator_Attach_WithNullEditorViewModel_Throws()
-        {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                RuntimeSettingsCoordinator.Attach(null, _ => { }));
-        }
-
-        [TestMethod]
-        public void RuntimeSettingsCoordinator_Attach_WithNullCallback_Throws()
-        {
-            using (var scope = new TestStorageScope())
-            {
-                var storage = scope.CreateStorage();
-                var viewModel = new EditorViewModel(storage, new ActiveWindowService());
-                Assert.ThrowsException<ArgumentNullException>(() =>
-                    RuntimeSettingsCoordinator.Attach(viewModel, null));
-            }
-        }
-
-        [TestMethod]
         public void SaveCommand_AppliesRuntimeSettingsWithoutRestart()
         {
             using (var scope = new TestStorageScope())
@@ -88,7 +45,7 @@ namespace WhatKey.Tests
                 var service = new KeyboardHookService(storage.Settings);
                 try
                 {
-                    RuntimeSettingsCoordinator.Attach(viewModel, settings => service.UpdateSettings(settings));
+                    viewModel.SettingsSaved += (_, settings) => service.UpdateSettings(settings);
 
                     viewModel.Settings.HoldDelayMs = 1350;
                     viewModel.Settings.HoldKey = "RShiftKey";
@@ -136,7 +93,7 @@ namespace WhatKey.Tests
                 var viewModel = new EditorViewModel(storage, new ActiveWindowService());
 
                 viewModel.Settings.HoldDelayMs = 999;
-                RuntimeSettingsCoordinator.Attach(viewModel, _ => throw new InvalidOperationException("apply failed"));
+                viewModel.SettingsSaved += (_, _) => throw new InvalidOperationException("apply failed");
 
                 Assert.ThrowsException<InvalidOperationException>(() => viewModel.SaveCommand.Execute(null));
                 Assert.IsFalse(File.Exists(storage.DataFilePath));
@@ -164,7 +121,7 @@ namespace WhatKey.Tests
                     Title = "New App"
                 });
 
-                RuntimeSettingsCoordinator.Attach(viewModel, _ => throw new InvalidOperationException("apply failed"));
+                viewModel.SettingsSaved += (_, _) => throw new InvalidOperationException("apply failed");
 
                 Assert.ThrowsException<InvalidOperationException>(() => viewModel.SaveCommand.Execute(null));
                 Assert.AreEqual(1, storage.Apps.Count);
@@ -183,11 +140,11 @@ namespace WhatKey.Tests
                 var service = new KeyboardHookService(storage.Settings);
                 try
                 {
-                    RuntimeSettingsCoordinator.Attach(viewModel, settings =>
+                    viewModel.SettingsSaved += (_, settings) =>
                     {
                         service.UpdateSettings(settings);
                         storage.Save();
-                    });
+                    };
 
                     viewModel.Settings.HoldDelayMs = -12;
                     viewModel.SaveCommand.Execute(null);

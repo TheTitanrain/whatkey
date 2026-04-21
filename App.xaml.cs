@@ -62,7 +62,7 @@ namespace WhatKey
             // Create windows (but don't show them)
             _overlayWindow = new OverlayWindow();
             var editorViewModel = new EditorViewModel(_storageService, _activeWindowService);
-            RuntimeSettingsCoordinator.Attach(editorViewModel, settings =>
+            editorViewModel.SettingsSaved += (sender, settings) =>
             {
                 var previousApplied = _hookService.GetAppliedSettingsSnapshot();
                 try
@@ -127,7 +127,7 @@ namespace WhatKey
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                 }
-            });
+            };
             _editorWindow = new EditorWindow(editorViewModel);
             _editorWindow.Icon = LoadPngIcon();
 
@@ -228,20 +228,18 @@ namespace WhatKey
 
         private void OnSessionSwitch(object sender, SessionSwitchEventArgs e)
         {
-            var svc = _hookService;
             if (e.Reason == SessionSwitchReason.SessionLock ||
                 e.Reason == SessionSwitchReason.RemoteDisconnect ||
                 e.Reason == SessionSwitchReason.ConsoleDisconnect)
             {
-                svc?.ForceResetHoldState();
+                _hookService?.ForceResetHoldState();
             }
         }
 
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
-            var svc = _hookService;
             if (e.Mode == PowerModes.Suspend)
-                svc?.ForceResetHoldState();
+                _hookService?.ForceResetHoldState();
         }
 
         private void OnTriggerShow(object sender, EventArgs e)
@@ -290,7 +288,7 @@ namespace WhatKey
             menu.Items.Add(new Separator());
 
             var exitItem = new MenuItem { Header = "Exit" };
-            exitItem.Click += (s, e) => ExitApp();
+            exitItem.Click += (s, e) => Shutdown();
             menu.Items.Add(exitItem);
 
             _trayIcon.ContextMenu = menu;
@@ -313,11 +311,6 @@ namespace WhatKey
             }
             _aboutWindow.Show();
             _aboutWindow.Activate();
-        }
-
-        private void ExitApp()
-        {
-            Shutdown();
         }
 
         private static void RestoreSettingsSnapshot(AppSettings target, AppSettings source)
@@ -382,17 +375,6 @@ namespace WhatKey
             _hookService?.Dispose();
             _trayIcon?.Dispose();
             base.OnExit(e);
-        }
-    }
-
-    public static class RuntimeSettingsCoordinator
-    {
-        public static void Attach(EditorViewModel editorViewModel, Action<Models.AppSettings> applySettings)
-        {
-            if (editorViewModel == null) throw new ArgumentNullException(nameof(editorViewModel));
-            if (applySettings == null) throw new ArgumentNullException(nameof(applySettings));
-
-            editorViewModel.SettingsSaved += (sender, settings) => applySettings(settings);
         }
     }
 

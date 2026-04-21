@@ -54,7 +54,7 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
-        public void ForceResetHoldState_StopsHoldTimer_PreventsTriggerShowFromFiring()
+        public void ForceResetHoldState_StopsHoldTimer()
         {
             var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
             var service = new KeyboardHookService(settings);
@@ -64,14 +64,11 @@ namespace WhatKey.Tests
             startMethod.Invoke(timer, null);
             SetPrivateField(service, "_isHoldKeyDown", true);
 
-            var showCalls = 0;
-            service.TriggerShow += (_, __) => showCalls++;
-
             service.ForceResetHoldState();
 
             var isEnabled = (bool)timer.GetType().GetProperty("IsEnabled", BindingFlags.Instance | BindingFlags.Public).GetValue(timer);
             Assert.IsFalse(isEnabled);
-            Assert.AreEqual(0, showCalls);
+            Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
 
             service.Dispose();
         }
@@ -146,6 +143,52 @@ namespace WhatKey.Tests
 
             Assert.AreEqual(0, hideCalls);
             Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
+        public void MouseHookCallback_OnMiddleButtonDown_ResetsHoldState()
+        {
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", true);
+            SetPrivateField(service, "_isOverlayVisible", true);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_MBUTTONDOWN = 0x0207;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_MBUTTONDOWN, IntPtr.Zero);
+
+            Assert.AreEqual(1, hideCalls);
+            Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
+            Assert.IsFalse((bool)GetPrivateField(service, "_isOverlayVisible"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
+        public void MouseHookCallback_OnXButtonDown_ResetsHoldState()
+        {
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            SetPrivateField(service, "_isHoldKeyDown", true);
+            SetPrivateField(service, "_isOverlayVisible", true);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_XBUTTONDOWN = 0x020B;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_XBUTTONDOWN, IntPtr.Zero);
+
+            Assert.AreEqual(1, hideCalls);
+            Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
+            Assert.IsFalse((bool)GetPrivateField(service, "_isOverlayVisible"));
 
             service.Dispose();
         }

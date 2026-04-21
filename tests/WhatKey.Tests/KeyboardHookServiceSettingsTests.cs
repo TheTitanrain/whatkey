@@ -331,6 +331,9 @@ namespace WhatKey.Tests
                 SetLastErrorDelegate(service, () => 5);
 
                 service.Install();
+
+                Assert.AreEqual(IntPtr.Zero, (IntPtr)GetPrivateField(service, "_mouseHookId"));
+                Assert.AreNotEqual(IntPtr.Zero, (IntPtr)GetPrivateField(service, "_hookId"));
             }
             finally
             {

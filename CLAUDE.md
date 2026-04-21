@@ -4,8 +4,7 @@
 
 - `EditorViewModel.SaveCommand` persists data through `HotkeysStorageService.Save(...)`.
 - After successful save, `EditorViewModel` raises `SettingsSaved`.
-- `App.xaml.cs` wires this event at startup via `RuntimeSettingsCoordinator.Attach(...)`.
-- The coordinator invokes `KeyboardHookService.UpdateSettings(...)` with saved settings.
+- `App.xaml.cs` wires `editorViewModel.SettingsSaved` at startup and invokes `KeyboardHookService.UpdateSettings(...)` with saved settings.
 - After successful runtime apply, `App.xaml.cs` saves once more to persist normalized runtime values back to disk atomically.
 - `KeyboardHookService.UpdateSettings(...)` applies runtime fields immediately:
   - `HoldDelayMs`
