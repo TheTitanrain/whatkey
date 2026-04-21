@@ -314,7 +314,7 @@ namespace WhatKey.Services
                 if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN ||
                     msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
                 {
-                    ResetHoldState();
+                    ForceResetHoldState();
                 }
             }
             return CallNextHookEx(_mouseHookId, nCode, wParam, lParam);

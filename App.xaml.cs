@@ -228,18 +228,20 @@ namespace WhatKey
 
         private void OnSessionSwitch(object sender, SessionSwitchEventArgs e)
         {
+            var svc = _hookService;
             if (e.Reason == SessionSwitchReason.SessionLock ||
                 e.Reason == SessionSwitchReason.RemoteDisconnect ||
                 e.Reason == SessionSwitchReason.ConsoleDisconnect)
             {
-                _hookService?.ForceResetHoldState();
+                svc?.ForceResetHoldState();
             }
         }
 
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
+            var svc = _hookService;
             if (e.Mode == PowerModes.Suspend)
-                _hookService?.ForceResetHoldState();
+                svc?.ForceResetHoldState();
         }
 
         private void OnTriggerShow(object sender, EventArgs e)
