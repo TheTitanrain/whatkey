@@ -49,6 +49,7 @@ namespace WhatKey.Tests
 
             Assert.AreEqual(0, hideCalls);
             Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
+            Assert.IsFalse((bool)GetPrivateField(service, "_isOverlayVisible"));
 
             service.Dispose();
         }
@@ -212,6 +213,35 @@ namespace WhatKey.Tests
             Assert.AreEqual(0, hideCalls);
             Assert.IsTrue((bool)GetPrivateField(service, "_isHoldKeyDown"));
             Assert.IsTrue((bool)GetPrivateField(service, "_isOverlayVisible"));
+
+            service.Dispose();
+        }
+
+        [TestMethod]
+        public void MouseHookCallback_OnButtonDown_WhenTimerRunningButHoldKeyUp_StopsTimerAndDoesNotFireTriggerHide()
+        {
+            // Hold key was released before timer fired: _isHoldKeyDown=false but _holdTimer.IsEnabled=true.
+            // Mouse click must stop the timer via the _holdTimer.IsEnabled arm of the guard.
+            var settings = new AppSettings { HoldDelayMs = 500, HoldKey = "LControlKey" };
+            var service = new KeyboardHookService(settings);
+
+            var timer = GetPrivateField(service, "_holdTimer");
+            var startMethod = timer.GetType().GetMethod("Start", BindingFlags.Instance | BindingFlags.Public);
+            startMethod.Invoke(timer, null);
+            SetPrivateField(service, "_isHoldKeyDown", false);
+            SetPrivateField(service, "_isOverlayVisible", false);
+
+            var hideCalls = 0;
+            service.TriggerHide += (_, __) => hideCalls++;
+
+            var mouseHookProc = (Delegate)GetPrivateField(service, "_mouseHookProc");
+            const int WM_LBUTTONDOWN = 0x0201;
+            mouseHookProc.DynamicInvoke(0, (IntPtr)WM_LBUTTONDOWN, IntPtr.Zero);
+
+            var isEnabled = (bool)timer.GetType().GetProperty("IsEnabled", BindingFlags.Instance | BindingFlags.Public).GetValue(timer);
+            Assert.IsFalse(isEnabled);
+            Assert.AreEqual(0, hideCalls);
+            Assert.IsFalse((bool)GetPrivateField(service, "_isHoldKeyDown"));
 
             service.Dispose();
         }

@@ -48,6 +48,9 @@ namespace WhatKey.Services
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
@@ -64,6 +67,7 @@ namespace WhatKey.Services
         private static extern bool UnregisterHotKeyNative(IntPtr hWnd, int id);
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct KBDLLHOOKSTRUCT
@@ -78,7 +82,7 @@ namespace WhatKey.Services
         private IntPtr _hookId = IntPtr.Zero;
         private readonly LowLevelKeyboardProc _hookProc; // keep alive to prevent GC
         private IntPtr _mouseHookId = IntPtr.Zero;
-        private readonly LowLevelKeyboardProc _mouseHookProc; // keep alive to prevent GC
+        private readonly LowLevelMouseProc _mouseHookProc; // keep alive to prevent GC
         private Func<IntPtr> _installMouseHook;
         private DispatcherTimer _holdTimer;
         private HwndSource _hwndSource;

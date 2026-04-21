@@ -336,9 +336,10 @@ namespace WhatKey
                 {
                     _hookService.UpdateSettings(rollbackSnapshot);
                 }
-                catch
+                catch (Exception runtimeEx)
                 {
                     // Best-effort runtime alignment before shutdown.
+                    Trace.TraceWarning("Failed to realign runtime state during rollback save failure: {0}", runtimeEx.Message);
                 }
 
                 MessageBox.Show(
