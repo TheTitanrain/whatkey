@@ -29,7 +29,13 @@ namespace WhatKey.Tests
 
         private static AppHotkeys MakeApp(string processName, string title = "Test")
         {
-            return new AppHotkeys { ProcessNames = new List<string> { processName }, Title = title };
+            return new AppHotkeys
+            {
+                ProcessNames = new List<string> { processName },
+                Title = title,
+                Groups = new ObservableCollection<HotkeyGroup> { new HotkeyGroup { Name = "General" } },
+                Hotkeys = null
+            };
         }
 
         // ── AddAppCommand ────────────────────────────────────────────────────
@@ -208,7 +214,7 @@ namespace WhatKey.Tests
 
                 vm.AddHotkeyCommand.Execute(null);
 
-                Assert.AreEqual(1, app.Hotkeys.Count);
+                Assert.AreEqual(1, vm.SelectedGroup.Hotkeys.Count);
             }
         }
 
@@ -225,7 +231,7 @@ namespace WhatKey.Tests
                 vm.AddHotkeyCommand.Execute(null);
 
                 Assert.IsNotNull(vm.SelectedHotkey);
-                Assert.AreSame(app.Hotkeys[0], vm.SelectedHotkey);
+                Assert.AreSame(vm.SelectedGroup.Hotkeys[0], vm.SelectedHotkey);
             }
         }
 
@@ -241,7 +247,7 @@ namespace WhatKey.Tests
 
                 vm.AddHotkeyCommand.Execute(null);
 
-                var hotkey = app.Hotkeys[0];
+                var hotkey = vm.SelectedGroup.Hotkeys[0];
                 Assert.IsFalse(string.IsNullOrWhiteSpace(hotkey.Keys));
                 Assert.IsFalse(string.IsNullOrWhiteSpace(hotkey.Description));
             }
@@ -283,10 +289,10 @@ namespace WhatKey.Tests
             {
                 var vm = Create(scope);
                 var app = MakeApp("notepad");
-                app.Hotkeys.Add(new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" });
                 vm.Apps.Add(app);
                 vm.SelectedApp = app;
-                vm.SelectedHotkey = app.Hotkeys[0];
+                vm.SelectedGroup.Hotkeys.Add(new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" });
+                vm.SelectedHotkey = vm.SelectedGroup.Hotkeys[0];
 
                 Assert.IsTrue(vm.RemoveHotkeyCommand.CanExecute(null));
             }
@@ -299,15 +305,15 @@ namespace WhatKey.Tests
             {
                 var vm = Create(scope);
                 var app = MakeApp("notepad");
-                var hotkey = new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" };
-                app.Hotkeys.Add(hotkey);
                 vm.Apps.Add(app);
                 vm.SelectedApp = app;
+                var hotkey = new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" };
+                vm.SelectedGroup.Hotkeys.Add(hotkey);
                 vm.SelectedHotkey = hotkey;
 
                 vm.RemoveHotkeyCommand.Execute(null);
 
-                CollectionAssert.DoesNotContain(app.Hotkeys, hotkey);
+                CollectionAssert.DoesNotContain(app.Groups[0].Hotkeys, hotkey);
             }
         }
 
@@ -318,10 +324,10 @@ namespace WhatKey.Tests
             {
                 var vm = Create(scope);
                 var app = MakeApp("notepad");
-                var hotkey = new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" };
-                app.Hotkeys.Add(hotkey);
                 vm.Apps.Add(app);
                 vm.SelectedApp = app;
+                var hotkey = new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" };
+                vm.SelectedGroup.Hotkeys.Add(hotkey);
                 vm.SelectedHotkey = hotkey;
 
                 vm.RemoveHotkeyCommand.Execute(null);
@@ -429,6 +435,134 @@ namespace WhatKey.Tests
                 Assert.IsNotNull(vm.SelectedApp);
                 Assert.IsFalse(vm.IsDetecting);
                 Assert.AreEqual("Detect", vm.DetectButtonText);
+            }
+        }
+
+        // ── AddGroupCommand ──────────────────────────────────────────────────
+
+        [TestMethod]
+        public void AddGroupCommand_CanExecute_FalseWhenNoApp()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                vm.SelectedApp = null;
+
+                Assert.IsFalse(vm.AddGroupCommand.CanExecute(null));
+            }
+        }
+
+        [TestMethod]
+        public void AddGroupCommand_AddsGroupAndSelectsIt()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                var app = MakeApp("notepad");
+                vm.Apps.Add(app);
+                vm.SelectedApp = app;
+                var initialCount = app.Groups.Count;
+
+                vm.AddGroupCommand.Execute(null);
+
+                Assert.AreEqual(initialCount + 1, app.Groups.Count);
+                Assert.IsNotNull(vm.SelectedGroup);
+                Assert.AreSame(app.Groups[app.Groups.Count - 1], vm.SelectedGroup);
+            }
+        }
+
+        // ── RemoveGroupCommand ───────────────────────────────────────────────
+
+        [TestMethod]
+        public void RemoveGroupCommand_CanExecute_FalseWhenNoGroup()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                var app = MakeApp("notepad");
+                vm.Apps.Add(app);
+                vm.SelectedApp = app;
+                vm.SelectedGroup = null;
+
+                Assert.IsFalse(vm.RemoveGroupCommand.CanExecute(null));
+            }
+        }
+
+        [TestMethod]
+        public void RemoveGroupCommand_RemovesGroupAndSelectsFallback()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                var app = MakeApp("notepad");
+                var second = new HotkeyGroup { Name = "Extra" };
+                app.Groups.Add(second);
+                vm.Apps.Add(app);
+                vm.SelectedApp = app;
+                vm.SelectedGroup = second;
+
+                vm.RemoveGroupCommand.Execute(null);
+
+                CollectionAssert.DoesNotContain(app.Groups, second);
+                Assert.IsNotNull(vm.SelectedGroup);
+                Assert.AreSame(app.Groups[0], vm.SelectedGroup);
+            }
+        }
+
+        [TestMethod]
+        public void RemoveGroupCommand_LastGroup_SelectsNull()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                var app = MakeApp("notepad");
+                vm.Apps.Add(app);
+                vm.SelectedApp = app;
+
+                vm.RemoveGroupCommand.Execute(null);
+
+                Assert.AreEqual(0, app.Groups.Count);
+                Assert.IsNull(vm.SelectedGroup);
+            }
+        }
+
+        // ── Group integration tests ──────────────────────────────────────────
+
+        [TestMethod]
+        public void AppSelection_AutoSelectsFirstGroup()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                var app = MakeApp("notepad");
+                var second = new HotkeyGroup { Name = "Second" };
+                app.Groups.Add(second);
+                vm.Apps.Add(app);
+
+                vm.SelectedApp = app;
+
+                Assert.IsNotNull(vm.SelectedGroup);
+                Assert.AreSame(app.Groups[0], vm.SelectedGroup);
+            }
+        }
+
+        [TestMethod]
+        public void AddHotkeyCommand_AddsToSelectedGroup()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var vm = Create(scope);
+                var app = MakeApp("notepad");
+                var second = new HotkeyGroup { Name = "Second" };
+                app.Groups.Add(second);
+                vm.Apps.Add(app);
+                vm.SelectedApp = app;
+                vm.SelectedGroup = second;
+
+                vm.AddHotkeyCommand.Execute(null);
+
+                Assert.AreEqual(1, second.Hotkeys.Count);
+                Assert.AreEqual(0, app.Groups[0].Hotkeys.Count);
             }
         }
 

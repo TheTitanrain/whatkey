@@ -19,6 +19,8 @@ namespace WhatKey.ViewModels
         private AppHotkeys _selectedApp;
         private string _processNamesRaw;
         private HotkeyEntry _selectedHotkey;
+        private ObservableCollection<HotkeyGroup> _groups;
+        private HotkeyGroup _selectedGroup;
         private AppSettings _settings;
         private string _detectButtonText = "Detect";
         private bool _isDetecting;
@@ -42,6 +44,9 @@ namespace WhatKey.ViewModels
                 {
                     _processNamesRaw = value != null ? string.Join(", ", value.ProcessNames) : "";
                     OnPropertyChanged(nameof(ProcessNamesText));
+                    Groups = value?.Groups;
+                    SelectedGroup = _groups?.FirstOrDefault();
+                    SelectedHotkey = null;
                 }
             }
         }
@@ -72,6 +77,18 @@ namespace WhatKey.ViewModels
             set => SetField(ref _selectedHotkey, value);
         }
 
+        public ObservableCollection<HotkeyGroup> Groups
+        {
+            get => _groups;
+            set => SetField(ref _groups, value);
+        }
+
+        public HotkeyGroup SelectedGroup
+        {
+            get => _selectedGroup;
+            set => SetField(ref _selectedGroup, value);
+        }
+
         public AppSettings Settings
         {
             get => _settings;
@@ -93,6 +110,8 @@ namespace WhatKey.ViewModels
         public ICommand AddAppCommand { get; }
         public ICommand RemoveAppCommand { get; }
         public ICommand DetectAppCommand { get; }
+        public ICommand AddGroupCommand { get; }
+        public ICommand RemoveGroupCommand { get; }
         public ICommand AddHotkeyCommand { get; }
         public ICommand RemoveHotkeyCommand { get; }
         public ICommand SaveCommand { get; }
@@ -112,8 +131,10 @@ namespace WhatKey.ViewModels
             AddAppCommand = new RelayCommand(AddApp);
             RemoveAppCommand = new RelayCommand(RemoveApp, () => SelectedApp != null);
             DetectAppCommand = new RelayCommand(StartDetect, () => !IsDetecting);
-            AddHotkeyCommand = new RelayCommand(AddHotkey, () => SelectedApp != null);
-            RemoveHotkeyCommand = new RelayCommand(RemoveHotkey, () => SelectedApp != null && SelectedHotkey != null);
+            AddGroupCommand = new RelayCommand(AddGroup, () => SelectedApp != null);
+            RemoveGroupCommand = new RelayCommand(RemoveGroup, () => SelectedApp != null && SelectedGroup != null);
+            AddHotkeyCommand = new RelayCommand(AddHotkey, () => SelectedApp != null && SelectedGroup != null);
+            RemoveHotkeyCommand = new RelayCommand(RemoveHotkey, () => SelectedApp != null && SelectedHotkey != null && SelectedGroup != null);
             SaveCommand = new RelayCommand(Save);
             OpenFolderCommand = new RelayCommand(OpenFolder);
             RestoreDefaultsCommand = new RelayCommand(RestoreDefaults);
@@ -194,19 +215,34 @@ namespace WhatKey.ViewModels
             IsDetecting = false;
         }
 
-        private void AddHotkey()
+        private void AddGroup()
         {
             if (SelectedApp == null) return;
+            var group = new HotkeyGroup { Name = "New Group" };
+            SelectedApp.Groups.Add(group);
+            SelectedGroup = group;
+        }
+
+        private void RemoveGroup()
+        {
+            if (SelectedApp == null || SelectedGroup == null) return;
+            SelectedApp.Groups.Remove(SelectedGroup);
+            SelectedGroup = SelectedApp.Groups.FirstOrDefault();
+        }
+
+        private void AddHotkey()
+        {
+            if (SelectedApp == null || SelectedGroup == null) return;
 
             var entry = new HotkeyEntry { Keys = "Ctrl+?", Description = "New hotkey" };
-            SelectedApp.Hotkeys.Add(entry);
+            SelectedGroup.Hotkeys.Add(entry);
             SelectedHotkey = entry;
         }
 
         private void RemoveHotkey()
         {
-            if (SelectedApp == null || SelectedHotkey == null) return;
-            SelectedApp.Hotkeys.Remove(SelectedHotkey);
+            if (SelectedApp == null || SelectedHotkey == null || SelectedGroup == null) return;
+            SelectedGroup.Hotkeys.Remove(SelectedHotkey);
             SelectedHotkey = null;
         }
 

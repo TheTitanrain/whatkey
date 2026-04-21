@@ -79,15 +79,15 @@ Add `HotkeyGroup` model that organizes hotkeys into named categories per app. Th
 - Modify: `Views/EditorWindow.xaml`
 - Modify: `tests/WhatKey.Tests/EditorViewModelCommandTests.cs`
 
-- [ ] `EditorViewModel`: add `SelectedGroup: HotkeyGroup` (notifying), `Groups: ObservableCollection<HotkeyGroup>` (synced from `SelectedApp.Groups`); add `AddGroupCommand`, `RemoveGroupCommand`
-- [ ] When `SelectedApp` changes: refresh `Groups` from `SelectedApp.Groups`, auto-select first group, reset `SelectedHotkey = null`
-- [ ] `AddGroupCommand`: add `HotkeyGroup { Name = "New Group" }` to both `SelectedApp.Groups` and `Groups`, select it; guard: SelectedApp != null
-- [ ] `RemoveGroupCommand`: remove `SelectedGroup` from `SelectedApp.Groups` and `Groups`; select first remaining group or null; guard: SelectedApp != null && SelectedGroup != null
-- [ ] `AddHotkeyCommand`: add to `SelectedGroup.Hotkeys`; guard: SelectedApp != null && SelectedGroup != null
-- [ ] `RemoveHotkeyCommand`: remove from `SelectedGroup.Hotkeys`; guard: both non-null
-- [ ] `EditorWindow.xaml`: above DataGrid, add group bar — `ListBox` with `ItemsSource="{Binding Groups}"`, `SelectedItem="{Binding SelectedGroup}"` showing group names (inline TextBox binding to `SelectedGroup.Name`); Add Group / Remove Group buttons beside it; DataGrid `ItemsSource` → `{Binding SelectedGroup.Hotkeys}`
-- [ ] Update `EditorViewModelCommandTests`: test `AddGroupCommand` adds group and selects it; test `RemoveGroupCommand` removes group and selects fallback; test `AddHotkeyCommand` adds to SelectedGroup; test app selection auto-selects first group
-- [ ] Run `dotnet test` — must pass before Task 4
+- [x] `EditorViewModel`: add `SelectedGroup: HotkeyGroup` (notifying), `Groups: ObservableCollection<HotkeyGroup>` (synced from `SelectedApp.Groups`); add `AddGroupCommand`, `RemoveGroupCommand`
+- [x] When `SelectedApp` changes: refresh `Groups` from `SelectedApp.Groups`, auto-select first group, reset `SelectedHotkey = null`
+- [x] `AddGroupCommand`: add `HotkeyGroup { Name = "New Group" }` to both `SelectedApp.Groups` and `Groups`, select it; guard: SelectedApp != null
+- [x] `RemoveGroupCommand`: remove `SelectedGroup` from `SelectedApp.Groups` and `Groups`; select first remaining group or null; guard: SelectedApp != null && SelectedGroup != null
+- [x] `AddHotkeyCommand`: add to `SelectedGroup.Hotkeys`; guard: SelectedApp != null && SelectedGroup != null
+- [x] `RemoveHotkeyCommand`: remove from `SelectedGroup.Hotkeys`; guard: both non-null
+- [x] `EditorWindow.xaml`: above DataGrid, add group bar — `ListBox` with `ItemsSource="{Binding Groups}"`, `SelectedItem="{Binding SelectedGroup}"` showing group names (inline TextBox binding to `SelectedGroup.Name`); Add Group / Remove Group buttons beside it; DataGrid `ItemsSource` → `{Binding SelectedGroup.Hotkeys}`
+- [x] Update `EditorViewModelCommandTests`: test `AddGroupCommand` adds group and selects it; test `RemoveGroupCommand` removes group and selects fallback; test `AddHotkeyCommand` adds to SelectedGroup; test app selection auto-selects first group
+- [x] Run `dotnet test` — must pass before Task 4
 
 ### Task 4: Verify acceptance criteria and documentation
 
