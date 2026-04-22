@@ -43,11 +43,14 @@ namespace WhatKey.Views
             DataContext = _viewModel;
         }
 
-        public void ShowWithGroups(List<HotkeyGroup> groups, string processName, IntPtr sourceHwnd = default)
+        public void ShowWithGroups(List<HotkeyGroup> groups, List<HotkeyGroup> systemGroups, string processName, IntPtr sourceHwnd = default)
         {
             var safeGroups = groups ?? new List<HotkeyGroup>();
-            var totalHotkeys = safeGroups.Sum(g => g.Hotkeys != null ? g.Hotkeys.Count : 0);
+            var safeSystem = systemGroups ?? new List<HotkeyGroup>();
+            var totalHotkeys = safeGroups.Sum(g => g.Hotkeys != null ? g.Hotkeys.Count : 0)
+                             + safeSystem.Sum(g => g.Hotkeys != null ? g.Hotkeys.Count : 0);
             _viewModel.Groups = new ObservableCollection<HotkeyGroup>(safeGroups);
+            _viewModel.SystemGroups = new ObservableCollection<HotkeyGroup>(safeSystem);
             _viewModel.UpdateLayoutForHotkeysCount(totalHotkeys);
             _viewModel.AppTitle = string.IsNullOrEmpty(processName) ? "Unknown Application" : processName;
 

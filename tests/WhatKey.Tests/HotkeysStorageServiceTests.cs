@@ -241,5 +241,46 @@ namespace WhatKey.Tests
                 Assert.IsNotNull(hotkeys, "GetHotkeysForProcess should find the migrated entry.");
             }
         }
+
+        [TestMethod]
+        public void GetSystemGroups_ReturnsSystemEntry()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var storage = scope.CreateStorage();
+                storage.Apps.Add(new AppHotkeys
+                {
+                    ProcessNames = new List<string> { "system" },
+                    Title = "System",
+                    Groups = new ObservableCollection<HotkeyGroup>
+                    {
+                        new HotkeyGroup
+                        {
+                            Name = "Window",
+                            Hotkeys = new ObservableCollection<HotkeyEntry>
+                            {
+                                new HotkeyEntry { Keys = "Win+D", Description = "Show Desktop" }
+                            }
+                        }
+                    }
+                });
+
+                var groups = storage.GetSystemGroups();
+
+                Assert.AreEqual(1, groups.Count);
+                Assert.AreEqual("Win+D", groups[0].Hotkeys[0].Keys);
+            }
+        }
+
+        [TestMethod]
+        public void GetSystemGroups_WhenNoSystemEntry_ReturnsEmptyList()
+        {
+            using (var scope = new TestStorageScope())
+            {
+                var storage = scope.CreateStorage();
+                var groups = storage.GetSystemGroups();
+                Assert.AreEqual(0, groups.Count);
+            }
+        }
     }
 }

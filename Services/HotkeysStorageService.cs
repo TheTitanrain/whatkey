@@ -108,6 +108,16 @@ namespace WhatKey.Services
             return GetDefaultGroups();
         }
 
+        public List<HotkeyGroup> GetSystemGroups()
+        {
+            foreach (var app in _data.Apps)
+            {
+                if (app.ProcessNames.Contains("system", StringComparer.OrdinalIgnoreCase))
+                    return new List<HotkeyGroup>(app.Groups ?? new ObservableCollection<HotkeyGroup>());
+            }
+            return new List<HotkeyGroup>();
+        }
+
         public List<HotkeyEntry> GetHotkeysForProcess(string processName)
         {
             return GetGroupsForProcess(processName)

@@ -708,6 +708,36 @@
       ]
     },
     {
+      "processNames": ["system"],
+      "title": "System",
+      "groups": [
+        {
+          "name": "Window",
+          "hotkeys": [
+            { "keys": "Alt+Tab", "description": "Switch Window" },
+            { "keys": "Win+D", "description": "Show Desktop" },
+            { "keys": "Win+L", "description": "Lock Screen" },
+            { "keys": "Alt+F4", "description": "Close Window" },
+            { "keys": "Win+Up", "description": "Maximize Window" },
+            { "keys": "Win+Down", "description": "Restore / Minimize" },
+            { "keys": "Win+Left/Right", "description": "Snap Window" }
+          ]
+        },
+        {
+          "name": "System",
+          "hotkeys": [
+            { "keys": "Win+E", "description": "File Explorer" },
+            { "keys": "Win+I", "description": "Settings" },
+            { "keys": "Win+R", "description": "Run Dialog" },
+            { "keys": "Ctrl+Shift+Esc", "description": "Task Manager" },
+            { "keys": "Win+PrtSc", "description": "Screenshot to Pictures" },
+            { "keys": "Win+Shift+S", "description": "Snip & Sketch" },
+            { "keys": "Win+V", "description": "Clipboard History" }
+          ]
+        }
+      ]
+    },
+    {
       "processNames": ["totalcmd", "totalcmd64"],
       "title": "Total Commander",
       "groups": [

@@ -247,7 +247,8 @@ namespace WhatKey
         {
             var (processName, hwnd) = _activeWindowService.GetActiveWindowInfo();
             var groups = _storageService.GetGroupsForProcess(processName);
-            _overlayWindow.ShowWithGroups(groups, processName, hwnd);
+            var systemGroups = _storageService.GetSystemGroups();
+            _overlayWindow.ShowWithGroups(groups, systemGroups, processName, hwnd);
         }
 
         private void OnTriggerHide(object sender, EventArgs e)

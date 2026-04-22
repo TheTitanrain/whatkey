@@ -18,6 +18,7 @@ namespace WhatKey.ViewModels
         private string _appTitle;
         private int _overlayColumns = MinOverlayColumns;
         private ObservableCollection<HotkeyGroup> _groups = new ObservableCollection<HotkeyGroup>();
+        private ObservableCollection<HotkeyGroup> _systemGroups = new ObservableCollection<HotkeyGroup>();
 
         public string AppTitle
         {
@@ -34,6 +35,20 @@ namespace WhatKey.ViewModels
                     OnPropertyChanged(nameof(EmptyMessageVisibility));
             }
         }
+
+        public ObservableCollection<HotkeyGroup> SystemGroups
+        {
+            get => _systemGroups;
+            set
+            {
+                if (SetField(ref _systemGroups, value))
+                    OnPropertyChanged(nameof(SystemSectionVisible));
+            }
+        }
+
+        public Visibility SystemSectionVisible =>
+            _systemGroups != null && _systemGroups.Any(g => g.Hotkeys != null && g.Hotkeys.Count > 0)
+                ? Visibility.Visible : Visibility.Collapsed;
 
         public int OverlayColumns
         {
