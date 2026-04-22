@@ -14,7 +14,7 @@
         MaxHeight="650">
 
     <Window.Resources>
-        <converters:KeyAccentBrushConverter x:Key="KeyAccentBrush"/>
+        <converters:KeyTokensConverter x:Key="KeyTokens"/>
     </Window.Resources>
 
     <Border Background="#CC1E1E2E"
@@ -74,10 +74,21 @@
                                                 <Border Background="#313244" CornerRadius="5"
                                                         Padding="8,3" Grid.Column="0" Margin="0,0,14,0"
                                                         HorizontalAlignment="Left">
-                                                    <TextBlock Text="{Binding Keys}"
-                                                               Foreground="{Binding Keys, Converter={StaticResource KeyAccentBrush}}"
-                                                               FontFamily="Consolas"
-                                                               FontSize="12"/>
+                                                    <ItemsControl ItemsSource="{Binding Keys, Converter={StaticResource KeyTokens}}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Horizontal"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Text}"
+                                                                           Foreground="{Binding Brush}"
+                                                                           FontFamily="Consolas"
+                                                                           FontSize="12"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
                                                 </Border>
 
                                                 <TextBlock Text="{Binding Description}"
