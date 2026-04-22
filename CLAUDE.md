@@ -46,6 +46,27 @@
 ## Overlay layout behavior
 
 - `OverlayViewModel` owns deterministic column count selection for the hotkeys overlay (`1/2/3` columns).
-- Column count is recalculated in `ShowWithHotkeys(...)` based on current hotkey count and max overlay height constraints.
+- Column count is recalculated in `ShowWithGroups(...)` based on total hotkey count across all groups and max overlay height constraints.
 - `Views/OverlayWindow.xaml` binds layout columns from the view model instead of hardcoding a single vertical list.
 - Keep column selection logic UI-independent so it remains covered by `tests/WhatKey.Tests/OverlayLayoutTests.cs`.
+
+## HotkeyGroup model and group management
+
+- `HotkeyGroup` (`Models/HotkeyGroup.cs`): `Name` (string) + `Hotkeys` (ObservableCollection<HotkeyEntry>). Groups organize hotkeys into named categories per app.
+- `AppHotkeys.Groups` (`[JsonProperty("groups")]`) is the canonical list of groups. Legacy `Hotkeys` is kept with `NullValueHandling.Ignore` for backwards-compat JSON reading only; never written back to disk.
+- `NormalizeData()` migrates old flat `hotkeys` array: wraps it in a single `HotkeyGroup { Name = "General" }` pushed into `Groups`, then sets `Hotkeys = null`. Mirrors the `processName → processNames` migration pattern.
+- `GetGroupsForProcess(string processName)` returns `List<HotkeyGroup>` using same lookup as `GetHotkeysForProcess`. `GetHotkeysForProcess` now flattens all groups' hotkeys (used by keyboard hook for matching).
+- `App.xaml.cs` calls `GetGroupsForProcess` and passes result to `OverlayWindow.ShowWithGroups(groups, processName, hwnd)`.
+- `EditorViewModel` exposes `Groups: ObservableCollection<HotkeyGroup>` (synced from `SelectedApp.Groups`) and `SelectedGroup: HotkeyGroup`. When `SelectedApp` changes, `Groups` refreshes and first group is auto-selected.
+- `AddGroupCommand` / `RemoveGroupCommand` add/remove groups from both `SelectedApp.Groups` and `Groups`; `AddHotkeyCommand` / `RemoveHotkeyCommand` target `SelectedGroup.Hotkeys`.
+- New apps (`AddApp`) are initialized with `Groups = [{ Name = "General" }]`.
+
+## KeyAccentBrushConverter
+
+- `Converters/KeyAccentBrushConverter.cs`: `IValueConverter` taking the `Keys` string of a `HotkeyEntry`.
+- Split on `+`, trim tokens. Priority order (first match wins):
+  - Any token matches `F([1-9]|1[0-2])` (case-insensitive, exact) → green `#A6E3A1` (function keys)
+  - Any token matches `Ctrl|Alt|Shift|Win|Esc|Tab|Meta` (case-insensitive) → yellow `#F9E2AF` (modifiers)
+  - Otherwise → default blue `#89DCEB`
+- Returns default brush on null input or conversion exception.
+- Registered in `OverlayWindow.xaml` `Window.Resources` and bound to key TextBlock foreground.

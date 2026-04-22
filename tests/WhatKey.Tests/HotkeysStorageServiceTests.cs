@@ -68,9 +68,16 @@ namespace WhatKey.Tests
                 {
                     ProcessNames = new List<string> { "notepad" },
                     Title = "Notepad",
-                    Hotkeys = new ObservableCollection<HotkeyEntry>
+                    Groups = new ObservableCollection<HotkeyGroup>
                     {
-                        new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" }
+                        new HotkeyGroup
+                        {
+                            Name = "General",
+                            Hotkeys = new ObservableCollection<HotkeyEntry>
+                            {
+                                new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" }
+                            }
+                        }
                     }
                 });
                 storage.Save();
@@ -82,7 +89,7 @@ namespace WhatKey.Tests
                 Assert.AreEqual(1200, storage2.Settings.HoldDelayMs);
                 Assert.AreEqual(1, storage2.Apps.Count);
                 Assert.IsTrue(storage2.Apps[0].ProcessNames.Contains("notepad"));
-                Assert.AreEqual("Save", storage2.Apps[0].Hotkeys[0].Description);
+                Assert.AreEqual("Save", storage2.Apps[0].Groups[0].Hotkeys[0].Description);
             }
         }
 
@@ -96,9 +103,16 @@ namespace WhatKey.Tests
                 {
                     ProcessNames = new List<string> { "notepad" },
                     Title = "Notepad",
-                    Hotkeys = new ObservableCollection<HotkeyEntry>
+                    Groups = new ObservableCollection<HotkeyGroup>
                     {
-                        new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" }
+                        new HotkeyGroup
+                        {
+                            Name = "General",
+                            Hotkeys = new ObservableCollection<HotkeyEntry>
+                            {
+                                new HotkeyEntry { Keys = "Ctrl+S", Description = "Save" }
+                            }
+                        }
                     }
                 });
 
@@ -119,9 +133,16 @@ namespace WhatKey.Tests
                 {
                     ProcessNames = new List<string> { "default" },
                     Title = "Default",
-                    Hotkeys = new ObservableCollection<HotkeyEntry>
+                    Groups = new ObservableCollection<HotkeyGroup>
                     {
-                        new HotkeyEntry { Keys = "F1", Description = "Help" }
+                        new HotkeyGroup
+                        {
+                            Name = "General",
+                            Hotkeys = new ObservableCollection<HotkeyEntry>
+                            {
+                                new HotkeyEntry { Keys = "F1", Description = "Help" }
+                            }
+                        }
                     }
                 });
 
@@ -175,9 +196,16 @@ namespace WhatKey.Tests
                 {
                     ProcessNames = new List<string> { "totalcmd", "totalcmd64" },
                     Title = "Total Commander",
-                    Hotkeys = new ObservableCollection<HotkeyEntry>
+                    Groups = new ObservableCollection<HotkeyGroup>
                     {
-                        new HotkeyEntry { Keys = "F5", Description = "Copy File(s)" }
+                        new HotkeyGroup
+                        {
+                            Name = "File Operations",
+                            Hotkeys = new ObservableCollection<HotkeyEntry>
+                            {
+                                new HotkeyEntry { Keys = "F5", Description = "Copy File(s)" }
+                            }
+                        }
                     }
                 });
 

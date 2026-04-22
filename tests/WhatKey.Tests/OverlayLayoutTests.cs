@@ -14,7 +14,9 @@ namespace WhatKey.Tests
         {
             var xaml = LoadOverlayWindowXaml();
 
-            StringAssert.Contains(xaml, "<UniformGrid Columns=\"{Binding OverlayColumns, FallbackValue=1}\"/>");
+            StringAssert.Contains(xaml, "ItemsSource=\"{Binding Groups}\"");
+            StringAssert.Contains(xaml, "UniformGrid");
+            StringAssert.Contains(xaml, "OverlayColumns");
         }
 
         [TestMethod]
@@ -168,16 +170,16 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
-        public void OverlayWindowCodeBehind_ShowWithHotkeys_UpdatesColumnsAndKeepsShowPipeline()
+        public void OverlayWindowCodeBehind_ShowWithGroups_UpdatesColumnsAndKeepsShowPipeline()
         {
             var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");
 
-            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count);");
+            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(totalHotkeys);");
             StringAssert.Contains(codeBehind, "MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);");
             StringAssert.Contains(codeBehind, "MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);");
-            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, MaxWidth);");
+            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, MaxWidth);");
             StringAssert.Contains(codeBehind, "var listWidth = GetAvailableHotkeysListWidth();");
-            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(safeHotkeys.Count, listWidth);");
+            StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, listWidth);");
             StringAssert.Contains(codeBehind, "Left = Math.Max(bounds.Left, Math.Min(centeredLeft, maxLeft));");
             StringAssert.Contains(codeBehind, "Top = Math.Max(bounds.Top, Math.Min(centeredTop, maxTop));");
             StringAssert.Contains(codeBehind, "Dispatcher.BeginInvoke(new Action(() =>");
@@ -208,25 +210,37 @@ namespace WhatKey.Tests
         {
             var viewModel = new OverlayViewModel();
 
-            viewModel.Hotkeys = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyEntry>();
+            viewModel.Groups = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyGroup>();
             Assert.AreEqual("Visible", viewModel.EmptyMessageVisibility.ToString());
 
-            viewModel.Hotkeys.Add(new WhatKey.Models.HotkeyEntry { Keys = "Ctrl+P", Description = "Quick Open" });
+            viewModel.Groups.Add(new WhatKey.Models.HotkeyGroup
+            {
+                Hotkeys = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyEntry>
+                {
+                    new WhatKey.Models.HotkeyEntry { Keys = "Ctrl+P", Description = "Quick Open" }
+                }
+            });
             Assert.AreEqual("Collapsed", viewModel.EmptyMessageVisibility.ToString());
         }
 
         [TestMethod]
-        public void EmptyMessageVisibility_WhenHotkeysSetToNull_IsVisible()
+        public void EmptyMessageVisibility_WhenGroupsSetToNull_IsVisible()
         {
             var viewModel = new OverlayViewModel
             {
-                Hotkeys = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyEntry>
+                Groups = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyGroup>
                 {
-                    new WhatKey.Models.HotkeyEntry()
+                    new WhatKey.Models.HotkeyGroup
+                    {
+                        Hotkeys = new System.Collections.ObjectModel.ObservableCollection<WhatKey.Models.HotkeyEntry>
+                        {
+                            new WhatKey.Models.HotkeyEntry()
+                        }
+                    }
                 }
             };
 
-            viewModel.Hotkeys = null;
+            viewModel.Groups = null;
 
             Assert.AreEqual("Visible", viewModel.EmptyMessageVisibility.ToString());
         }

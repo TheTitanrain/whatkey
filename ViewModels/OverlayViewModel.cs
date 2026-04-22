@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using WhatKey.Models;
 
@@ -16,7 +17,7 @@ namespace WhatKey.ViewModels
 
         private string _appTitle;
         private int _overlayColumns = MinOverlayColumns;
-        private ObservableCollection<HotkeyEntry> _hotkeys = new ObservableCollection<HotkeyEntry>();
+        private ObservableCollection<HotkeyGroup> _groups = new ObservableCollection<HotkeyGroup>();
 
         public string AppTitle
         {
@@ -24,12 +25,12 @@ namespace WhatKey.ViewModels
             set => SetField(ref _appTitle, value);
         }
 
-        public ObservableCollection<HotkeyEntry> Hotkeys
+        public ObservableCollection<HotkeyGroup> Groups
         {
-            get => _hotkeys;
+            get => _groups;
             set
             {
-                if (SetField(ref _hotkeys, value))
+                if (SetField(ref _groups, value))
                     OnPropertyChanged(nameof(EmptyMessageVisibility));
             }
         }
@@ -41,7 +42,7 @@ namespace WhatKey.ViewModels
         }
 
         public Visibility EmptyMessageVisibility =>
-            _hotkeys == null || _hotkeys.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            _groups == null || !_groups.Any(g => g.Hotkeys != null && g.Hotkeys.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
 
         public double HotkeysListMaxHeight => DefaultHotkeysListMaxHeight;
 
