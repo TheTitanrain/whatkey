@@ -74,6 +74,15 @@
 - Manual check: tray menu item reuses `_updateService` app-level field; About window creates `new UpdateService()` per click. Both show `MessageBox` result.
 - Unit tests inject a fake fetch delegate — no real HTTP in tests.
 
+## Versioning (MinVer)
+
+- `MinVer` NuGet package drives assembly version from git tags automatically (`PrivateAssets="All"`).
+- `<MinVerTagPrefix>v</MinVerTagPrefix>` in `WhatKey.csproj` strips the `v` prefix so tag `v1.7.0` → version `1.7.0`.
+- No `<Version>` property in csproj; MinVer computes it at build time.
+- Workflow: create annotated tag (`git tag -a v1.X.0 -m "..."`) → `dotnet build` → assembly version updates automatically.
+- Commits past a tag get pre-release suffix (e.g., `1.7.0-alpha.0.2`); clean tagged commit = exact version.
+- `dotnet msbuild -getProperty:Version` shows the computed version without a full build.
+
 ## KeyTokensConverter
 
 - `Converters/KeyTokensConverter.cs`: `IValueConverter` taking the `Keys` string of a `HotkeyEntry` and returning `List<KeyToken>`.
