@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WhatKey.Models;
@@ -36,6 +37,8 @@ namespace WhatKey.Views
             public uint dwFlags;
         }
 
+        private int _fadeOutGeneration;
+
         public OverlayWindow()
         {
             InitializeComponent();
@@ -45,6 +48,7 @@ namespace WhatKey.Views
 
         public void ShowWithGroups(List<HotkeyGroup> groups, List<HotkeyGroup> systemGroups, string processName, IntPtr sourceHwnd = default)
         {
+            ++_fadeOutGeneration;
             var safeGroups = groups ?? new List<HotkeyGroup>();
             var safeSystem = systemGroups ?? new List<HotkeyGroup>();
             var totalHotkeys = safeGroups.Sum(g => g.Hotkeys != null ? g.Hotkeys.Count : 0)
@@ -104,9 +108,19 @@ namespace WhatKey.Views
                 SystemParameters.PrimaryScreenWidth,
                 SystemParameters.PrimaryScreenHeight);
 
-            if (hwnd == IntPtr.Zero) return fallback;
+            IntPtr hMonitor;
+            if (hwnd == IntPtr.Zero)
+            {
+                var ourHwnd = new WindowInteropHelper(this).Handle;
+                hMonitor = ourHwnd != IntPtr.Zero
+                    ? MonitorFromWindow(ourHwnd, MONITOR_DEFAULTTONEAREST)
+                    : MonitorFromWindow(IntPtr.Zero, MONITOR_DEFAULTTONEAREST);
+            }
+            else
+            {
+                hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            }
 
-            var hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
             var info = new MONITORINFO { cbSize = (uint)Marshal.SizeOf<MONITORINFO>() };
             if (!GetMonitorInfo(hMonitor, ref info)) return fallback;
 
@@ -121,10 +135,11 @@ namespace WhatKey.Views
 
         public void HideOverlay()
         {
+            var gen = _fadeOutGeneration;
             var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(150));
             fadeOut.Completed += (s, e) =>
             {
-                if (Opacity == 0)
+                if (_fadeOutGeneration == gen)
                     Hide();
             };
             BeginAnimation(OpacityProperty, fadeOut);

@@ -9,10 +9,22 @@ namespace WhatKey.Converters
 {
     public class KeyTokensConverter : IValueConverter
     {
-        private static readonly Brush ModifierBrush = new SolidColorBrush(Color.FromRgb(0xF9, 0xE2, 0xAF));
-        private static readonly Brush FunctionBrush = new SolidColorBrush(Color.FromRgb(0xA6, 0xE3, 0xA1));
-        private static readonly Brush DefaultBrush = new SolidColorBrush(Color.FromRgb(0xCD, 0xD6, 0xF4));
-        private static readonly Brush SeparatorBrush = new SolidColorBrush(Color.FromRgb(0x6C, 0x70, 0x86));
+        private static readonly Brush ModifierBrush;
+        private static readonly Brush FunctionBrush;
+        private static readonly Brush DefaultBrush;
+        private static readonly Brush SeparatorBrush;
+
+        static KeyTokensConverter()
+        {
+            ModifierBrush = new SolidColorBrush(Color.FromRgb(0xF9, 0xE2, 0xAF));
+            ModifierBrush.Freeze();
+            FunctionBrush = new SolidColorBrush(Color.FromRgb(0xA6, 0xE3, 0xA1));
+            FunctionBrush.Freeze();
+            DefaultBrush = new SolidColorBrush(Color.FromRgb(0xCD, 0xD6, 0xF4));
+            DefaultBrush.Freeze();
+            SeparatorBrush = new SolidColorBrush(Color.FromRgb(0x6C, 0x70, 0x86));
+            SeparatorBrush.Freeze();
+        }
 
         private static readonly string[] ModifierKeys = { "ctrl", "alt", "shift", "win", "esc", "tab", "meta" };
         private static readonly Regex FunctionKeyRegex = new Regex(@"^f([1-9]|1[0-2])$", RegexOptions.IgnoreCase | RegexOptions.Compiled);

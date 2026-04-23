@@ -61,12 +61,15 @@
 - `AddGroupCommand` / `RemoveGroupCommand` add/remove groups from both `SelectedApp.Groups` and `Groups`; `AddHotkeyCommand` / `RemoveHotkeyCommand` target `SelectedGroup.Hotkeys`.
 - New apps (`AddApp`) are initialized with `Groups = [{ Name = "General" }]`.
 
-## KeyAccentBrushConverter
+## KeyTokensConverter
 
-- `Converters/KeyAccentBrushConverter.cs`: `IValueConverter` taking the `Keys` string of a `HotkeyEntry`.
-- Split on `+`, trim tokens. Priority order (first match wins):
+- `Converters/KeyTokensConverter.cs`: `IValueConverter` taking the `Keys` string of a `HotkeyEntry` and returning `List<KeyToken>`.
+- Splits on `+` for modifiers and `space` for chords (e.g., `Ctrl+K Ctrl+W`).
+- Creates `KeyToken` objects with text and brush color; inserts separator tokens for `+` and ` `.
+- Priority order for brush selection (first match wins):
   - Any token matches `F([1-9]|1[0-2])` (case-insensitive, exact) → green `#A6E3A1` (function keys)
   - Any token matches `Ctrl|Alt|Shift|Win|Esc|Tab|Meta` (case-insensitive) → yellow `#F9E2AF` (modifiers)
-  - Otherwise → default blue `#89DCEB`
-- Returns default brush on null input or conversion exception.
-- Registered in `OverlayWindow.xaml` `Window.Resources` and bound to key TextBlock foreground.
+  - Otherwise → default lavender `#CDD6F4`
+  - Separators use dark gray `#6C7086`
+- Returns empty list on null input.
+- Registered in `OverlayWindow.xaml` `Window.Resources` and bound to `ItemsSource` of key tokens `ItemsControl`.

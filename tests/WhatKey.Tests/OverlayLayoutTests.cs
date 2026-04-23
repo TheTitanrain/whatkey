@@ -24,7 +24,7 @@ namespace WhatKey.Tests
         {
             var xaml = LoadOverlayWindowXaml();
 
-            StringAssert.Contains(xaml, "Binding Keys");
+            StringAssert.Contains(xaml, "ItemsSource=\"{Binding Keys, Converter={StaticResource KeyTokens}");
             StringAssert.Contains(xaml, "Text=\"{Binding Description}\"");
             StringAssert.Contains(xaml, "Text=\"No hotkeys defined for this application.\"");
         }
