@@ -63,9 +63,9 @@ manual check shows a dialog.
 
 ### Task 4: Verify acceptance criteria
 
-- [ ] Run `dotnet test` (full suite)
-- [ ] Run `dotnet build` — 0 errors, 0 warnings
-- [ ] Manual smoke: launch app, About window shows version + button works, tray menu item works, startup balloon appears if update available
+- [x] Run `dotnet test` (full suite)
+- [x] Run `dotnet build` — 0 errors, 0 warnings
+- [x] Manual smoke: launch app, About window shows version + button works, tray menu item works, startup balloon appears if update available (manual test - skipped, not automatable)
 
 ### Task 5: Update documentation
 
