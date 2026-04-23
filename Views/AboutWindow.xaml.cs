@@ -30,6 +30,8 @@ namespace WhatKey.Views
 
         private async void CheckUpdates_Click(object sender, RoutedEventArgs e)
         {
+            var button = (System.Windows.Controls.Button)sender;
+            button.IsEnabled = false;
             try
             {
                 var svc = new UpdateService();
@@ -55,6 +57,10 @@ namespace WhatKey.Views
             catch (Exception ex)
             {
                 MessageBox.Show($"Could not check for updates: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                button.IsEnabled = true;
             }
         }
 

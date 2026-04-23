@@ -31,7 +31,8 @@ namespace WhatKey.Tests
             string json = "{\"tag_name\":\"v1.0.0\",\"html_url\":\"https://github.com/releases/tag/v1.0.0\"}";
             var svc = MakeService(json);
 
-            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0));
+            // Use 4-part version to match production (Assembly.GetName().Version is always 4-part on .NET Framework).
+            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0, 0));
 
             Assert.IsFalse(result.UpdateAvailable);
             Assert.AreEqual("1.0.0", result.LatestVersion);
@@ -94,6 +95,32 @@ namespace WhatKey.Tests
 
             Assert.IsNotNull(caught);
             Assert.IsInstanceOfType(caught, typeof(JsonException));
+        }
+
+        [TestMethod]
+        public async Task CheckForUpdate_PrereleaseTag_StripsAndParsesCorrectly()
+        {
+            string json = "{\"tag_name\":\"v2.0.0-rc1\",\"html_url\":\"https://github.com/\"}";
+            var svc = MakeService(json);
+
+            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0, 0));
+
+            Assert.IsTrue(result.UpdateAvailable);
+            Assert.AreEqual("2.0.0", result.LatestVersion);
+        }
+
+        [TestMethod]
+        public async Task CheckForUpdate_NullTagName_Throws()
+        {
+            string json = "{\"tag_name\":null,\"html_url\":\"https://github.com/\"}";
+            var svc = MakeService(json);
+
+            Exception caught = null;
+            try { await svc.CheckForUpdateAsync(new Version(1, 0, 0, 0)); }
+            catch (Exception ex) { caught = ex; }
+
+            Assert.IsNotNull(caught);
+            Assert.IsInstanceOfType(caught, typeof(FormatException));
         }
 
         [TestMethod]

@@ -38,12 +38,20 @@ namespace WhatKey.Services
             {
                 JsonElement root = doc.RootElement;
                 string tagName = root.GetProperty("tag_name").GetString();
+                if (string.IsNullOrEmpty(tagName))
+                    throw new FormatException("GitHub release tag_name is missing or null.");
+
                 string htmlUrl = root.TryGetProperty("html_url", out JsonElement urlElem)
-                    ? urlElem.GetString()
+                    ? (urlElem.GetString() ?? string.Empty)
                     : string.Empty;
 
                 string versionStr = tagName.TrimStart('v', 'V');
-                Version latestVersion = Version.Parse(versionStr);
+                int dashIdx = versionStr.IndexOf('-');
+                if (dashIdx >= 0)
+                    versionStr = versionStr.Substring(0, dashIdx);
+
+                if (!Version.TryParse(versionStr, out Version latestVersion))
+                    throw new FormatException($"Cannot parse version from tag '{tagName}'.");
 
                 bool updateAvailable = latestVersion > currentVersion;
                 return new UpdateCheckResult(updateAvailable, versionStr, htmlUrl);
