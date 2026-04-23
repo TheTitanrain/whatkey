@@ -69,9 +69,9 @@
 - `Services/UpdateService.cs` accepts `Func<Task<string>>` in constructor for injectable fetch (defaults to live GitHub API via `static readonly HttpClient`).
 - Static `HttpClient` avoids socket exhaustion for repeated checks in a single process lifetime.
 - `CheckForUpdateAsync(Version currentVersion)` fetches JSON, parses `tag_name` and `html_url` via `System.Text.Json`, strips leading `v`, compares with `Version.Parse`, returns `UpdateCheckResult { UpdateAvailable, LatestVersion, ReleaseUrl }`.
-- Returns `null` on network failure (caller decides how to surface the error).
-- `App.xaml.cs` fires auto-check after tray init as fire-and-forget (`_ = CheckForUpdatesInBackgroundAsync()`); exceptions caught silently; on update found shows `TaskbarIcon.ShowBalloonTip` and wires one-time `TrayBalloonTipClicked` to open release URL.
-- Manual check (About window + tray menu item) creates `UpdateService` directly and shows `MessageBox` result.
+- Throws on network or parse failure; `App.xaml.cs` background check catches silently, manual check handlers show `MessageBox` on exception.
+- `App.xaml.cs` fires auto-check after tray init as fire-and-forget (`_ = CheckForUpdatesInBackgroundAsync()`); exceptions caught silently; on update found shows `TaskbarIcon.ShowBalloonTip` and wires one-time `TrayBalloonTipClicked` (unsubscribed on click or on `TrayBalloonTipClosed`) to open release URL.
+- Manual check: tray menu item reuses `_updateService` app-level field; About window creates `new UpdateService()` per click. Both show `MessageBox` result.
 - Unit tests inject a fake fetch delegate — no real HTTP in tests.
 
 ## KeyTokensConverter

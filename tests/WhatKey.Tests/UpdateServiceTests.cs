@@ -46,6 +46,8 @@ namespace WhatKey.Tests
             var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0));
 
             Assert.IsFalse(result.UpdateAvailable);
+            Assert.AreEqual("0.9.0", result.LatestVersion);
+            Assert.AreEqual("https://github.com/releases/tag/v0.9.0", result.ReleaseUrl);
         }
 
         [TestMethod]

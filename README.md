@@ -27,6 +27,7 @@ You can also press **Ctrl+Alt+H** to toggle the overlay in pinned mode.
 - `Detect App` button auto-detects the target process within 3 seconds
 - Configurable trigger key, hold delay, and toggle hotkey
 - Data is stored in `%APPDATA%\WhatKey\hotkeys.json`
+- Checks for updates on startup and notifies via tray balloon; manual check available in the About window and tray menu
 - Runs in the tray and stays out of the way
 
 ## Built-in profiles

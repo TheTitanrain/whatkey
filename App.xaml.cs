@@ -366,13 +366,21 @@ namespace WhatKey
 
                 string releaseUrl = result.ReleaseUrl;
                 RoutedEventHandler handler = null;
+                RoutedEventHandler closeHandler = null;
                 handler = (s, e) =>
                 {
                     _trayIcon.TrayBalloonTipClicked -= handler;
+                    _trayIcon.TrayBalloonTipClosed -= closeHandler;
                     if (!string.IsNullOrEmpty(releaseUrl))
                         Process.Start(new ProcessStartInfo(releaseUrl) { UseShellExecute = true });
                 };
+                closeHandler = (s, e) =>
+                {
+                    _trayIcon.TrayBalloonTipClicked -= handler;
+                    _trayIcon.TrayBalloonTipClosed -= closeHandler;
+                };
                 _trayIcon.TrayBalloonTipClicked += handler;
+                _trayIcon.TrayBalloonTipClosed += closeHandler;
                 _trayIcon.ShowBalloonTip("Update available", $"WhatKey {result.LatestVersion} is available. Click to open.", BalloonIcon.Info);
             }
             catch
