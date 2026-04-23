@@ -39,9 +39,12 @@ namespace WhatKey.Converters
 
             // Handle chord sequences (space-separated, e.g. "Ctrl+K Ctrl+W")
             var chords = keys.Split(' ');
+            bool firstChord = true;
             for (int ci = 0; ci < chords.Length; ci++)
             {
-                if (ci > 0)
+                if (string.IsNullOrWhiteSpace(chords[ci])) continue;
+
+                if (!firstChord)
                     result.Add(new KeyToken(" ", SeparatorBrush));
 
                 var parts = chords[ci].Split('+');
@@ -55,6 +58,7 @@ namespace WhatKey.Converters
 
                     result.Add(new KeyToken(token, GetBrush(token)));
                 }
+                firstChord = false;
             }
 
             return result;

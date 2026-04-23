@@ -49,6 +49,7 @@ namespace WhatKey.Views
 
         public void ShowWithGroups(List<HotkeyGroup> groups, List<HotkeyGroup> systemGroups, string processName, IntPtr sourceHwnd = default)
         {
+            Dispatcher.VerifyAccess();
             ++_fadeOutGeneration;
             var safeGroups = groups ?? new List<HotkeyGroup>();
             var safeSystem = systemGroups ?? new List<HotkeyGroup>();
@@ -113,9 +114,8 @@ namespace WhatKey.Views
             if (hwnd == IntPtr.Zero)
             {
                 var ourHwnd = new WindowInteropHelper(this).Handle;
-                hMonitor = ourHwnd != IntPtr.Zero
-                    ? MonitorFromWindow(ourHwnd, MONITOR_DEFAULTTONEAREST)
-                    : MonitorFromWindow(IntPtr.Zero, MONITOR_DEFAULTTOPRIMARY);
+                if (ourHwnd == IntPtr.Zero) return fallback;
+                hMonitor = MonitorFromWindow(ourHwnd, MONITOR_DEFAULTTONEAREST);
             }
             else
             {
@@ -136,6 +136,7 @@ namespace WhatKey.Views
 
         public void HideOverlay()
         {
+            Dispatcher.VerifyAccess();
             var gen = _fadeOutGeneration;
             var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(150));
             fadeOut.Completed += (s, e) =>
