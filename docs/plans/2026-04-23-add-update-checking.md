@@ -56,10 +56,10 @@ manual check shows a dialog.
 **Files:**
 - Modify: `App.xaml.cs`
 
-- [ ] Add `UpdateService _updateService` field, instantiate in `OnStartup`
-- [ ] Add "Check for updates" `MenuItem` to tray context menu (between autostart and About separator): click handler calls `CheckForUpdateAsync`, shows `MessageBox` with result (same logic as About window handler — extract to private method `ShowUpdateResult(UpdateCheckResult)`)
-- [ ] After `InitializeTray()`, fire-and-forget auto-check: `_ = CheckForUpdatesInBackgroundAsync()` — private async method that catches all exceptions silently; if update available, calls `_trayIcon.ShowBalloonTip("Update available", "WhatKey {version} is available. Click to open.", BalloonIcon.Info)` and wires one-time `TrayBalloonTipClicked` to open release URL
-- [ ] Run `dotnet test` — must pass
+- [x] Add `UpdateService _updateService` field, instantiate in `OnStartup`
+- [x] Add "Check for updates" `MenuItem` to tray context menu (between autostart and About separator): click handler calls `CheckForUpdateAsync`, shows `MessageBox` with result (same logic as About window handler — extract to private method `ShowUpdateResult(UpdateCheckResult)`)
+- [x] After `InitializeTray()`, fire-and-forget auto-check: `_ = CheckForUpdatesInBackgroundAsync()` — private async method that catches all exceptions silently; if update available, calls `_trayIcon.ShowBalloonTip("Update available", "WhatKey {version} is available. Click to open.", BalloonIcon.Info)` and wires one-time `TrayBalloonTipClicked` to open release URL
+- [x] Run `dotnet test` — must pass
 
 ### Task 4: Verify acceptance criteria
 

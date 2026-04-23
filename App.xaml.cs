@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -18,6 +20,7 @@ namespace WhatKey
         private KeyboardHookService _hookService;
         private ActiveWindowService _activeWindowService;
         private HotkeysStorageService _storageService;
+        private UpdateService _updateService;
         private OverlayWindow _overlayWindow;
         private EditorWindow _editorWindow;
         private AboutWindow _aboutWindow;
@@ -133,7 +136,9 @@ namespace WhatKey
             _editorWindow.Icon = LoadPngIcon();
 
             // Setup tray
+            _updateService = new UpdateService();
             InitializeTray();
+            _ = CheckForUpdatesInBackgroundAsync();
         }
 
         private bool HandleLoadResult(HotkeysLoadResult result)
@@ -281,6 +286,22 @@ namespace WhatKey
             };
             menu.Items.Add(autostartItem);
 
+            var checkUpdateItem = new MenuItem { Header = "Check for updates" };
+            checkUpdateItem.Click += async (s, e) =>
+            {
+                try
+                {
+                    Version current = Assembly.GetExecutingAssembly().GetName().Version;
+                    UpdateCheckResult result = await _updateService.CheckForUpdateAsync(current);
+                    ShowUpdateResult(result);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not check for updates: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            };
+            menu.Items.Add(checkUpdateItem);
+
             menu.Items.Add(new Separator());
 
             var aboutItem = new MenuItem { Header = "About" };
@@ -313,6 +334,51 @@ namespace WhatKey
             }
             _aboutWindow.Show();
             _aboutWindow.Activate();
+        }
+
+        private static void ShowUpdateResult(UpdateCheckResult result)
+        {
+            if (result.UpdateAvailable)
+            {
+                var answer = MessageBox.Show(
+                    $"Version {result.LatestVersion} is available. Open release page?",
+                    "Update available",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (answer == MessageBoxResult.Yes && !string.IsNullOrEmpty(result.ReleaseUrl))
+                    Process.Start(new ProcessStartInfo(result.ReleaseUrl) { UseShellExecute = true });
+            }
+            else
+            {
+                MessageBox.Show("You're up to date.", "No updates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private async Task CheckForUpdatesInBackgroundAsync()
+        {
+            try
+            {
+                Version current = Assembly.GetExecutingAssembly().GetName().Version;
+                UpdateCheckResult result = await _updateService.CheckForUpdateAsync(current);
+
+                if (!result.UpdateAvailable) return;
+
+                string releaseUrl = result.ReleaseUrl;
+                RoutedEventHandler handler = null;
+                handler = (s, e) =>
+                {
+                    _trayIcon.TrayBalloonTipClicked -= handler;
+                    if (!string.IsNullOrEmpty(releaseUrl))
+                        Process.Start(new ProcessStartInfo(releaseUrl) { UseShellExecute = true });
+                };
+                _trayIcon.TrayBalloonTipClicked += handler;
+                _trayIcon.ShowBalloonTip("Update available", $"WhatKey {result.LatestVersion} is available. Click to open.", BalloonIcon.Info);
+            }
+            catch
+            {
+                // Silent — background update check failure should not disturb the user.
+            }
         }
 
         private static void RestoreSettingsSnapshot(AppSettings target, AppSettings source)
