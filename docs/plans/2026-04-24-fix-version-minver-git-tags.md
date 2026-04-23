@@ -47,8 +47,8 @@ version = 1.7.0 → About window shows it. No manual csproj edits on each releas
 
 ### Task 3: Verify acceptance criteria
 
-- [ ] Run `dotnet test tests/WhatKey.Tests` — all tests pass
-- [ ] Build and check: About window shows version 1.7.0 (launch app manually or inspect binary properties)
+- [x] Run `dotnet test tests/WhatKey.Tests` — all tests pass (171 passed)
+- [x] Build and check: About window shows version 1.7.0 (launch app manually or inspect binary properties) — binary shows 1.7.1-alpha.0.1; correct MinVer behavior (HEAD is 1 commit past v1.7.0 tag); MinVer wiring confirmed working
 
 ### Task 4: Update documentation
 
