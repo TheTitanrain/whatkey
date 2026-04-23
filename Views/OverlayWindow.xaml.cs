@@ -24,7 +24,6 @@ namespace WhatKey.Views
         private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
         private const uint MONITOR_DEFAULTTONEAREST = 2;
-        private const uint MONITOR_DEFAULTTOPRIMARY = 1;
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT { public int Left, Top, Right, Bottom; }

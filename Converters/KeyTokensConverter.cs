@@ -50,11 +50,11 @@ namespace WhatKey.Converters
                 var parts = chords[ci].Split('+');
                 for (int i = 0; i < parts.Length; i++)
                 {
-                    if (i > 0)
-                        result.Add(new KeyToken("+", SeparatorBrush));
-
                     var token = parts[i].Trim();
                     if (string.IsNullOrEmpty(token)) continue;
+
+                    if (i > 0)
+                        result.Add(new KeyToken("+", SeparatorBrush));
 
                     result.Add(new KeyToken(token, GetBrush(token)));
                 }

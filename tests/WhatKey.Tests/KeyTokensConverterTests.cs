@@ -272,6 +272,18 @@ namespace WhatKey.Tests
             AssertColorEquals(0xA6, 0xE3, 0xA1, list[2].Brush);
         }
 
+        [TestMethod]
+        public void MalformedChordWithConsecutivePlus_SkipsEmptyToken()
+        {
+            var result = _converter.Convert("A++B", typeof(object), null, CultureInfo.InvariantCulture);
+
+            var list = result as System.Collections.Generic.List<KeyToken>;
+            Assert.AreEqual(3, list.Count);
+            Assert.AreEqual("A", list[0].Text);
+            Assert.AreEqual("+", list[1].Text);
+            Assert.AreEqual("B", list[2].Text);
+        }
+
         private void AssertColorEquals(byte expectedR, byte expectedG, byte expectedB, Brush brush)
         {
             var solidBrush = brush as SolidColorBrush;
