@@ -17,8 +17,8 @@ hardcoded 980px constant instead of adapting to monitor width.
 
 - Window expands horizontally when more hotkeys require more columns.
 - Column count is driven by 65% of screen height (comfortable reading height per column).
-- Window height is capped at 90% of screen height; scrollbar appears beyond that.
-- Window max width is 80% of screen width.
+- The hotkeys list (ScrollViewer) is capped at 90% of screen height; scrollbar appears beyond that.
+- Window max width is 80% of screen width, but never exceeds the actual monitor work area width.
 
 ## Non-Goals
 
@@ -89,9 +89,10 @@ var scrollCapHeight = Math.Max(
     OverlayViewModel.DefaultHotkeyRowHeight * 2,
     bounds.Height * OverlayViewModel.OverlayScrollCapRatio);
 
-var maxWidth = Math.Max(
-    OverlayViewModel.DefaultOverlayMinWidth,
-    bounds.Width * OverlayViewModel.OverlayMaxWidthRatio);
+// Clamp to bounds.Width so the window never exceeds the monitor work area on narrow screens.
+var maxWidth = Math.Min(
+    bounds.Width,
+    Math.Max(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width * OverlayViewModel.OverlayMaxWidthRatio));
 
 _viewModel.ColumnTargetHeight = columnTargetHeight;
 _viewModel.HotkeysListMaxHeight = scrollCapHeight;
@@ -109,20 +110,29 @@ _viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, listWidth);
 
 ## OverlayWindow.xaml Changes
 
-None. `MaxHeight="650"` already removed in previous plan. ScrollViewer binding to
-`HotkeysListMaxHeight` unchanged.
+- Remove `MaxWidth="980"` from the `<Border>` element (line 22). The Border was constraining
+  content to 980px independently of Window.MaxWidth, so widening the window had no effect.
+  The window's own `MaxWidth` (set in code-behind) is the sole width constraint.
+- `MaxHeight="650"` already removed in the previous plan.
+- ScrollViewer binding to `HotkeysListMaxHeight` unchanged.
 
 ## Tests (OverlayLayoutTests.cs)
 
 ### Update
 
+- `OverlayViewModel_UsesSharedHotkeysListMaxHeightForUiAndCalculation` → rename to
+  `OverlayViewModel_HotkeysListMaxHeight_DefaultIsScrollCapOnly`; assert only that
+  `HotkeysListMaxHeight` defaults to `DefaultHotkeysListMaxHeight` (column calc now uses
+  `ColumnTargetHeight`).
 - `OverlayViewModel_UpdateLayoutForHotkeysCount_UsesDynamicHotkeysListMaxHeight` →
-  rename to `…UsesColumnTargetHeight`; test `ColumnTargetHeight` setter, not `HotkeysListMaxHeight`.
+  rename to `…UsesColumnTargetHeight`; set `ColumnTargetHeight`, verify column result.
 - `OverlayWindowCodeBehind_ShowWithGroups_SetsHotkeysListMaxHeightFromBounds` →
   assert `OverlayScrollCapRatio`, `OverlayColumnTargetRatio` strings present; remove
   `OverlayHeaderFooterOverheadDips` assertion.
 - `OverlayWindowCodeBehind_ShowWithGroups_UpdatesColumnsAndKeepsShowPipeline` →
-  add assertion for `_viewModel.ColumnTargetHeight = columnTargetHeight`.
+  replace old `MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width)` assertion
+  with `OverlayViewModel.OverlayMaxWidthRatio`; add assertion for
+  `_viewModel.ColumnTargetHeight = columnTargetHeight`.
 
 ### Add
 
@@ -131,11 +141,16 @@ None. `MaxHeight="650"` already removed in previous plan. ScrollViewer binding t
 - `OverlayViewModel_UpdateLayoutForHotkeysCount_UsesColumnTargetHeightNotScrollCap` — set
   `ColumnTargetHeight=60`, `HotkeysListMaxHeight=9000`, call with 3 hotkeys, expect 2 columns
   (proves column calc ignores the scroll cap).
+- `OverlayWindowXaml_BorderDoesNotHardcodeMaxWidth` — assert XAML does not contain
+  `MaxWidth="980"` on the Border element.
 
 ## Acceptance Criteria
 
-- On 1080p: Firefox (~27 hotkeys) displays in 2 columns; window width grows beyond 420px.
-- On 1080p: Very large hotkey set (>31 hotkeys) shows 3 columns.
-- On 1080p: If content overflows 90% screen height, scrollbar appears.
+Math at 1080p: `columnTargetHeight = 1080 * 0.65 = 702px`, `rowsPerColumn = 702 / 30 = 23`.
+
+- On 1080p: Firefox (~27 hotkeys) displays in 2 columns (ceil(27/23) = 2); window width grows beyond 420px.
+- On 1080p: Hotkey set > 46 entries shows 3 columns (ceil(47/23) = 3).
+- The hotkeys list (ScrollViewer) does not exceed 90% of screen height; scrollbar appears if content is taller.
+- Window never exceeds monitor work area width on any screen size.
 - All existing tests pass; new tests pass.
 - `dotnet build` — 0 errors, 0 warnings.
