@@ -45,11 +45,11 @@ manual check shows a dialog.
 - Modify: `Views/AboutWindow.xaml`
 - Modify: `Views/AboutWindow.xaml.cs`
 
-- [ ] Replace hardcoded "Version 1.0" TextBlock with binding to `Assembly.GetExecutingAssembly().GetName().Version` formatted as `v{major}.{minor}.{build}`
-- [ ] Add "Check for Updates" Button in bottom bar next to Close button (same style as Close)
-- [ ] Add async `CheckUpdates_Click` handler in code-behind: creates `UpdateService`, calls `CheckForUpdateAsync`, shows `MessageBox` — either "You're up to date" or "Version X.X available — open release page?" (Yes/No), Yes opens GitHub releases URL via `Process.Start`
-- [ ] Handle exceptions: show "Could not check for updates: {message}" on failure
-- [ ] Run `dotnet test` — must pass (no new tests needed for UI wiring)
+- [x] Replace hardcoded "Version 1.0" TextBlock with binding to `Assembly.GetExecutingAssembly().GetName().Version` formatted as `v{major}.{minor}.{build}`
+- [x] Add "Check for Updates" Button in bottom bar next to Close button (same style as Close)
+- [x] Add async `CheckUpdates_Click` handler in code-behind: creates `UpdateService`, calls `CheckForUpdateAsync`, shows `MessageBox` — either "You're up to date" or "Version X.X available — open release page?" (Yes/No), Yes opens GitHub releases URL via `Process.Start`
+- [x] Handle exceptions: show "Could not check for updates: {message}" on failure
+- [x] Run `dotnet test` — must pass (no new tests needed for UI wiring)
 
 ### Task 3: Tray menu item + auto-check on startup
 

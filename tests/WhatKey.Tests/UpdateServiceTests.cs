@@ -86,8 +86,12 @@ namespace WhatKey.Tests
         {
             var svc = MakeService("not json at all");
 
-            await Assert.ThrowsExceptionAsync<JsonException>(
-                () => svc.CheckForUpdateAsync(new Version(1, 0, 0)));
+            Exception caught = null;
+            try { await svc.CheckForUpdateAsync(new Version(1, 0, 0)); }
+            catch (Exception ex) { caught = ex; }
+
+            Assert.IsNotNull(caught);
+            Assert.IsInstanceOfType(caught, typeof(JsonException));
         }
 
         [TestMethod]
