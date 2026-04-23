@@ -41,9 +41,9 @@ version = 1.7.0 → About window shows it. No manual csproj edits on each releas
 **Files:**
 - No file changes — git operation only
 
-- [ ] Create annotated tag: `git tag -a v1.7.0 -m "Release v1.7.0 — update checking feature"`
-- [ ] Run `dotnet build` again — `dotnet msbuild -getProperty:Version` must return `1.7.0`
-- [ ] Run full test suite: `dotnet test tests/WhatKey.Tests` — must pass before task 3
+- [x] Create annotated tag: `git tag -a v1.7.0 -m "Release v1.7.0 — update checking feature"`
+- [x] Run `dotnet build` again — `dotnet msbuild -getProperty:Version` must return `1.7.0`
+- [x] Run full test suite: `dotnet test tests/WhatKey.Tests` — must pass before task 3
 
 ### Task 3: Verify acceptance criteria
 
