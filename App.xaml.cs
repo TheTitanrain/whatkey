@@ -291,8 +291,7 @@ namespace WhatKey
             {
                 try
                 {
-                    Version current = Assembly.GetExecutingAssembly().GetName().Version;
-                    UpdateCheckResult result = await _updateService.CheckForUpdateAsync(current);
+                    UpdateCheckResult result = await _updateService.CheckForUpdateAsync(CurrentVersion);
                     ShowUpdateResult(result);
                 }
                 catch (Exception ex)
@@ -336,7 +335,19 @@ namespace WhatKey
             _aboutWindow.Activate();
         }
 
-        private static void ShowUpdateResult(UpdateCheckResult result)
+        internal static readonly Version CurrentVersion = GetCurrentVersion();
+
+        private static Version GetCurrentVersion()
+        {
+            string infoVer = Assembly.GetExecutingAssembly()
+                .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false) is System.Reflection.AssemblyInformationalVersionAttribute[] attrs && attrs.Length > 0
+                ? attrs[0].InformationalVersion : "0.0.0";
+            int dashIdx = infoVer.IndexOf('-');
+            string versionStr = dashIdx >= 0 ? infoVer.Substring(0, dashIdx) : infoVer;
+            return Version.TryParse(versionStr, out Version v) ? v : new Version(0, 0, 0);
+        }
+
+        internal static void ShowUpdateResult(UpdateCheckResult result)
         {
             if (result.UpdateAvailable)
             {
@@ -359,8 +370,7 @@ namespace WhatKey
         {
             try
             {
-                Version current = Assembly.GetExecutingAssembly().GetName().Version;
-                UpdateCheckResult result = await _updateService.CheckForUpdateAsync(current);
+                UpdateCheckResult result = await _updateService.CheckForUpdateAsync(CurrentVersion);
 
                 if (!result.UpdateAvailable) return;
 

@@ -128,7 +128,6 @@
                             Margin="0,0,8,0"
                             Style="{StaticResource BottomButton}"
                             Click="CheckUpdates_Click"/>
-                    <UIElement/>
                 </DockPanel>
             </Border>
         </Grid>

@@ -31,11 +31,12 @@ namespace WhatKey.Tests
             string json = "{\"tag_name\":\"v1.0.0\",\"html_url\":\"https://github.com/releases/tag/v1.0.0\"}";
             var svc = MakeService(json);
 
-            // Use 4-part version to match production (Assembly.GetName().Version is always 4-part on .NET Framework).
-            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0, 0));
+            // Use 3-part version matching App.CurrentVersion (parsed from InformationalVersion).
+            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0));
 
             Assert.IsFalse(result.UpdateAvailable);
             Assert.AreEqual("1.0.0", result.LatestVersion);
+            Assert.AreEqual("https://github.com/releases/tag/v1.0.0", result.ReleaseUrl);
         }
 
         [TestMethod]
@@ -103,7 +104,7 @@ namespace WhatKey.Tests
             string json = "{\"tag_name\":\"v2.0.0-rc1\",\"html_url\":\"https://github.com/\"}";
             var svc = MakeService(json);
 
-            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0, 0));
+            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0));
 
             Assert.IsTrue(result.UpdateAvailable);
             Assert.AreEqual("2.0.0", result.LatestVersion);
@@ -115,12 +116,40 @@ namespace WhatKey.Tests
             string json = "{\"tag_name\":null,\"html_url\":\"https://github.com/\"}";
             var svc = MakeService(json);
 
-            Exception caught = null;
-            try { await svc.CheckForUpdateAsync(new Version(1, 0, 0, 0)); }
-            catch (Exception ex) { caught = ex; }
+            await Assert.ThrowsExceptionAsync<FormatException>(
+                () => svc.CheckForUpdateAsync(new Version(1, 0, 0)));
+        }
 
-            Assert.IsNotNull(caught);
-            Assert.IsInstanceOfType(caught, typeof(FormatException));
+        [TestMethod]
+        public async Task CheckForUpdate_MissingTagName_Throws()
+        {
+            string json = "{\"html_url\":\"https://github.com/\"}";
+            var svc = MakeService(json);
+
+            await Assert.ThrowsExceptionAsync<FormatException>(
+                () => svc.CheckForUpdateAsync(new Version(1, 0, 0)));
+        }
+
+        [TestMethod]
+        public async Task CheckForUpdate_UnparseableTag_Throws()
+        {
+            string json = "{\"tag_name\":\"release-candidate\",\"html_url\":\"https://github.com/\"}";
+            var svc = MakeService(json);
+
+            await Assert.ThrowsExceptionAsync<FormatException>(
+                () => svc.CheckForUpdateAsync(new Version(1, 0, 0)));
+        }
+
+        [TestMethod]
+        public async Task CheckForUpdate_NullHtmlUrl_ReturnsEmptyReleaseUrl()
+        {
+            string json = "{\"tag_name\":\"v2.0.0\",\"html_url\":null}";
+            var svc = MakeService(json);
+
+            var result = await svc.CheckForUpdateAsync(new Version(1, 0, 0));
+
+            Assert.IsTrue(result.UpdateAvailable);
+            Assert.AreEqual(string.Empty, result.ReleaseUrl);
         }
 
         [TestMethod]

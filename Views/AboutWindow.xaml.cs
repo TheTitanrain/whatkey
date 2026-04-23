@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -13,7 +12,7 @@ namespace WhatKey.Views
         public AboutWindow()
         {
             InitializeComponent();
-            Version v = Assembly.GetExecutingAssembly().GetName().Version;
+            Version v = App.CurrentVersion;
             VersionText.Text = $"v{v.Major}.{v.Minor}.{v.Build}";
         }
 
@@ -35,24 +34,8 @@ namespace WhatKey.Views
             try
             {
                 var svc = new UpdateService();
-                Version current = Assembly.GetExecutingAssembly().GetName().Version;
-                UpdateCheckResult result = await svc.CheckForUpdateAsync(current);
-
-                if (result.UpdateAvailable)
-                {
-                    var answer = MessageBox.Show(
-                        $"Version {result.LatestVersion} is available. Open release page?",
-                        "Update available",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Information);
-
-                    if (answer == MessageBoxResult.Yes && !string.IsNullOrEmpty(result.ReleaseUrl))
-                        Process.Start(new ProcessStartInfo(result.ReleaseUrl) { UseShellExecute = true });
-                }
-                else
-                {
-                    MessageBox.Show("You're up to date.", "No updates", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                UpdateCheckResult result = await svc.CheckForUpdateAsync(App.CurrentVersion);
+                App.ShowUpdateResult(result);
             }
             catch (Exception ex)
             {

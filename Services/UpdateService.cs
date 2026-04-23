@@ -14,6 +14,7 @@ namespace WhatKey.Services
         static UpdateService()
         {
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "WhatKey");
+            _httpClient.Timeout = TimeSpan.FromSeconds(10);
         }
 
         private readonly Func<Task<string>> _fetchJson;
@@ -37,7 +38,9 @@ namespace WhatKey.Services
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
                 JsonElement root = doc.RootElement;
-                string tagName = root.GetProperty("tag_name").GetString();
+                if (!root.TryGetProperty("tag_name", out JsonElement tagElem))
+                    throw new FormatException("GitHub release tag_name is missing.");
+                string tagName = tagElem.GetString();
                 if (string.IsNullOrEmpty(tagName))
                     throw new FormatException("GitHub release tag_name is missing or null.");
 
