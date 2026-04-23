@@ -64,6 +64,16 @@
 - `AddGroupCommand` / `RemoveGroupCommand` add/remove groups from both `SelectedApp.Groups` and `Groups`; `AddHotkeyCommand` / `RemoveHotkeyCommand` target `SelectedGroup.Hotkeys`.
 - New apps (`AddApp`) are initialized with `Groups = [{ Name = "General" }]`.
 
+## UpdateService pattern
+
+- `Services/UpdateService.cs` accepts `Func<Task<string>>` in constructor for injectable fetch (defaults to live GitHub API via `static readonly HttpClient`).
+- Static `HttpClient` avoids socket exhaustion for repeated checks in a single process lifetime.
+- `CheckForUpdateAsync(Version currentVersion)` fetches JSON, parses `tag_name` and `html_url` via `System.Text.Json`, strips leading `v`, compares with `Version.Parse`, returns `UpdateCheckResult { UpdateAvailable, LatestVersion, ReleaseUrl }`.
+- Returns `null` on network failure (caller decides how to surface the error).
+- `App.xaml.cs` fires auto-check after tray init as fire-and-forget (`_ = CheckForUpdatesInBackgroundAsync()`); exceptions caught silently; on update found shows `TaskbarIcon.ShowBalloonTip` and wires one-time `TrayBalloonTipClicked` to open release URL.
+- Manual check (About window + tray menu item) creates `UpdateService` directly and shows `MessageBox` result.
+- Unit tests inject a fake fetch delegate — no real HTTP in tests.
+
 ## KeyTokensConverter
 
 - `Converters/KeyTokensConverter.cs`: `IValueConverter` taking the `Keys` string of a `HotkeyEntry` and returning `List<KeyToken>`.
