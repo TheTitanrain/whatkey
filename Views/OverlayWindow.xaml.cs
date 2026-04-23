@@ -69,8 +69,20 @@ namespace WhatKey.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 var bounds = GetMonitorWorkAreaDips(sourceHwnd);
-                MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);
-                MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);
+                var columnTargetHeight = Math.Max(
+                    OverlayViewModel.DefaultHotkeyRowHeight * 2,
+                    bounds.Height * OverlayViewModel.OverlayColumnTargetRatio);
+                var scrollCapHeight = Math.Max(
+                    OverlayViewModel.DefaultHotkeyRowHeight * 2,
+                    bounds.Height * OverlayViewModel.OverlayScrollCapRatio);
+                var maxWidth = Math.Min(
+                    bounds.Width,
+                    Math.Max(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width * OverlayViewModel.OverlayMaxWidthRatio));
+                _viewModel.ColumnTargetHeight = columnTargetHeight;
+                _viewModel.HotkeysListMaxHeight = scrollCapHeight;
+                UpdateLayout();
+                MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, maxWidth);
+                MaxWidth = maxWidth;
                 _viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, MaxWidth);
                 UpdateLayout();
                 var listWidth = GetAvailableHotkeysListWidth();

@@ -12,11 +12,16 @@ namespace WhatKey.ViewModels
         public const double DefaultMinColumnWidth = 240d;
         public const double DefaultOverlayMinWidth = 420d;
         public const double DefaultOverlayMaxWidth = 980d;
+        public const double OverlayColumnTargetRatio = 0.65;
+        public const double OverlayScrollCapRatio    = 0.90;
+        public const double OverlayMaxWidthRatio     = 0.80;
         public const int MinOverlayColumns = 1;
         public const int MaxOverlayColumns = 3;
 
         private string _appTitle;
         private int _overlayColumns = MinOverlayColumns;
+        private double _hotkeysListMaxHeight = DefaultHotkeysListMaxHeight;
+        private double _columnTargetHeight = DefaultHotkeysListMaxHeight;
         private ObservableCollection<HotkeyGroup> _groups = new ObservableCollection<HotkeyGroup>();
         private ObservableCollection<HotkeyGroup> _systemGroups = new ObservableCollection<HotkeyGroup>();
 
@@ -59,7 +64,17 @@ namespace WhatKey.ViewModels
         public Visibility EmptyMessageVisibility =>
             _groups == null || !_groups.Any(g => g.Hotkeys != null && g.Hotkeys.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
 
-        public double HotkeysListMaxHeight => DefaultHotkeysListMaxHeight;
+        public double HotkeysListMaxHeight
+        {
+            get => _hotkeysListMaxHeight;
+            set => SetField(ref _hotkeysListMaxHeight, value);
+        }
+
+        public double ColumnTargetHeight
+        {
+            get => _columnTargetHeight;
+            set => SetField(ref _columnTargetHeight, value);
+        }
 
         public static int CalculateOverlayColumns(
             int hotkeysCount,
@@ -105,7 +120,7 @@ namespace WhatKey.ViewModels
 
         public void UpdateLayoutForHotkeysCount(int hotkeysCount, double availableWidth = double.PositiveInfinity)
         {
-            OverlayColumns = CalculateOverlayColumns(hotkeysCount, availableWidth: availableWidth);
+            OverlayColumns = CalculateOverlayColumns(hotkeysCount, ColumnTargetHeight, availableWidth: availableWidth);
         }
     }
 }

@@ -39,11 +39,69 @@ namespace WhatKey.Tests
         }
 
         [TestMethod]
-        public void OverlayViewModel_UsesSharedHotkeysListMaxHeightForUiAndCalculation()
+        public void OverlayViewModel_HotkeysListMaxHeight_DefaultIsScrollCapOnly()
         {
             var viewModel = new OverlayViewModel();
 
             Assert.AreEqual(OverlayViewModel.DefaultHotkeysListMaxHeight, viewModel.HotkeysListMaxHeight);
+        }
+
+        [TestMethod]
+        public void OverlayViewModel_HotkeysListMaxHeight_IsSettableAndNotifiesProperty()
+        {
+            var viewModel = new OverlayViewModel();
+            string changedProp = null;
+            viewModel.PropertyChanged += (s, e) => changedProp = e.PropertyName;
+
+            viewModel.HotkeysListMaxHeight = 300d;
+
+            Assert.AreEqual(300d, viewModel.HotkeysListMaxHeight);
+            Assert.AreEqual(nameof(OverlayViewModel.HotkeysListMaxHeight), changedProp);
+        }
+
+        [TestMethod]
+        public void OverlayViewModel_UpdateLayoutForHotkeysCount_UsesColumnTargetHeight()
+        {
+            var viewModel = new OverlayViewModel();
+            viewModel.ColumnTargetHeight = 60d; // 2 rows at 30px each
+
+            viewModel.UpdateLayoutForHotkeysCount(3); // 3 hotkeys → ceil(3/2) = 2 columns
+
+            Assert.AreEqual(2, viewModel.OverlayColumns);
+        }
+
+        [TestMethod]
+        public void OverlayViewModel_ColumnTargetHeight_DefaultEqualsHotkeysListMaxHeight()
+        {
+            var viewModel = new OverlayViewModel();
+
+            Assert.AreEqual(OverlayViewModel.DefaultHotkeysListMaxHeight, viewModel.ColumnTargetHeight);
+            Assert.AreEqual(viewModel.HotkeysListMaxHeight, viewModel.ColumnTargetHeight);
+        }
+
+        [TestMethod]
+        public void OverlayViewModel_ColumnTargetHeight_IsSettableAndNotifiesProperty()
+        {
+            var viewModel = new OverlayViewModel();
+            string changedProp = null;
+            viewModel.PropertyChanged += (s, e) => changedProp = e.PropertyName;
+
+            viewModel.ColumnTargetHeight = 400d;
+
+            Assert.AreEqual(400d, viewModel.ColumnTargetHeight);
+            Assert.AreEqual(nameof(OverlayViewModel.ColumnTargetHeight), changedProp);
+        }
+
+        [TestMethod]
+        public void OverlayViewModel_UpdateLayoutForHotkeysCount_UsesColumnTargetHeightNotScrollCap()
+        {
+            var viewModel = new OverlayViewModel();
+            viewModel.ColumnTargetHeight = 60d;   // 2 rows per col → 3 hotkeys needs 2 cols
+            viewModel.HotkeysListMaxHeight = 9000d; // scroll cap irrelevant to column calc
+
+            viewModel.UpdateLayoutForHotkeysCount(3);
+
+            Assert.AreEqual(2, viewModel.OverlayColumns);
         }
 
         [TestMethod]
@@ -175,8 +233,8 @@ namespace WhatKey.Tests
             var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");
 
             StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(totalHotkeys);");
-            StringAssert.Contains(codeBehind, "MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, bounds.Width);");
-            StringAssert.Contains(codeBehind, "MaxWidth = Math.Min(OverlayViewModel.DefaultOverlayMaxWidth, bounds.Width);");
+            StringAssert.Contains(codeBehind, "MinWidth = Math.Min(OverlayViewModel.DefaultOverlayMinWidth, maxWidth);");
+            StringAssert.Contains(codeBehind, "MaxWidth = maxWidth;");
             StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, MaxWidth);");
             StringAssert.Contains(codeBehind, "var listWidth = GetAvailableHotkeysListWidth();");
             StringAssert.Contains(codeBehind, "_viewModel.UpdateLayoutForHotkeysCount(totalHotkeys, listWidth);");
@@ -186,6 +244,36 @@ namespace WhatKey.Tests
             StringAssert.Contains(codeBehind, "BeginAnimation(OpacityProperty, fadeIn);");
             StringAssert.Contains(codeBehind, "if (!IsVisible)");
             StringAssert.Contains(codeBehind, "Show();");
+            StringAssert.Contains(codeBehind, "_viewModel.HotkeysListMaxHeight = scrollCapHeight;");
+            StringAssert.Contains(codeBehind, "_viewModel.ColumnTargetHeight = columnTargetHeight;");
+            StringAssert.Contains(codeBehind, "OverlayViewModel.OverlayMaxWidthRatio");
+        }
+
+        [TestMethod]
+        public void OverlayWindowCodeBehind_ShowWithGroups_SetsHotkeysListMaxHeightFromBounds()
+        {
+            var codeBehind = LoadSourceFile("Views", "OverlayWindow.xaml.cs");
+
+            StringAssert.Contains(codeBehind, "_viewModel.HotkeysListMaxHeight = scrollCapHeight;");
+            StringAssert.Contains(codeBehind, "OverlayViewModel.OverlayScrollCapRatio");
+            StringAssert.Contains(codeBehind, "OverlayViewModel.OverlayColumnTargetRatio");
+            StringAssert.Contains(codeBehind, "bounds.Height * OverlayViewModel.OverlayScrollCapRatio");
+        }
+
+        [TestMethod]
+        public void OverlayWindowXaml_DoesNotHardcodeMaxHeight()
+        {
+            var xaml = LoadOverlayWindowXaml();
+
+            Assert.IsFalse(xaml.Contains("MaxHeight=\"650\""), "Window XAML must not hardcode MaxHeight=\"650\"");
+        }
+
+        [TestMethod]
+        public void OverlayWindowXaml_BorderDoesNotHardcodeMaxWidth()
+        {
+            var xaml = LoadOverlayWindowXaml();
+
+            Assert.IsFalse(xaml.Contains("MaxWidth=\"980\""), "Border must not hardcode MaxWidth=\"980\"");
         }
 
         [TestMethod]

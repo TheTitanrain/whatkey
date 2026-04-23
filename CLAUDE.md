@@ -49,6 +49,9 @@
 - Column count is recalculated in `ShowWithGroups(...)` based on total hotkey count across all groups and max overlay height constraints.
 - `Views/OverlayWindow.xaml` binds layout columns from the view model instead of hardcoding a single vertical list.
 - Keep column selection logic UI-independent so it remains covered by `tests/WhatKey.Tests/OverlayLayoutTests.cs`.
+- Two separate height properties on `OverlayViewModel`: `HotkeysListMaxHeight` (scroll cap, 90% of screen height, bound to ScrollViewer `MaxHeight`) and `ColumnTargetHeight` (column trigger, 65% of screen height, passed to `CalculateOverlayColumns`). Both default to `DefaultHotkeysListMaxHeight = 460` before `ShowWithGroups` is called.
+- `ShowWithGroups` computes all three sizing values from monitor bounds using ratio constants: `OverlayColumnTargetRatio = 0.65`, `OverlayScrollCapRatio = 0.90`, `OverlayMaxWidthRatio = 0.80`. Max width is clamped to `bounds.Width` to avoid exceeding the work area on narrow screens.
+- Window XAML has no hardcoded `MaxHeight` or `MaxWidth` on either the `<Window>` or `<Border>` elements; all sizing is controlled at runtime via code-behind and the ScrollViewer binding.
 
 ## HotkeyGroup model and group management
 

@@ -10,8 +10,7 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
-        MinWidth="420"
-        MaxHeight="650">
+        MinWidth="420">
 
     <Window.Resources>
         <converters:KeyTokensConverter x:Key="KeyTokens"/>
@@ -19,8 +18,7 @@
 
     <Border Background="#CC1E1E2E"
             CornerRadius="12"
-            Padding="28,20"
-            MaxWidth="980">
+            Padding="28,20">
         <StackPanel>
             <!-- Header -->
             <DockPanel Margin="0,0,0,14">
