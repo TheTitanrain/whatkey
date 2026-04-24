@@ -37,19 +37,6 @@ jobs:
           echo "VERSION=$version" >> $env:GITHUB_OUTPUT
           Write-Host "Releasing version: $version (tag: $tag)"
 
-      - name: Patch version in AboutWindow.xaml
-        shell: pwsh
-        run: |
-          $version = '${{ steps.version.outputs.VERSION }}'
-          $file = 'Views\AboutWindow.xaml'
-          $content = Get-Content $file -Raw
-          $patched = $content -replace 'Text="Version [^"]*"', "Text=`"Version $version`""
-          Set-Content $file -Value $patched -NoNewline
-          if (-not ($patched -match [regex]::Escape("Version $version"))) {
-            Write-Error "Version patch failed"
-            exit 1
-          }
-
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
