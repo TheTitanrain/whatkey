@@ -69,6 +69,10 @@ dotnet build -c Release
 
 Binary: `bin/Release/net48/WhatKey.exe`
 
+Release builds use MinVer. A Git tag like `v1.7.2` becomes the app version, and the app
+parses `AssemblyInformationalVersion` defensively so MinVer suffixes such as `-alpha` or
+`+commitSha` do not break the About window version or update comparison logic.
+
 ## Hotkey configuration
 
 Open the editor by double-clicking the tray icon or using `Edit Hotkeys` in the context menu.

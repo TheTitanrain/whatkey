@@ -342,9 +342,7 @@ namespace WhatKey
             string infoVer = Assembly.GetExecutingAssembly()
                 .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false) is System.Reflection.AssemblyInformationalVersionAttribute[] attrs && attrs.Length > 0
                 ? attrs[0].InformationalVersion : "0.0.0";
-            int dashIdx = infoVer.IndexOf('-');
-            string versionStr = dashIdx >= 0 ? infoVer.Substring(0, dashIdx) : infoVer;
-            return Version.TryParse(versionStr, out Version v) ? v : new Version(0, 0, 0);
+            return VersionParser.ParseInformationalVersion(infoVer);
         }
 
         internal static void ShowUpdateResult(UpdateCheckResult result)
